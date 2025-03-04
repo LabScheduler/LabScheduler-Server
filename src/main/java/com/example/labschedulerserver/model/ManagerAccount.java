@@ -3,6 +3,7 @@ package com.example.labschedulerserver.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -30,4 +31,7 @@ public class ManagerAccount {
     @OneToOne
     @MapsId
     private Account account;
+
+    @OneToMany(mappedBy = "managerAccount")
+    private List<ScheduleRequestLog> scheduleRequestLogs;
 }

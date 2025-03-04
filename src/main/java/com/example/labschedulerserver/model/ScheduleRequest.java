@@ -46,10 +46,6 @@ public class ScheduleRequest {
 
     private String reason;
 
-    @Column(name = "request_status")
-    @Enumerated(EnumType.STRING)
-    private RequestStatus requestStatus;
-
     @Column(name = "request_type")
     @Enumerated(EnumType.STRING)
     private RequestType requestType;
@@ -57,6 +53,7 @@ public class ScheduleRequest {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-    @Column(name = "updated_at")
-    private Timestamp updatedAt;
+    @OneToOne(mappedBy = "request")
+    private ScheduleRequestLog scheduleRequestLog;
+
 }
