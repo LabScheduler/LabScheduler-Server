@@ -15,8 +15,8 @@ import java.util.UUID;
 @Table(name = "semester")
 public class Semester {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private String name;
 

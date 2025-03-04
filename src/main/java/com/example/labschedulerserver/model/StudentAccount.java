@@ -28,7 +28,7 @@ public class StudentAccount {
 
     private boolean gender;
 
-    @OneToOne(mappedBy = "studentAccount", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @MapsId
     private Account account;
 

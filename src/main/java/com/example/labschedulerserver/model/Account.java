@@ -19,8 +19,8 @@ import java.util.UUID;
 @Table(name = "account")
 public class Account implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private String email;
 
@@ -30,16 +30,9 @@ public class Account implements UserDetails {
     @JoinColumn(name = "role_id")
     private Role role;
 
+    @Enumerated(EnumType.STRING)
     private AccountStatus status;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private ManagerAccount managerAccount;
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private LecturerAccount lecturerAccount;
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private StudentAccount studentAccount;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

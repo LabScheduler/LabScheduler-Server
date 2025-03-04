@@ -16,8 +16,8 @@ import java.util.UUID;
 @Table(name = "schedule_request")
 public class ScheduleRequest {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "lecturer_account_id")

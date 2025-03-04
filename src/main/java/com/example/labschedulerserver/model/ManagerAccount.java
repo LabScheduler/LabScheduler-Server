@@ -13,8 +13,9 @@ import java.util.UUID;
 @Table(name = "manager_account")
 public class ManagerAccount {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id")
-    private UUID accountId;
+    private Integer accountId;
 
     @Column(name = "full_name")
     private String fullName;
@@ -27,7 +28,7 @@ public class ManagerAccount {
 
     private boolean gender;
 
-    @OneToOne(mappedBy = "managerAccount",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @MapsId
     private Account account;
 }

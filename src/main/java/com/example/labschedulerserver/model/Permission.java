@@ -14,8 +14,8 @@ import java.util.UUID;
 @Table(name = "permission")
 public class Permission {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private String name;
 
