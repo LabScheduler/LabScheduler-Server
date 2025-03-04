@@ -13,7 +13,6 @@ import java.util.UUID;
 @Table(name = "manager_account")
 public class ManagerAccount {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id")
     private Integer accountId;
 

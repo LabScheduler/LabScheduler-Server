@@ -14,7 +14,6 @@ import java.util.UUID;
 @Table(name = "lecturer_account")
 public class LecturerAccount {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id")
     private Integer accountId;
 
