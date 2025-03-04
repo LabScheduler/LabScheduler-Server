@@ -30,7 +30,7 @@ public class Room {
 
     private String description;
 
-    @Column(name = "last_updated", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "last_updated")
     private Timestamp lastUpdated;
 
     @OneToMany(mappedBy = "room")

@@ -20,26 +20,24 @@ public class LecturerAccount {
     @Column(name = "full_name")
     private String fullName;
 
-    @Column(unique = true, nullable = false)
     private String code;
 
-    @Column(unique = true, nullable = false)
     private String phone;
 
     private boolean gender;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne
     @MapsId
     private Account account;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
 
-    @OneToMany(mappedBy = "lecturerAccount", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "lecturerAccount")
     private List<Course> courses;
 
-    @OneToMany(mappedBy = "lecturerAccount", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "lecturerAccount")
     private List<ScheduleRequest> scheduleRequests;
 
 }

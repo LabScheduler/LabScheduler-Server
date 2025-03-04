@@ -19,7 +19,7 @@ public class Role {
 
     private String name;
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "role")
     private List<Account> accounts;
 
     @ManyToMany

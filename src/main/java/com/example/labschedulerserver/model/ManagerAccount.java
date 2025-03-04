@@ -27,7 +27,7 @@ public class ManagerAccount {
 
     private boolean gender;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne
     @MapsId
     private Account account;
 }

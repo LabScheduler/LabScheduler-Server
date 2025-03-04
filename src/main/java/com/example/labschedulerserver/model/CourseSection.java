@@ -21,7 +21,7 @@ public class CourseSection {
     @JoinColumn(name = "course_id")
     private Course course;
 
-    @Column(columnDefinition = "integer default 0", name = "section_number")
+    @Column(name = "section_number")
     private Integer sectionNumber;
 
     @Column(name = "total_students")

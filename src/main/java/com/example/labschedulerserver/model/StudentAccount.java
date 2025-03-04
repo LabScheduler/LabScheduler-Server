@@ -28,15 +28,15 @@ public class StudentAccount {
 
     private boolean gender;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne
     @MapsId
     private Account account;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "major_id")
     private Major major;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "class_id")
     private Class clazz;
 }

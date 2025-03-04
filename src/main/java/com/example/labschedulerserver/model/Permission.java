@@ -19,10 +19,6 @@ public class Permission {
 
     private String name;
 
-    @ManyToMany(mappedBy = "permissions", cascade = {
-            CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.REFRESH,
-            CascadeType.PERSIST})
+    @ManyToMany(mappedBy = "permissions")
     private List<Role> roles;
 }
