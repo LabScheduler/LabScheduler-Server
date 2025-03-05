@@ -1,10 +1,7 @@
 package com.example.labschedulerserver.model;
 
-import com.example.labschedulerserver.common.AccountStatus;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.UUID;
 
 @Entity
 @Data
@@ -38,5 +35,5 @@ public class StudentAccount {
 
     @ManyToOne
     @JoinColumn(name = "class_id")
-    private Class clazz;
+    private Clazz clazz;
 }

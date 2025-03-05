@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -23,7 +22,7 @@ public class Course {
 
     @ManyToOne
     @JoinColumn(name = "class_id")
-    private Class clazz;
+    private Clazz clazz;
 
     @ManyToOne
     @JoinColumn(name = "semester_id")

@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -12,7 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Table(name="class")
-public class Class {
+public class Clazz {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

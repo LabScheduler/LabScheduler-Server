@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -22,7 +21,7 @@ public class Major {
     private String name;
 
     @OneToMany(mappedBy = "major")
-    private List<Class> classes;
+    private List<Clazz> classes;
 
     @OneToMany(mappedBy = "major")
     private List<StudentAccount> studentAccounts;
