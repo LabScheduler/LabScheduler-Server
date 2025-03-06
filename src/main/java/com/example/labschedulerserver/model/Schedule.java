@@ -40,11 +40,11 @@ public class Schedule {
     @JoinColumn(name = "semester_week_id")
     private SemesterWeek semesterWeek;
 
-    @Column(name = "schedule_type")
+    @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private ScheduleType scheduleType;
 
-    @Column(name = "schedule_status")
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private ScheduleStatus scheduleStatus;
 

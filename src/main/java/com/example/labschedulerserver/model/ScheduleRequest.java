@@ -20,7 +20,7 @@ public class ScheduleRequest {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "lecturer_account_id")
+    @JoinColumn(name = "lecturer_id")
     private LecturerAccount lecturerAccount;
 
     @ManyToOne
@@ -46,7 +46,7 @@ public class ScheduleRequest {
 
     private String reason;
 
-    @Column(name = "request_type")
+    @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private RequestType requestType;
 

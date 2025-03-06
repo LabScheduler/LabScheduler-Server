@@ -21,6 +21,7 @@ public class ScheduleRequestLog {
     private Integer id;
 
     @OneToOne
+    @JoinColumn(name = "request_id")
     private ScheduleRequest request;
 
     @Enumerated(EnumType.STRING)

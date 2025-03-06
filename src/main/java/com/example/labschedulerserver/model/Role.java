@@ -20,4 +20,12 @@ public class Role {
     @OneToMany(mappedBy = "role")
     @JsonIgnore
     private List<Account> accounts;
+
+    @ManyToMany
+    @JoinTable(
+            name = "role_permission",
+            joinColumns = @JoinColumn(name = "role_name"),
+            inverseJoinColumns = @JoinColumn(name = "permission_name")
+    )
+    private List<Permission> permissions;
 }

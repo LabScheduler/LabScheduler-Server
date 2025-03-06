@@ -29,7 +29,7 @@ public class Course {
     private Semester semester;
 
     @ManyToOne
-    @JoinColumn(name = "lecturer_account_id")
+    @JoinColumn(name = "lecturer_id")
     private LecturerAccount lecturerAccount;
 
     @Column(name = "total_students")

@@ -20,10 +20,10 @@ public class SemesterWeek {
 
     private String name;
 
-    @Column(name = "start_time")
+    @Column(name = "start_date")
     private Timestamp startDate;
 
-    @Column(name = "end_time")
+    @Column(name = "end_date")
     private Timestamp endDate;
 
     @ManyToOne

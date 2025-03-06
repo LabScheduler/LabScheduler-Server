@@ -24,8 +24,8 @@ public class CourseSection {
     @Column(name = "section_number")
     private Integer sectionNumber;
 
-    @Column(name = "total_students")
-    private Integer totalStudents;
+    @Column(name = "total_students_in_section")
+    private Integer totalStudentsInSection;
 
     @OneToMany(mappedBy = "courseSection")
     private List<Schedule> schedules;
