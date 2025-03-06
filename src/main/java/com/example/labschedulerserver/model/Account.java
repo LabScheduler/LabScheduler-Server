@@ -1,6 +1,7 @@
 package com.example.labschedulerserver.model;
 
 import com.example.labschedulerserver.common.AccountStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,7 +28,8 @@ public class Account implements UserDetails {
     private String password;
 
     @ManyToOne
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "role")
+    @JsonIgnore
     private Role role;
 
     @Enumerated(EnumType.STRING)
@@ -51,7 +53,7 @@ public class Account implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return AccountStatus.LOCKED.equals(status);
+        return !AccountStatus.LOCKED.equals(status);
     }
 
     @Override
