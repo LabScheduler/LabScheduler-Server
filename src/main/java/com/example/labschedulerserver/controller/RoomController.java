@@ -67,5 +67,15 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/findByName/{name}")
+    public ResponseEntity<?> findRoomByName(@PathVariable String name) {
+        DataResponse<Room> response = DataResponse.<Room>builder()
+                .data(roomService.findByName(name))
+                .success(true)
+                .message("Get room by name successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
 
 }

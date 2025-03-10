@@ -31,5 +31,6 @@ public class ScheduleRequestLog {
     @JoinColumn(name = "manager_account_id")
     private ManagerAccount managerAccount;
 
-    private Timestamp changedAt;
+    @Column(name = "updated_at")
+    private Timestamp updatedAt;
 }

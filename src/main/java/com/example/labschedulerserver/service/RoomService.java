@@ -12,4 +12,5 @@ public interface RoomService {
     public Room addNewRoom(AddRoomRequest addRoomRequest);
     public void deleteRoomById(Integer id);
     public Room updateRoomById(Integer id, Map<String,Object> payload);
+    public Room findByName(String name);
 }

@@ -1,6 +1,7 @@
 package com.example.labschedulerserver.model;
 
 import com.example.labschedulerserver.common.RoomStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,9 +34,9 @@ public class Room {
     @Column(name = "last_updated")
     private Timestamp lastUpdated;
 
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<Schedule> schedules;
 
-    @OneToMany(mappedBy = "newRoom")
+    @OneToMany(mappedBy = "newRoom", fetch = FetchType.LAZY)
     private List<ScheduleRequest> scheduleRequests;
 }

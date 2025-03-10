@@ -68,4 +68,9 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.save(tmpRoom);
         return tmpRoom;
     }
+
+    @Override
+    public Room findByName(String name) {
+        return roomRepository.findByName(name).orElseThrow(()->new RuntimeException("Room not found with name: " + name));
+    }
 }

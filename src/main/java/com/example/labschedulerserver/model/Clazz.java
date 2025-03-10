@@ -1,5 +1,6 @@
 package com.example.labschedulerserver.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,11 +21,14 @@ public class Clazz {
 
     @ManyToOne
     @JoinColumn(name = "major_id")
+    @JsonIgnore
     private Major major;
 
     @OneToMany(mappedBy = "clazz")
+    @JsonIgnore
     private List<StudentAccount> students;
 
     @OneToMany(mappedBy = "clazz")
+    @JsonIgnore
     private List<Course> courses;
 }
