@@ -1,5 +1,6 @@
 package com.example.labschedulerserver.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,18 +27,22 @@ public class LecturerAccount {
 
     private boolean gender;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @MapsId
+    @JsonIgnore
     private Account account;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
+    @JsonIgnore
     private Department department;
 
-    @OneToMany(mappedBy = "lecturerAccount")
+    @OneToMany(mappedBy = "lecturerAccount",fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Course> courses;
 
-    @OneToMany(mappedBy = "lecturerAccount")
+    @OneToMany(mappedBy = "lecturerAccount",fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<ScheduleRequest> scheduleRequests;
 
 }

@@ -1,5 +1,6 @@
 package com.example.labschedulerserver.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,8 +29,9 @@ public class ManagerAccount {
 
     private boolean gender;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @MapsId
+    @JsonIgnore
     private Account account;
 
     @OneToMany(mappedBy = "managerAccount")

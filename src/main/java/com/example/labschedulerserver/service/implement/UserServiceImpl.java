@@ -1,8 +1,6 @@
 package com.example.labschedulerserver.service.implement;
 
 import com.example.labschedulerserver.model.Account;
-import com.example.labschedulerserver.payload.request.GetUserRequest;
-import com.example.labschedulerserver.payload.response.UserInfoResponse;
 import com.example.labschedulerserver.repository.AccountRepository;
 import com.example.labschedulerserver.repository.LecturerAccountRepository;
 import com.example.labschedulerserver.repository.ManagerAccountRepository;
@@ -11,6 +9,7 @@ import com.example.labschedulerserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -42,35 +41,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfoResponse getUserInfo(GetUserRequest getUserRequest) {
-        Account account = accountRepository.findAccountByEmail(String.valueOf(getUserRequest.getEmail())).orElseThrow(() -> new RuntimeException("Account not found"));
-        switch (getUserRequest.getRole()) {
+    public Object getUserInfo(Account account) {
+        Object userInfo = null;
+        switch (account.getRole().getName()){
             case "MANAGER":
-                return UserInfoResponse.builder()
-                        .id(account.getId())
-                        .email(account.getEmail())
-                        .role(getUserRequest.getRole())
-                        .status(account.getStatus())
-                        .accountInfo(managerAccountRepository.findByAccount(account))
-                        .build();
+                userInfo = managerAccountRepository.findById(account.getId()).orElseThrow(() -> new RuntimeException("Manager not found"));
+                break;
             case "LECTURER":
-                return UserInfoResponse.builder()
-                        .id(account.getId())
-                        .email(account.getEmail())
-                        .role(getUserRequest.getRole())
-                        .status(account.getStatus())
-                        .accountInfo(lecturerAccountRepository.findByAccount((account)))
-                        .build();
+                userInfo = lecturerAccountRepository.findById(account.getId()).orElseThrow(() -> new RuntimeException("Lecturer not found"));
+                break;
             case "STUDENT":
-                return UserInfoResponse.builder()
-                        .id(account.getId())
-                        .email(account.getEmail())
-                        .role(getUserRequest.getRole())
-                        .status(account.getStatus())
-                        .accountInfo(studentAccountRepository.findByAccount(account))
-                        .build();
+                userInfo = studentAccountRepository.findById(account.getId()).orElseThrow(() -> new RuntimeException("Student not found"));
+                break;
         }
-        return null;
+
+        return userInfo;
+    }
+
+    @Override
+    public boolean changeUserInfo(Integer id, String role, Map<String, Object> payload) {
+        return false;
     }
 
 

@@ -1,17 +1,13 @@
 package com.example.labschedulerserver.auth;
 
-import com.example.labschedulerserver.common.AccountStatus;
-import com.example.labschedulerserver.model.Account;
-import com.example.labschedulerserver.model.Role;
+import com.example.labschedulerserver.model.*;
 import com.example.labschedulerserver.repository.RoleRepository;
 import com.example.labschedulerserver.service.JwtService;
 import com.example.labschedulerserver.service.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,12 +27,18 @@ public class AuthService {
         }catch (Exception e){
             throw new AuthenticationCredentialsNotFoundException("Invalid email or password");
         }
-        Account user = userService.getUserByEmail(authRequest.getEmail()).get();
+        Account user = userService.getUserByEmail(authRequest.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
+        Object userInfo = userService.getUserInfo(user);
+
+
 
         return AuthResponse.builder()
+                .id(user.getId())
+                .status(user.getStatus().toString())
                 .token(jwtService.generateToken(user))
                 .email(user.getEmail())
                 .role(user.getRole())
+                .accountInfo(userInfo)
                 .build();
     }
 }
