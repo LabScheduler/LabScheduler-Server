@@ -10,6 +10,6 @@ public interface UserService {
     public Optional<Account> getUserByEmail(String email);
     public void saveUser(Account account);
     public Object getUserInfo(Account account);
-    public boolean changeUserInfo(Integer id, String role, Map<String, Object> payload);
+    public Object changeUserInfo(Integer id, Map<String, Object> payload);
 
 }
