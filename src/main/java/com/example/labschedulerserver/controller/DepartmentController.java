@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,8 +37,8 @@ public class DepartmentController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/addNewDepartment")
-    public ResponseEntity<?> addNewDepartment(@RequestBody Department department) {
+    @PostMapping("/create")
+    public ResponseEntity<?> createNewDepartment(@RequestBody Department department) {
         DataResponse<Department> response = DataResponse.<Department>builder()
                 .data(departmentService.addNewDepartment(department))
                 .success(true)
@@ -46,5 +47,24 @@ public class DepartmentController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteDepartment(@PathVariable Integer id) {
+        departmentService.deleteDepartmentById(id);
+        DataResponse<?> response = DataResponse.builder()
+                .success(true)
+                .message("Delete department successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<?> updateDepartment(@PathVariable Integer id, @RequestBody Map<String, Object> payload) {
+        DataResponse<Department> response = DataResponse.<Department>builder()
+                .data(departmentService.updateDepartment(id, payload))
+                .success(true)
+                .message("Update department successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
 
 }

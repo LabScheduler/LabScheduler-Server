@@ -34,6 +34,7 @@ public class ManagerAccount {
     @JsonIgnore
     private Account account;
 
-    @OneToMany(mappedBy = "managerAccount")
+    @OneToMany(mappedBy = "managerAccount", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<ScheduleRequestLog> scheduleRequestLogs;
 }

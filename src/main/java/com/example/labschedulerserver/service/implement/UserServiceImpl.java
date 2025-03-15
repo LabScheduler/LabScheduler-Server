@@ -1,9 +1,12 @@
 package com.example.labschedulerserver.service.implement;
 
+import com.example.labschedulerserver.common.AccountStatus;
 import com.example.labschedulerserver.model.Account;
 import com.example.labschedulerserver.model.LecturerAccount;
 import com.example.labschedulerserver.model.ManagerAccount;
 import com.example.labschedulerserver.model.StudentAccount;
+import com.example.labschedulerserver.payload.response.DataResponse;
+import com.example.labschedulerserver.payload.response.UserResponse;
 import com.example.labschedulerserver.repository.AccountRepository;
 import com.example.labschedulerserver.repository.LecturerAccountRepository;
 import com.example.labschedulerserver.repository.ManagerAccountRepository;
@@ -11,10 +14,12 @@ import com.example.labschedulerserver.repository.StudentAccountRepository;
 import com.example.labschedulerserver.service.UserService;
 import com.example.labschedulerserver.ultils.ConvertFromJsonToTypeVariable;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.Manager;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -47,6 +52,38 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserResponse> getAllUser() {
+        List<Account> accounts = accountRepository.findAll();
+        List<UserResponse> result = new ArrayList<>();
+        for(Account account : accounts){
+            UserResponse userResponse = UserResponse.builder()
+                    .email(account.getEmail())
+                    .role(account.getRole().getName())
+                    .id(account.getId())
+                    .status(account.getStatus())
+                    .userInfo(getUserInfo(account))
+                    .build();
+            result.add(userResponse);
+        }
+        return result;
+    }
+
+    @Override
+    public void deleteUser(Integer id) {
+        Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
+        accountRepository.delete(account);
+    }
+
+    @Override
+    public Account lockAccount(Integer id) {
+        Account account = accountRepository.findById(id).orElseThrow(()-> new RuntimeException("Account not found"));
+        account.setStatus(AccountStatus.valueOf("LOCKED"));
+        accountRepository.save(account);
+
+        return account;
+    }
+
+    @Override
     public Object getUserInfo(Account account) {
         Object userInfo = null;
         switch (account.getRole().getName()){
@@ -68,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
     }
     @Override
-    public Object changeUserInfo(Integer id, Map<String, Object> payload) {
+    public Object updateUserInfo(Integer id, Map<String, Object> payload) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
         Object userInfo = getUserInfo(account);
 
@@ -98,6 +135,5 @@ public class UserServiceImpl implements UserService {
 
         return userInfo;
     }
-
 
 }

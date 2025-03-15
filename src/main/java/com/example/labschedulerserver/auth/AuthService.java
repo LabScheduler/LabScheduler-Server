@@ -30,8 +30,6 @@ public class AuthService {
         Account user = userService.getUserByEmail(authRequest.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
         Object userInfo = userService.getUserInfo(user);
 
-
-
         return AuthResponse.builder()
                 .id(user.getId())
                 .status(user.getStatus().toString())

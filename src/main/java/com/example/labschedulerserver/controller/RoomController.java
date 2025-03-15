@@ -37,8 +37,8 @@ public class RoomController {
                 .build();
         return ResponseEntity.ok(response);
     }
-    @PostMapping("/addNewRoom")
-    public ResponseEntity<?> addNewRoom(@RequestBody AddRoomRequest addRoomRequest) {
+    @PostMapping("/create")
+    public ResponseEntity<?> createNewRoom(@RequestBody AddRoomRequest addRoomRequest) {
         DataResponse<Room> response = DataResponse.<Room>builder()
                 .data(roomService.addNewRoom(addRoomRequest))
                 .success(true)
@@ -47,7 +47,7 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/deleteRoom/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteRoomById(@PathVariable Integer id) {
         roomService.deleteRoomById(id);
         DataResponse<?> response = DataResponse.builder()
@@ -57,7 +57,7 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/updateRoom/{id}")
+    @PatchMapping("/update/{id}")
     public ResponseEntity<?> updateRoomById(@PathVariable Integer id,@RequestBody Map<String, Object> payload) {
         DataResponse<?> response = DataResponse.builder()
                 .success(true)
@@ -67,7 +67,7 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/findByName/{name}")
+    @GetMapping("/find/{name}")
     public ResponseEntity<?> findRoomByName(@PathVariable String name) {
         DataResponse<Room> response = DataResponse.<Room>builder()
                 .data(roomService.findByName(name))
