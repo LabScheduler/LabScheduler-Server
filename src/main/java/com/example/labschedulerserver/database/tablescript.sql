@@ -67,7 +67,7 @@ CREATE TABLE `Subject` (
                            `code` varchar(255) UNIQUE NOT NULL,
                            `name` varchar(255) NOT NULL,
                            `total_credits` Int NOT NULL,
-                           `total_on_class_periods` Int NOT NULL,
+                           `total_theory_periods` Int NOT NULL,
                            `total_practice_periods` Int NOT NULL
 );
 
