@@ -32,9 +32,9 @@ public class SubjectServiceImpl implements SubjectService {
         Subject subject = Subject.builder()
                 .code(request.getCode())
                 .name(request.getName())
-                .totalCredits(request.getTotal_credits())
-                .totalTheoryPeriods(request.getTotal_theory_periods())
-                .totalPracticePeriods(request.getTotal_practice_periods())
+                .totalCredits(request.getTotalCredits())
+                .totalTheoryPeriods(request.getTotalTheoryPeriods())
+                .totalPracticePeriods(request.getTotalPracticePeriods())
                 .build();
         subjectRepository.save(subject);
         return subject;
