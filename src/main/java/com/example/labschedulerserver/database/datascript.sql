@@ -38,8 +38,8 @@ VALUES
 INSERT INTO manager_account (account_id, full_name, code, phone, gender)
 VALUES
     (6, 'Son Dinh', 'MANAGER001', '0123123123',1);
-select * from account
-    INSERT INTO lecturer_account (account_id, code, full_name, department_id, phone, gender)
+
+INSERT INTO lecturer_account (account_id, code, full_name, department_id, phone, gender)
 VALUES
     (1, 'LECTURER001', 'Huynh Trong Thua', 1, '011111111', 1),
     (2, 'LECTURER002', 'Luu Nguyen Ky Thu', 1, '022222222', 1),
@@ -67,7 +67,7 @@ VALUES
     (8, 'Tuần 24', '2025-01-20', '2025-01-26', 2);
 
 
-INSERT INTO Subject (id, code, name, total_credits, total_on_class_periods, total_practice_periods)
+INSERT INTO Subject (id, code, name, total_credits, total_theory_periods, total_practice_periods)
 VALUES
     (1, 'INT1306', 'Cấu trúc dữ liệu và giải thuật', 3, 30, 15),
     (2, 'INT1310', 'Lập trình hướng đối tượng', 4, 40, 20),
