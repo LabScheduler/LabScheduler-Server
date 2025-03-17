@@ -80,7 +80,6 @@ CREATE TABLE `Course` (
                           `total_students` Int NOT NULL
 );
 
--- Bảng Course_Section (tham chiếu Course)
 CREATE TABLE `Course_Section` (
                                   `id` Integer PRIMARY KEY AUTO_INCREMENT,
                                   `course_id` Integer NOT NULL,

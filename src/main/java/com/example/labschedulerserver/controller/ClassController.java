@@ -20,9 +20,9 @@ import java.util.Map;
 public class ClassController {
     private final ClassService classService;
     @GetMapping
-    public ResponseEntity<DataResponse<?>> getClasses() {
+    public ResponseEntity<DataResponse> getClasses() {
         List<Clazz> classes = classService.getAllClasses();
-        DataResponse<?> response = DataResponse.builder()
+        DataResponse response = DataResponse.builder()
                 .data(classes)
                 .success(true)
                 .message("Get all classes successfully")
@@ -31,7 +31,7 @@ public class ClassController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Integer id) {
-        DataResponse<Clazz> response = DataResponse.<Clazz>builder()
+        DataResponse response = DataResponse.<Clazz>builder()
                 .data(classService.getClassById(id))
                 .success(true)
                 .message("Get class by id successfully")
@@ -40,7 +40,7 @@ public class ClassController {
     }
     @PostMapping
     public ResponseEntity<?> createNewClass(@RequestBody AddClassRequest addClassRequest) {
-        DataResponse<Clazz> response = DataResponse.<Clazz>builder()
+        DataResponse response = DataResponse.<Clazz>builder()
                 .data(classService.addNewClass(addClassRequest))
                 .success(true)
                 .message("Add new class successfully")
@@ -51,7 +51,7 @@ public class ClassController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteClass(@PathVariable Integer id) {
         classService.deleteClass(id);
-        DataResponse<?> response = DataResponse.builder()
+        DataResponse response = DataResponse.builder()
                 .success(true)
                 .message("Delete class successfully")
                 .build();
@@ -60,7 +60,7 @@ public class ClassController {
 
     @PatchMapping("/update/{id}")
     public ResponseEntity<?> updateRoomById(@PathVariable Integer id,@RequestBody Map<String, Object> mp) {
-        DataResponse<?> response = DataResponse.builder()
+        DataResponse response = DataResponse.builder()
                 .success(true)
                 .data(classService.updateClass(id,mp))
                 .message("Update class successfully")
@@ -70,7 +70,7 @@ public class ClassController {
 
     @GetMapping("/find/{name}")
     public ResponseEntity<?> findClassByName(@PathVariable String name) {
-        DataResponse<Clazz> response = DataResponse.<Clazz>builder()
+        DataResponse response = DataResponse.<Clazz>builder()
                 .data(classService.getClassByName(name))
                 .success(true)
                 .message("Get class by name successfully")

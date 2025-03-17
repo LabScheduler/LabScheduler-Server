@@ -22,9 +22,9 @@ import java.util.Map;
 public class SubjectController {
     private final SubjectService subjectService;
     @GetMapping
-    public ResponseEntity<DataResponse<?>> GetAllSubjects() {
+    public ResponseEntity<DataResponse> GetAllSubjects() {
         List<Subject> classes = subjectService.getAllSubjects();
-        DataResponse<?> response = DataResponse.builder()
+        DataResponse response = DataResponse.builder()
                 .data(classes)
                 .success(true)
                 .message("Get all subjects successfully")
@@ -33,7 +33,7 @@ public class SubjectController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Integer id) {
-        DataResponse<Subject> response = DataResponse.<Subject>builder()
+        DataResponse response = DataResponse.<Subject>builder()
                 .data(subjectService.getSubjectById(id))
                 .success(true)
                 .message("Get subject by id successfully")
@@ -42,7 +42,7 @@ public class SubjectController {
     }
     @PostMapping
     public ResponseEntity<?> createNewSubject(@RequestBody AddSubjectRequest request) {
-        DataResponse<Subject> response = DataResponse.<Subject>builder()
+        DataResponse response = DataResponse.<Subject>builder()
                 .data(subjectService.addNewSubject(request))
                 .success(true)
                 .message("Add new class successfully")
@@ -53,7 +53,7 @@ public class SubjectController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteSubject(@PathVariable Integer id) {
         subjectService.deleteSubject(id);
-        DataResponse<?> response = DataResponse.builder()
+        DataResponse response = DataResponse.builder()
                 .success(true)
                 .message("Delete class successfully")
                 .build();
@@ -61,7 +61,7 @@ public class SubjectController {
     }
     @PatchMapping("/update/{id}")
     public ResponseEntity<?> updateSubjectById(@PathVariable Integer id,@RequestBody Map<String, Object> mp) {
-        DataResponse<?> response = DataResponse.builder()
+        DataResponse response = DataResponse.builder()
                 .success(true)
                 .data(subjectService.updateSubject(id,mp))
                 .message("Update subject successfully")
@@ -70,7 +70,7 @@ public class SubjectController {
     }
     @GetMapping("/find/{name}")
     public ResponseEntity<?> findSubjectByName(@PathVariable String name) {
-        DataResponse<Subject> response = DataResponse.<Subject>builder()
+        DataResponse response = DataResponse.<Subject>builder()
                 .data(subjectService.getSubjectByName(name))
                 .success(true)
                 .message("Get subject by name successfully")

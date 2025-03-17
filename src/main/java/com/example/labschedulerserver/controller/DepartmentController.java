@@ -19,7 +19,7 @@ public class DepartmentController {
     @GetMapping
     public ResponseEntity<?> getAllDepartment() {
         List<Department> departments = departmentService.getAllDepartment();
-        DataResponse<?> response = DataResponse.builder()
+        DataResponse response = DataResponse.builder()
                 .data(departments)
                 .success(true)
                 .message("Get all departments successfully")
@@ -29,7 +29,7 @@ public class DepartmentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Integer id) {
-        DataResponse<Department> response = DataResponse.<Department>builder()
+        DataResponse response = DataResponse.<Department>builder()
                 .data(departmentService.getDepartmentById(id))
                 .success(true)
                 .message("Get department by id successfully")
@@ -39,7 +39,7 @@ public class DepartmentController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createNewDepartment(@RequestBody Department department) {
-        DataResponse<Department> response = DataResponse.<Department>builder()
+        DataResponse response = DataResponse.<Department>builder()
                 .data(departmentService.addNewDepartment(department))
                 .success(true)
                 .message("Add new department successfully")
@@ -50,7 +50,7 @@ public class DepartmentController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteDepartment(@PathVariable Integer id) {
         departmentService.deleteDepartmentById(id);
-        DataResponse<?> response = DataResponse.builder()
+        DataResponse response = DataResponse.builder()
                 .success(true)
                 .message("Delete department successfully")
                 .build();
@@ -59,7 +59,7 @@ public class DepartmentController {
 
     @PatchMapping("/update/{id}")
     public ResponseEntity<?> updateDepartment(@PathVariable Integer id, @RequestBody Map<String, Object> payload) {
-        DataResponse<Department> response = DataResponse.<Department>builder()
+        DataResponse response = DataResponse.<Department>builder()
                 .data(departmentService.updateDepartment(id, payload))
                 .success(true)
                 .message("Update department successfully")

@@ -17,7 +17,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         AuthResponse authResponse = authService.authenticate(authRequest);
-        DataResponse<AuthResponse> response =  DataResponse.<AuthResponse>builder()
+        DataResponse response =  DataResponse.<AuthResponse>builder()
                 .success(true)
                 .message("Login successfully")
                 .data(authResponse)

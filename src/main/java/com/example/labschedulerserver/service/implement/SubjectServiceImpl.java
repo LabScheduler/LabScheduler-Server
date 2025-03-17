@@ -53,7 +53,7 @@ public class SubjectServiceImpl implements SubjectService {
             Object value = entry.getValue();
 
             try {
-                Field field = Room.class.getDeclaredField(ConvertFromJsonToTypeVariable.convert(key));
+                Field field = Room.class.getDeclaredField(ConvertFromJsonToTypeVariable.convert(ConvertFromJsonToTypeVariable.convert(key)));
                 field.setAccessible(true);
                 field.set(subject, value);
             } catch (NoSuchFieldException | IllegalAccessException e) {

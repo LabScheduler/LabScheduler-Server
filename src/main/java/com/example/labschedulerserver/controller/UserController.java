@@ -23,7 +23,7 @@ public class UserController {
     public ResponseEntity<?> getAllUser() {
         List<UserResponse> result = userService.getAllUser();
 
-        DataResponse<?> dataResponse = DataResponse.builder()
+        DataResponse dataResponse = DataResponse.builder()
                 .data(result)
                 .message("Get all account successfully")
                 .success(true)
@@ -36,7 +36,7 @@ public class UserController {
     public ResponseEntity<?> updateUserInfo(@PathVariable Integer id, @RequestBody Map<String,Object> payload) {
         Object userInfo = userService.updateUserInfo(id,payload);
 
-        DataResponse<?> dataResponse = DataResponse.builder()
+        DataResponse dataResponse = DataResponse.builder()
                 .data(userInfo)
                 .message("Change user information successfully")
                 .success(true)
@@ -48,7 +48,7 @@ public class UserController {
     public ResponseEntity<?> lockAccount(@PathVariable Integer id) {
         Account account = userService.lockAccount(id);
 
-        DataResponse<?> dataResponse = DataResponse.builder()
+        DataResponse dataResponse = DataResponse.builder()
                 .message("Lock account successfully")
                 .success(true)
                 .data(account)
@@ -60,7 +60,7 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
         userService.deleteUser(id);
 
-        DataResponse<?> dataResponse = DataResponse.builder()
+        DataResponse dataResponse = DataResponse.builder()
                 .message("Delete user successfully")
                 .success(true)
                 .build();

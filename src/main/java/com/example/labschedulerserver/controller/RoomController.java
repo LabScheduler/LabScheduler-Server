@@ -20,7 +20,7 @@ public class RoomController {
     @GetMapping
     public ResponseEntity<?> getAllRoom() {
         List<Room> rooms = roomService.getAllRoom();
-        DataResponse<?> response = DataResponse.builder()
+        DataResponse response = DataResponse.builder()
                 .data(rooms)
                 .success(true)
                 .message("Get all rooms successfully")
@@ -30,7 +30,7 @@ public class RoomController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Integer id) {
-        DataResponse<Room> response = DataResponse.<Room>builder()
+        DataResponse response = DataResponse.<Room>builder()
                 .data(roomService.getRoomById(id))
                 .success(true)
                 .message("Get room by id successfully")
@@ -39,7 +39,7 @@ public class RoomController {
     }
     @PostMapping("/create")
     public ResponseEntity<?> createNewRoom(@RequestBody AddRoomRequest addRoomRequest) {
-        DataResponse<Room> response = DataResponse.<Room>builder()
+        DataResponse response = DataResponse.<Room>builder()
                 .data(roomService.addNewRoom(addRoomRequest))
                 .success(true)
                 .message("Add new room successfully")
@@ -50,7 +50,7 @@ public class RoomController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteRoomById(@PathVariable Integer id) {
         roomService.deleteRoomById(id);
-        DataResponse<?> response = DataResponse.builder()
+        DataResponse response = DataResponse.builder()
                 .success(true)
                 .message("Delete room successfully")
                 .build();
@@ -59,7 +59,7 @@ public class RoomController {
 
     @PatchMapping("/update/{id}")
     public ResponseEntity<?> updateRoomById(@PathVariable Integer id,@RequestBody Map<String, Object> payload) {
-        DataResponse<?> response = DataResponse.builder()
+        DataResponse response = DataResponse.builder()
                 .success(true)
                 .data(roomService.updateRoomById(id,payload))
                 .message("Update room successfully")
@@ -69,7 +69,7 @@ public class RoomController {
 
     @GetMapping("/find/{name}")
     public ResponseEntity<?> findRoomByName(@PathVariable String name) {
-        DataResponse<Room> response = DataResponse.<Room>builder()
+        DataResponse response = DataResponse.<Room>builder()
                 .data(roomService.findByName(name))
                 .success(true)
                 .message("Get room by name successfully")
