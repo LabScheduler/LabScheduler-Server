@@ -1,146 +1,9 @@
 CREATE TABLE `Role` (
-                        `name` varchar(255) PRIMARY KEY
-);
-
-CREATE TABLE `Account` (
-                           `id` Integer PRIMARY KEY AUTO_INCREMENT,
-                           `email` varchar(255) UNIQUE NOT NULL,
-                           `password` varchar(255) NOT NULL,
-                           `role` varchar(255) NOT NULL,
-                           `status` ENUM ('ACTIVE', 'LOCKED') NOT NULL
-);
-
-CREATE TABLE `Department` (
-                              `id` Integer PRIMARY KEY AUTO_INCREMENT,
-                              `name` varchar(255) UNIQUE NOT NULL
-);
-
-CREATE TABLE `Major` (
-                         `id` Integer PRIMARY KEY AUTO_INCREMENT,
-                         `code` varchar(255) NOT NULL,
-                         `name` varchar(255) NOT NULL,
-                         `department_id` Integer NOT NULL
-);
-
-CREATE TABLE `Class` (
-                         `id` Integer PRIMARY KEY AUTO_INCREMENT,
-                         `name` varchar(255) UNIQUE NOT NULL,
-                         `major_id` Integer NOT NULL
-);
-
-CREATE TABLE `Student_Account` (
-                                   `account_id` Integer PRIMARY KEY,
-                                   `full_name` varchar(255) NOT NULL,
-                                   `code` varchar(255) NOT NULL,
-                                   `phone` varchar(255) UNIQUE NOT NULL,
-                                   `gender` bit NOT NULL,
-                                   `major_id` Integer NOT NULL,
-                                   `class_id` Integer NOT NULL
-);
-
-CREATE TABLE `Lecturer_Account` (
-                                    `account_id` Integer PRIMARY KEY,
-                                    `code` varchar(255) NOT NULL,
-                                    `full_name` varchar(255) NOT NULL,
-                                    `department_id` Integer NOT NULL,
-                                    `phone` varchar(255) UNIQUE NOT NULL,
-                                    `gender` bit NOT NULL
-);
-
-CREATE TABLE `Manager_Account` (
-                                   `account_id` Integer PRIMARY KEY,
-                                   `full_name` varchar(255) NOT NULL,
-                                   `code` varchar(255) NOT NULL,
-                                   `phone` varchar(255) UNIQUE NOT NULL,
-                                   `gender` bit NOT NULL
-);
-
-CREATE TABLE `Semester` (
-                            `id` Integer PRIMARY KEY AUTO_INCREMENT,
-                            `name` varchar(255) UNIQUE NOT NULL,
-                            `start_date` timestamp NOT NULL,
-                            `end_date` timestamp NOT NULL
-);
-
-CREATE TABLE `Subject` (
-                           `id` Integer PRIMARY KEY AUTO_INCREMENT,
-                           `code` varchar(255) UNIQUE NOT NULL,
-                           `name` varchar(255) NOT NULL,
-                           `total_credits` Int NOT NULL,
-                           `total_theory_periods` Int NOT NULL,
-                           `total_practice_periods` Int NOT NULL
-);
-
-CREATE TABLE `Course` (
-                          `id` Integer PRIMARY KEY AUTO_INCREMENT,
-                          `subject_id` Integer NOT NULL,
-                          `class_id` Integer NOT NULL,
-                          `semester_id` Integer NOT NULL,
-                          `lecturer_id` Integer NOT NULL,
-                          `total_students` Int NOT NULL
-);
-
-CREATE TABLE `Course_Section` (
-                                  `id` Integer PRIMARY KEY AUTO_INCREMENT,
-                                  `course_id` Integer NOT NULL,
-                                  `section_number` Int NOT NULL,
-                                  `total_students_in_section` Int NOT NULL
-);
-
-CREATE TABLE `Room` (
-                        `id` Integer PRIMARY KEY AUTO_INCREMENT,
-                        `name` varchar(255) UNIQUE NOT NULL,
-                        `location` varchar(255) NOT NULL,
-                        `capacity` integer NOT NULL,
-                        `status` ENUM ('AVAILABLE', 'UNAVAILABLE', 'REPAIRING') NOT NULL,
-                        `description` varchar(255) NOT NULL,
-                        `last_updated` datetime NOT NULL
-);
-
-CREATE TABLE `Semester_Week` (
-                                 `id` Integer PRIMARY KEY AUTO_INCREMENT,
-                                 `name` varchar(255) NOT NULL,
-                                 `start_date` timestamp NOT NULL,
-                                 `end_date` timestamp NOT NULL,
-                                 `semester_id` Integer NOT NULL
-);
-
-CREATE TABLE `Schedule` (
-                            `id` Integer PRIMARY KEY AUTO_INCREMENT,
-                            `course_section_id` Integer NOT NULL,
-                            `room_id` Integer NOT NULL,
-                            `day_of_week` varchar(255) NOT NULL,
-                            `start_period` Int NOT NULL,
-                            `total_period` Int NOT NULL,
-                            `type` ENUM ('THEORY', 'PRACTICE') NOT NULL,
-                            `semester_week_id` Integer NOT NULL,
-                            `status` ENUM ('IN_PROGRESS', 'CANCELLED') NOT NULL
-);
-
-CREATE TABLE `Schedule_Request` (
-                                    `id` Integer PRIMARY KEY AUTO_INCREMENT,
-                                    `lecturer_id` Integer NOT NULL,
-                                    `schedule_id` Integer,
-                                    `new_room_id` Integer NOT NULL,
-                                    `new_semester_week_id` Integer,
-                                    `new_day_of_week` varchar(255),
-                                    `new_start_period` Int,
-                                    `new_total_period` Int,
-                                    `reason` varchar(255) NOT NULL,
-                                    `type` ENUM ('NEW_SCHEDULE', 'CHANGE_SCHEDULE') NOT NULL,
-                                    `created_at` timestamp NOT NULL DEFAULT (now())
-);
-
-CREATE TABLE `Schedule_Request_Log` (
-                                        `id` Integer PRIMARY KEY AUTO_INCREMENT,
-                                        `request_id` Integer NOT NULL,
-                                        `status` ENUM ('PENDING', 'ACCEPT', 'REJECT') NOT NULL,
-                                        `Manager_Account_id` Integer NOT NULL,
-                                        `updated_at` timestamp NOT NULL DEFAULT (now())
+                        `name` varchar(36) PRIMARY KEY
 );
 
 CREATE TABLE `Permission`(
-                             `name` varchar(255) PRIMARY KEY
+                             `name` varchar(72) PRIMARY KEY
 );
 
 CREATE TABLE `role_permission` (
@@ -150,6 +13,149 @@ CREATE TABLE `role_permission` (
                                    FOREIGN KEY (`role_name`) REFERENCES `Role`(`name`) ON DELETE CASCADE,
                                    FOREIGN KEY (`permission_name`) REFERENCES `Permission`(`name`) ON DELETE CASCADE
 );
+
+CREATE TABLE `Account` (
+                           `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+                           `email` varchar(50) UNIQUE NOT NULL,
+                           `password` varchar(255) NOT NULL,
+                           `role` varchar(36) NOT NULL,
+                           `status` ENUM ('ACTIVE', 'LOCKED') NOT NULL,
+                           `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE `Department` (
+                              `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+                              `name` varchar(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE `Major` (
+                         `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+                         `code` varchar(255) UNIQUE NOT NULL,
+                         `name` varchar(255) UNIQUE NOT NULL,
+                         `department_id` BIGINT NOT NULL
+);
+
+CREATE TABLE `Class` (
+                         `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+                         `name` varchar(100) UNIQUE NOT NULL,
+                         `major_id` BIGINT NOT NULL
+);
+
+CREATE TABLE `Student_Account` (
+                                   `account_id` BIGINT PRIMARY KEY,
+                                   `full_name` varchar(100) NOT NULL,
+                                   `code` varchar(36) UNIQUE NOT NULL,
+                                   `phone` varchar(10) UNIQUE NOT NULL,
+                                   `gender` bit NOT NULL,
+                                   `major_id` BIGINT NOT NULL,
+                                   `class_id` BIGINT NOT NULL
+);
+
+CREATE TABLE `Lecturer_Account` (
+                                    `account_id` BIGINT PRIMARY KEY,
+                                    `full_name` varchar(100) NOT NULL,
+                                    `code` varchar(36) UNIQUE NOT NULL,
+                                    `phone` varchar(10) UNIQUE NOT NULL,
+                                    `gender` bit NOT NULL,
+                                    `department_id` BIGINT NOT NULL
+);
+
+CREATE TABLE `Manager_Account` (
+                                   `account_id` BIGINT PRIMARY KEY,
+                                   `full_name` varchar(100) NOT NULL,
+                                   `code` varchar(36) UNIQUE NOT NULL,
+                                   `phone` varchar(10) UNIQUE NOT NULL,
+                                   `gender` bit NOT NULL
+);
+
+CREATE TABLE `Semester` (
+                            `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+                            `name` varchar(36) UNIQUE NOT NULL,
+                            `start_date` timestamp NOT NULL,
+                            `end_date` timestamp NOT NULL
+);
+
+CREATE TABLE `Subject` (
+                           `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+                           `code` varchar(36) UNIQUE NOT NULL,
+                           `name` varchar(100) UNIQUE NOT NULL,
+                           `total_credits` Int NOT NULL,
+                           `total_theory_periods` BIGINT NOT NULL,
+                           `total_practice_periods` BIGINT NOT NULL
+);
+
+CREATE TABLE `Course` (
+                          `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+                          `subject_id` BIGINT NOT NULL,
+                          `class_id` BIGINT NOT NULL,
+                          `semester_id` BIGINT NOT NULL,
+                          `lecturer_id` BIGINT NOT NULL,
+                          `total_students` Int NOT NULL
+);
+
+CREATE TABLE `Course_Section` (
+                                  `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                  `course_id` BIGINT NOT NULL,
+                                  `section_number` Int UNIQUE NOT NULL,
+                                  `total_students_in_section` Int NOT NULL
+);
+
+CREATE TABLE `Room` (
+                        `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+                        `name` varchar(36) UNIQUE NOT NULL,
+--                         `location` varchar(36) NOT NULL,
+                        `capacity` INT NOT NULL,
+                        `status` ENUM ('AVAILABLE', 'REPAIRING') NOT NULL,
+                        `description` varchar(255) NOT NULL,
+                        `last_updated` datetime NOT NULL
+);
+
+CREATE TABLE `Semester_Week` (
+                                 `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                 `name` varchar(100) NOT NULL,
+                                 `start_date` timestamp NOT NULL,
+                                 `end_date` timestamp NOT NULL,
+                                 `semester_id` BIGINT NOT NULL
+);
+
+CREATE TABLE `Schedule` (
+                            `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+                            `course_section_id` BIGINT NOT NULL,
+                            `room_id` BIGINT NOT NULL,
+                            `day_of_week` TINYINT NOT NULL CHECK (day_of_week BETWEEN 1 AND 7),
+                            `start_period` Int NOT NULL,
+                            `total_period` Int NOT NULL,
+                            `type` ENUM ('THEORY', 'PRACTICE') NOT NULL,
+                            `semester_week_id` BIGINT NOT NULL,
+                            `status` ENUM ('IN_PROGRESS', 'CANCELLED') NOT NULL
+);
+
+CREATE TABLE `Schedule_Request` (
+                                    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                    `lecturer_id` BIGINT NOT NULL,
+                                    `schedule_id` BIGINT,
+                                    `new_room_id` BIGINT NOT NULL,
+                                    `new_semester_week_id` BIGINT,
+                                    `new_day_of_week` TINYINT NOT NULL CHECK (new_day_of_week BETWEEN 1 AND 7),
+                                    `new_start_period` Int NOT NULL,
+                                    `new_total_period` Int NOT NULL,
+                                    `reason` varchar(255) NOT NULL,
+                                    `type` ENUM ('NEW_SCHEDULE', 'CHANGE_SCHEDULE') NOT NULL,
+                                    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                    CHECK ((type = 'NEW_SCHEDULE' AND schedule_id IS NULL)
+                                        OR
+                                           (type = 'CHANGE_SCHEDULE' AND schedule_id IS NOT NULL))
+);
+
+CREATE TABLE `Schedule_Request_Log` (
+                                        `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                        `request_id` BIGINT NOT NULL,
+                                        `status` ENUM ('PENDING', 'ACCEPT', 'REJECT') NOT NULL,
+                                        `manager_id` BIGINT NOT NULL,
+                                        `replied_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 
 ALTER TABLE `Account` ADD FOREIGN KEY (`role`) REFERENCES `Role` (`name`);
 
@@ -185,4 +191,4 @@ ALTER TABLE `Schedule_Request` ADD FOREIGN KEY (`new_room_id`) REFERENCES `Room`
 ALTER TABLE `Schedule_Request` ADD FOREIGN KEY (`new_semester_week_id`) REFERENCES `Semester_Week` (`id`);
 
 ALTER TABLE `Schedule_Request_Log` ADD FOREIGN KEY (`request_id`) REFERENCES `Schedule_Request` (`id`);
-ALTER TABLE `Schedule_Request_Log` ADD FOREIGN KEY (`Manager_Account_id`) REFERENCES `Manager_Account` (`account_id`);
+ALTER TABLE `Schedule_Request_Log` ADD FOREIGN KEY (`manager_id`) REFERENCES `Manager_Account` (`account_id`);

@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "course_section_id")
@@ -28,13 +28,13 @@ public class Schedule {
     private Room room;
 
     @Column(name = "day_of_week")
-    private Integer dayOfWeek;
+    private Byte dayOfWeek;
 
     @Column(name = "start_period")
-    private Integer startPeriod;
+    private Byte startPeriod;
 
     @Column(name = "total_period")
-    private Integer totalPeriod;
+    private Byte totalPeriod;
 
     @ManyToOne
     @JoinColumn(name = "semester_week_id")

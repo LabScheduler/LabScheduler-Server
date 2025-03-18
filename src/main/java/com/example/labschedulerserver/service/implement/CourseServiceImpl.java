@@ -20,7 +20,7 @@ public class CourseServiceImpl implements CourseService {
     private final SubjectRepository subjectRepository;
     private final ClassRepository classRepository;
     private final LecturerAccountRepository lecturerAccountRepository;
-
+    private final CourseSectionRepository courseSectionRepository;
 
 
     @Override
@@ -41,6 +41,14 @@ public class CourseServiceImpl implements CourseService {
             throw new RuntimeException("Course already exist");
         }
 
+        Course newCourse = Course.builder()
+                .subject(subjectRepository.findById(request.getSubjectId()).get())
+                .clazz(classRepository.findById(request.getClassId()).get())
+                .lecturerAccount(lecturerAccountRepository.findById(request.getLecturerId()).get())
+                .totalStudents(request.getTotalStudents())
+                .semester(currentSemester)
+                .build();
+
 
         return Course.builder()
                 .semester(currentSemester)
@@ -51,13 +59,14 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteCourseById(Integer id) {
-
+        Course course = courseRepository.findById(id).orElseThrow(()->new RuntimeException("Course not found"));
+        courseRepository.deleteById(id);
     }
 
-    @Override
-    public Course updateCourse(Integer id, Map<String, Object> payload) {
-        return null;
-    }
+//    @Override
+//    public Course updateCourse(Integer id, Map<String, Object> payload) {
+//        return null;
+//    }
 
     @Override
     public Course checkCourseExist(Integer subjectId, Integer classId, Integer semesterId) {

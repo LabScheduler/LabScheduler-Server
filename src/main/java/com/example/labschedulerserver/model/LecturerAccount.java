@@ -16,7 +16,7 @@ import java.util.UUID;
 public class LecturerAccount {
     @Id
     @Column(name = "account_id")
-    private Integer accountId;
+    private Long accountId;
 
     @Column(name = "full_name")
     private String fullName;

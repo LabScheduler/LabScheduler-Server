@@ -15,7 +15,7 @@ import java.util.UUID;
 public class CourseSection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "course_id")

@@ -11,7 +11,7 @@ public interface CourseService {
     public Course getCourseById(Integer id);
     public Course addNewCourse(AddCourseRequest request);
     public void deleteCourseById(Integer id);
-    public Course updateCourse(Integer id, Map<String, Object> payload);
+//    public Course updateCourse(Integer id, Map<String, Object> payload);
     public Course checkCourseExist(Integer subjectId, Integer classId, Integer semesterId);
 
 }

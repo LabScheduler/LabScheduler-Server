@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 public class ScheduleRequestLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "request_id")
@@ -28,9 +28,9 @@ public class ScheduleRequestLog {
     private RequestStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "manager_account_id")
+    @JoinColumn(name = "manager_id")
     private ManagerAccount managerAccount;
 
-    @Column(name = "updated_at")
-    private Timestamp updatedAt;
+    @Column(name = "replied_at")
+    private Timestamp repliedAt;
 }
