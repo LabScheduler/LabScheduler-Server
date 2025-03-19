@@ -19,7 +19,7 @@ CREATE TABLE `Account` (
                            `email` varchar(50) UNIQUE NOT NULL,
                            `password` varchar(255) NOT NULL,
                            `role` varchar(36) NOT NULL,
-                           `status` ENUM ('ACTIVE', 'LOCKED') NOT NULL,
+                           `status` ENUM ('ACTIVE', 'LOCKED') NOT NULL DEFAULT 'ACTIVE',
                            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -97,7 +97,8 @@ CREATE TABLE `Course_Section` (
                                   `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                                   `course_id` BIGINT NOT NULL,
                                   `section_number` Int UNIQUE NOT NULL,
-                                  `total_students_in_section` Int NOT NULL
+                                  `total_students_in_section` Int NOT NULL,
+                                  FOREIGN KEY (`course_id`) REFERENCES `Course`(`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `Room` (
@@ -179,7 +180,7 @@ ALTER TABLE `Course` ADD FOREIGN KEY (`class_id`) REFERENCES `Class` (`id`);
 ALTER TABLE `Course` ADD FOREIGN KEY (`semester_id`) REFERENCES `Semester` (`id`);
 ALTER TABLE `Course` ADD FOREIGN KEY (`lecturer_id`) REFERENCES `Lecturer_Account` (`account_id`);
 
-ALTER TABLE `Course_Section` ADD FOREIGN KEY (`course_id`) REFERENCES `Course` (`id`);
+ALTER TABLE `Course_Section` ADD FOREIGN KEY (`course_id`) REFERENCES `Course` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `Schedule` ADD FOREIGN KEY (`course_section_id`) REFERENCES `Course_Section` (`id`);
 ALTER TABLE `Schedule` ADD FOREIGN KEY (`room_id`) REFERENCES `Room` (`id`);

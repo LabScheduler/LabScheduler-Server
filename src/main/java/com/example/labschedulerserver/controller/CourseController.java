@@ -16,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CourseController {
     private final CourseService courseService;
-    private final SemesterService semesterService;
 
     @GetMapping
     public ResponseEntity<?> getAllCourseInSemester(@RequestParam("semester_id") Long semesterId) {
