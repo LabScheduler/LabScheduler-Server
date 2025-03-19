@@ -9,11 +9,11 @@ import java.util.Map;
 public interface MajorService {
     List<Major> getAllMajors();
 
-    Major getMajorById(Integer id);
+    Major getMajorById(Long id);
 
     Major createNewMajor(AddMajorRequest request);
 
-    void deleteMajorById(Integer id);
+    void deleteMajorById(Long id);
 
-    Major updateMajor(Integer id, Map<String, Object> payload);
+    Major updateMajor(Long id, Map<String, Object> payload);
 }

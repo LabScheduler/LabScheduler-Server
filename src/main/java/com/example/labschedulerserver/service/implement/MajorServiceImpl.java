@@ -26,7 +26,7 @@ public class MajorServiceImpl implements MajorService {
     }
 
     @Override
-    public Major getMajorById(Integer id) {
+    public Major getMajorById(Long id) {
         return majorRepository.findById(id).orElseThrow(()-> new RuntimeException("Major not found with id: " + id));
     }
 
@@ -44,7 +44,7 @@ public class MajorServiceImpl implements MajorService {
     }
 
     @Override
-    public void deleteMajorById(Integer id) {
+    public void deleteMajorById(Long id) {
         if(!majorRepository.existsById(id)){
             throw new RuntimeException("Major not found with id: " + id);
         }
@@ -52,7 +52,7 @@ public class MajorServiceImpl implements MajorService {
     }
 
     @Override
-    public Major updateMajor(Integer id, Map<String, Object> payload) {
+    public Major updateMajor(Long id, Map<String, Object> payload) {
         Major major = majorRepository.findById(id).orElseThrow(()-> new RuntimeException("Major not found with id: " + id));
 
         for (Map.Entry<String, Object> entry : payload.entrySet()) {

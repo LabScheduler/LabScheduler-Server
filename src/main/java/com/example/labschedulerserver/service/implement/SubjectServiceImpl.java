@@ -23,8 +23,9 @@ public class SubjectServiceImpl implements SubjectService {
     public List<Subject> getAllSubjects(){
         return subjectRepository.findAll();
     };
+
     @Override
-    public Subject getSubjectById(int id){
+    public Subject getSubjectById(Long id){
         return subjectRepository.findById(id).orElseThrow(()->new RuntimeException("Subject not found"));
     };
     @Override
@@ -40,12 +41,12 @@ public class SubjectServiceImpl implements SubjectService {
         return subject;
     };
     @Override
-    public void deleteSubject(int id){
+    public void deleteSubject(Long id){
         Subject subject = subjectRepository.findById(id).orElseThrow(()->new RuntimeException("Subject not found"));
         subjectRepository.delete(subject);
     };
     @Override
-    public Subject updateSubject(int id, Map<String,Object> mp){
+    public Subject updateSubject(Long id, Map<String,Object> mp){
         Subject subject = subjectRepository.findById(id).orElseThrow(()->new RuntimeException("Subject not found"));
 
         for (Map.Entry<String, Object> entry : mp.entrySet()) {

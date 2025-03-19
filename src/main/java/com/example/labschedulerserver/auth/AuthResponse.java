@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class AuthResponse {
-    private Integer id;
+    private Long id;
     private String token;
     private String email;
     private Role role;

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface LecturerAccountRepository extends JpaRepository<LecturerAccount, Integer> {
+public interface LecturerAccountRepository extends JpaRepository<LecturerAccount, Long> {
     public Object findByAccount(Account account);
 }

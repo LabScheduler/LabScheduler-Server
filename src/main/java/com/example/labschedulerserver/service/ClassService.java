@@ -9,9 +9,9 @@ import java.util.Map;
 
 public interface ClassService {
     public List<Clazz> getAllClasses();
-    public Clazz getClassById(int id);
+    public Clazz getClassById(Long id);
     public Clazz addNewClass(AddClassRequest addClassRequest);
-    public void deleteClass(int id);
-    public Clazz updateClass(int id, Map<String,Object> mp);
+    public void deleteClass(Long id);
+    public Clazz updateClass(Long id, Map<String,Object> mp);
     public Clazz getClassByName(String className);
 }

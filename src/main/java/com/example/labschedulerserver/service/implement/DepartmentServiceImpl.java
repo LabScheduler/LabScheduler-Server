@@ -21,7 +21,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Department getDepartmentById(Integer id) {
+    public Department getDepartmentById(Long id) {
         return departmentRepository.findById(id).orElseThrow(()-> new RuntimeException("Department not found"));
     }
 
@@ -37,13 +37,13 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public void deleteDepartmentById(Integer id) {
+    public void deleteDepartmentById(Long id) {
         Department department = departmentRepository.findById(id).orElseThrow(()-> new RuntimeException("Department not found"));
         departmentRepository.delete(department);
     }
 
     @Override
-    public Department updateDepartment(Integer id, Map<String, Object> payload) {
+    public Department updateDepartment(Long id, Map<String, Object> payload) {
         Department department = departmentRepository.findById(id).orElseThrow(()-> new RuntimeException("Department not found with id: " + id));
         department.setName((String) payload.get("name"));
         departmentRepository.save(department);

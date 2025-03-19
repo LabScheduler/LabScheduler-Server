@@ -25,7 +25,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room getRoomById(Integer id) {
+    public Room getRoomById(Long id) {
         return roomRepository.findById(id).orElseThrow(() -> new RuntimeException("Room not found with id: " + id));
     }
 
@@ -33,9 +33,7 @@ public class RoomServiceImpl implements RoomService {
     public Room addNewRoom(AddRoomRequest addRoomRequest) {
         Room room = Room.builder()
                 .name(addRoomRequest.getName())
-                .location(addRoomRequest.getLocation())
                 .capacity(addRoomRequest.getCapacity())
-                .status(RoomStatus.valueOf(addRoomRequest.getStatus()))
                 .description(addRoomRequest.getDescription())
                 .build();
         roomRepository.save(room);
@@ -43,13 +41,13 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void deleteRoomById(Integer id) {
+    public void deleteRoomById(Long id) {
         Room room = roomRepository.findById(id).orElseThrow(() -> new RuntimeException("Room not found with id: " + id));
         roomRepository.delete(room);
     }
 
     @Override
-    public Room updateRoomById(Integer id, Map<String, Object> payload) {
+    public Room updateRoomById(Long id, Map<String, Object> payload) {
         Room tmpRoom = roomRepository.findById(id).orElseThrow(() -> new RuntimeException("Room not found with id: " + id));
 
         for (Map.Entry<String, Object> entry : payload.entrySet()) {

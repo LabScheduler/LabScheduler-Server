@@ -47,8 +47,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveUser(Account account) {
+    public Account createAccount(Account account) {
         accountRepository.save(account);
+        return null;
     }
 
     @Override
@@ -69,13 +70,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Integer id) {
+    public void deleteUser(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
         accountRepository.delete(account);
     }
 
     @Override
-    public Account lockAccount(Integer id) {
+    public Account lockAccount(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(()-> new RuntimeException("Account not found"));
         account.setStatus(AccountStatus.valueOf("LOCKED"));
         accountRepository.save(account);
@@ -105,7 +106,7 @@ public class UserServiceImpl implements UserService {
 
     }
     @Override
-    public Object updateUserInfo(Integer id, Map<String, Object> payload) {
+    public Object updateUserInfo(Long id, Map<String, Object> payload) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
         Object userInfo = getUserInfo(account);
 

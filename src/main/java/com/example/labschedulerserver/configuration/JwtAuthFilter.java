@@ -60,7 +60,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
 
                 UserDetails userDetails = Account.builder()
-                        .id(Integer.valueOf(jwtService.extractId(token)))
+                        .id(Long.valueOf(jwtService.extractId(token)))
                         .email(jwtService.extractUserName(token))
                         .role(roleService.findRoleByName(jwtService.getAuthorities(token).get(0)))
                         .build();

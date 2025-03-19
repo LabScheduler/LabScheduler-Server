@@ -29,7 +29,7 @@ public class MajorController {
     }
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<?> updateMajor(@PathVariable Integer id,@RequestBody Map<String,Object> payload){
+    public ResponseEntity<?> updateMajor(@PathVariable Long id,@RequestBody Map<String,Object> payload){
         Major major = majorService.updateMajor(id,payload);
         DataResponse response = DataResponse.builder()
                 .data(major)
@@ -40,7 +40,7 @@ public class MajorController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteMajor(@PathVariable Integer id){
+    public ResponseEntity<?> deleteMajor(@PathVariable Long id){
         majorService.deleteMajorById(id);
         DataResponse response = DataResponse.builder()
                 .success(true)

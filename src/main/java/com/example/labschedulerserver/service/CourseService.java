@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 public interface CourseService {
-    public List<Course> getAllCoursesInSemester(Integer semesterId);
-    public Course getCourseById(Integer id);
+    public List<Course> getAllCoursesInSemester(Long semesterId);
+    public Course getCourseById(Long id);
     public Course addNewCourse(AddCourseRequest request);
-    public void deleteCourseById(Integer id);
+    public void deleteCourseById(Long id);
 //    public Course updateCourse(Integer id, Map<String, Object> payload);
-    public Course checkCourseExist(Integer subjectId, Integer classId, Integer semesterId);
+    public Course checkCourseExist(Long subjectId, Long classId, Long semesterId);
 
 }

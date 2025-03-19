@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ScheduleRequestLogRepository extends JpaRepository<ScheduleRequestLog, Integer> {
+public interface ScheduleRequestLogRepository extends JpaRepository<ScheduleRequestLog, Long> {
 }

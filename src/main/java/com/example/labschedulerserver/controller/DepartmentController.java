@@ -28,7 +28,7 @@ public class DepartmentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Integer id) {
+    public ResponseEntity<?> findById(@PathVariable Long id) {
         DataResponse response = DataResponse.<Department>builder()
                 .data(departmentService.getDepartmentById(id))
                 .success(true)
@@ -48,7 +48,7 @@ public class DepartmentController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteDepartment(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteDepartment(@PathVariable Long id) {
         departmentService.deleteDepartmentById(id);
         DataResponse response = DataResponse.builder()
                 .success(true)
@@ -58,7 +58,7 @@ public class DepartmentController {
     }
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<?> updateDepartment(@PathVariable Integer id, @RequestBody Map<String, Object> payload) {
+    public ResponseEntity<?> updateDepartment(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
         DataResponse response = DataResponse.<Department>builder()
                 .data(departmentService.updateDepartment(id, payload))
                 .success(true)

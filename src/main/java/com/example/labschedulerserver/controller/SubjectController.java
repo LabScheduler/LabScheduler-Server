@@ -32,7 +32,7 @@ public class SubjectController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Integer id) {
+    public ResponseEntity<?> findById(@PathVariable Long id) {
         DataResponse response = DataResponse.<Subject>builder()
                 .data(subjectService.getSubjectById(id))
                 .success(true)
@@ -51,7 +51,7 @@ public class SubjectController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteSubject(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteSubject(@PathVariable Long id) {
         subjectService.deleteSubject(id);
         DataResponse response = DataResponse.builder()
                 .success(true)
@@ -60,7 +60,7 @@ public class SubjectController {
         return ResponseEntity.ok(response);
     }
     @PatchMapping("/update/{id}")
-    public ResponseEntity<?> updateSubjectById(@PathVariable Integer id,@RequestBody Map<String, Object> mp) {
+    public ResponseEntity<?> updateSubjectById(@PathVariable Long id,@RequestBody Map<String, Object> mp) {
         DataResponse response = DataResponse.builder()
                 .success(true)
                 .data(subjectService.updateSubject(id,mp))

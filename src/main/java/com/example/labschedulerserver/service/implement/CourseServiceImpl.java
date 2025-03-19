@@ -24,12 +24,12 @@ public class CourseServiceImpl implements CourseService {
 
 
     @Override
-    public List<Course> getAllCoursesInSemester(Integer semesterId) {
+    public List<Course> getAllCoursesInSemester(Long semesterId) {
         return courseRepository.findAllBySemesterId(semesterId);
     }
 
     @Override
-    public Course getCourseById(Integer id) {
+    public Course getCourseById(Long id) {
         return courseRepository.findById(id).orElseThrow(()->new RuntimeException("Course not found"));
     }
 
@@ -58,7 +58,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void deleteCourseById(Integer id) {
+    public void deleteCourseById(Long id) {
         Course course = courseRepository.findById(id).orElseThrow(()->new RuntimeException("Course not found"));
         courseRepository.deleteById(id);
     }
@@ -69,7 +69,7 @@ public class CourseServiceImpl implements CourseService {
 //    }
 
     @Override
-    public Course checkCourseExist(Integer subjectId, Integer classId, Integer semesterId) {
+    public Course checkCourseExist(Long subjectId, Long classId, Long semesterId) {
         return courseRepository.findCoursesBySubjectIdAndClazzIdAndSemesterId(subjectId, classId, semesterId);
     }
 }

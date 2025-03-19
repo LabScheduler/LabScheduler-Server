@@ -7,6 +7,6 @@ import lombok.Data;
 
 public class AddClassRequest {
     private String name;
-    private Integer majorId;
+    private Long majorId;
 
 }

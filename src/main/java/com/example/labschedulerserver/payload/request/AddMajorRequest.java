@@ -13,5 +13,5 @@ import lombok.NoArgsConstructor;
 public class AddMajorRequest {
     private String name;
     private String code;
-    private Integer departmentId;
+    private Long departmentId;
 }

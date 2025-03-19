@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class AddCourseRequest {
-    private Integer subjectId;
-    private Integer classId;
-    private Integer lecturerId;
+    private Long subjectId;
+    private Long classId;
+    private Long lecturerId;
     private Integer totalStudents;
 }

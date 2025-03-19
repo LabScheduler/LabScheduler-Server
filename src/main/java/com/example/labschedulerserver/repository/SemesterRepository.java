@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
-public interface SemesterRepository extends JpaRepository<Semester, Integer> {
+public interface SemesterRepository extends JpaRepository<Semester, Long> {
     @Query("SELECT s FROM Semester s WHERE :now BETWEEN s.startDate AND s.endDate")
     Optional<Semester> findCurrentSemester(@Param("now") LocalDateTime now);
 }

@@ -12,13 +12,13 @@ import java.util.Map;
 public interface SubjectService {
     public List<Subject> getAllSubjects();
 
-    public Subject getSubjectById(int id);
+    public Subject getSubjectById(Long id);
 
     public Subject addNewSubject(AddSubjectRequest request);
 
-    public void deleteSubject(int id);
+    public void deleteSubject(Long id);
 
-    public Subject updateSubject(int id, Map<String, Object> mp);
+    public Subject updateSubject(Long id, Map<String, Object> mp);
 
     public Subject getSubjectByName(String name);
 }

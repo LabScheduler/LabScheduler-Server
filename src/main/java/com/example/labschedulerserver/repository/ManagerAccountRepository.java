@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ManagerAccountRepository extends JpaRepository<ManagerAccount, Integer> {
+public interface ManagerAccountRepository extends JpaRepository<ManagerAccount, Long> {
     public ManagerAccount findByAccount(Account account);
 }

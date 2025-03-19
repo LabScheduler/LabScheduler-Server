@@ -33,7 +33,7 @@ public class UserController {
 
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<?> updateUserInfo(@PathVariable Integer id, @RequestBody Map<String,Object> payload) {
+    public ResponseEntity<?> updateUserInfo(@PathVariable Long id, @RequestBody Map<String,Object> payload) {
         Object userInfo = userService.updateUserInfo(id,payload);
 
         DataResponse dataResponse = DataResponse.builder()
@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @PatchMapping("/lock/{id}")
-    public ResponseEntity<?> lockAccount(@PathVariable Integer id) {
+    public ResponseEntity<?> lockAccount(@PathVariable Long id) {
         Account account = userService.lockAccount(id);
 
         DataResponse dataResponse = DataResponse.builder()
@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
 
         DataResponse dataResponse = DataResponse.builder()

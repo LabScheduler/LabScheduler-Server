@@ -18,7 +18,7 @@ public class CourseController {
     private final SemesterService semesterService;
 
     @GetMapping
-    public ResponseEntity<?> getAllCourseInSemester(@RequestParam("semester_id") Integer semesterId) {
+    public ResponseEntity<?> getAllCourseInSemester(@RequestParam("semester_id") Long semesterId) {
         DataResponse response = DataResponse.builder()
                 .success(true)
                 .data(courseService.getAllCoursesInSemester(semesterId).stream())
@@ -28,7 +28,7 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getCourseById(@PathVariable Integer id) {
+    public ResponseEntity<?> getCourseById(@PathVariable Long id) {
         DataResponse response = DataResponse.builder()
                 .success(true)
                 .data(courseService.getCourseById(id))

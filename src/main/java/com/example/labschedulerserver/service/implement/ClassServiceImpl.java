@@ -29,7 +29,7 @@ public class ClassServiceImpl implements ClassService {
     }
 
     @Override
-    public Clazz getClassById(int id) {
+    public Clazz getClassById(Long id) {
         return classRepository.findById(id).orElseThrow(()->new RuntimeException("Class not found"));
     }
 
@@ -50,13 +50,13 @@ public class ClassServiceImpl implements ClassService {
     }
 
     @Override
-    public void deleteClass(int id) {
+    public void deleteClass(Long id) {
         Clazz clazz = classRepository.findById(id).orElseThrow(()->new RuntimeException("Class not found"));
         classRepository.delete(clazz);
     }
 
     @Override
-    public Clazz updateClass(int id, Map<String,Object> mp){
+    public Clazz updateClass(Long id, Map<String,Object> mp){
         Clazz clazz = classRepository.findById(id).orElseThrow(()->new RuntimeException("Class not found"));
 
         for (Map.Entry<String, Object> entry : mp.entrySet()) {

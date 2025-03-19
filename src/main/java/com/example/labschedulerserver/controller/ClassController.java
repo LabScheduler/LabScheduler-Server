@@ -30,7 +30,7 @@ public class ClassController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Integer id) {
+    public ResponseEntity<?> findById(@PathVariable Long id) {
         DataResponse response = DataResponse.<Clazz>builder()
                 .data(classService.getClassById(id))
                 .success(true)
@@ -49,7 +49,7 @@ public class ClassController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteClass(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteClass(@PathVariable Long id) {
         classService.deleteClass(id);
         DataResponse response = DataResponse.builder()
                 .success(true)
@@ -59,7 +59,7 @@ public class ClassController {
     }
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<?> updateRoomById(@PathVariable Integer id,@RequestBody Map<String, Object> mp) {
+    public ResponseEntity<?> updateRoomById(@PathVariable Long id,@RequestBody Map<String, Object> mp) {
         DataResponse response = DataResponse.builder()
                 .success(true)
                 .data(classService.updateClass(id,mp))

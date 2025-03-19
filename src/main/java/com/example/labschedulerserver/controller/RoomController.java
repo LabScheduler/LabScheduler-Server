@@ -29,7 +29,7 @@ public class RoomController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Integer id) {
+    public ResponseEntity<?> findById(@PathVariable Long id) {
         DataResponse response = DataResponse.<Room>builder()
                 .data(roomService.getRoomById(id))
                 .success(true)
@@ -48,7 +48,7 @@ public class RoomController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteRoomById(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteRoomById(@PathVariable Long id) {
         roomService.deleteRoomById(id);
         DataResponse response = DataResponse.builder()
                 .success(true)
@@ -58,7 +58,7 @@ public class RoomController {
     }
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<?> updateRoomById(@PathVariable Integer id,@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<?> updateRoomById(@PathVariable Long id,@RequestBody Map<String, Object> payload) {
         DataResponse response = DataResponse.builder()
                 .success(true)
                 .data(roomService.updateRoomById(id,payload))
