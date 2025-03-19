@@ -9,9 +9,9 @@ import java.util.Map;
 public interface CourseService {
     public List<Course> getAllCoursesInSemester(Long semesterId);
     public Course getCourseById(Long id);
-    public Course addNewCourse(AddCourseRequest request);
+    public Course addNewCourse(AddCourseRequest request, Integer totalGroup);
     public void deleteCourseById(Long id);
 //    public Course updateCourse(Integer id, Map<String, Object> payload);
     public Course checkCourseExist(Long subjectId, Long classId, Long semesterId);
-
+    public void deleteCourse(Long id);
 }

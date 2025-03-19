@@ -1,6 +1,7 @@
 package com.example.labschedulerserver.controller;
 
 import com.example.labschedulerserver.model.Course;
+import com.example.labschedulerserver.payload.request.AddCourseRequest;
 import com.example.labschedulerserver.payload.response.DataResponse;
 import com.example.labschedulerserver.service.CourseService;
 import com.example.labschedulerserver.service.SemesterService;
@@ -37,19 +38,23 @@ public class CourseController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/create")
+    public ResponseEntity<?> createCourse(@RequestBody AddCourseRequest request, @RequestParam("total_group") Integer totalGroup) {
+        DataResponse response = DataResponse.builder()
+                .success(true)
+                .data(courseService.addNewCourse(request,totalGroup))
+                .message("Create course successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
 
-
-
-
-
-
-
-//    @GetMapping("/check")
-//    public ResponseEntity<?> checkCourse(@RequestParam("subject_id") Integer subjectId, @RequestParam("class_id") Integer classId, @RequestParam("semester_id") Integer semesterId) {
-//        DataResponse response = DataResponse.builder()
-//                .success(true)
-//                .data(courseService.checkCourseExist(subjectId, classId, semesterId))
-//                .build();
-//        return ResponseEntity.ok(response);
-//    }
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<?> deleteCourse(@PathVariable Long id) {
+        courseService.deleteCourse(id);
+        DataResponse response = DataResponse.builder()
+                .success(true)
+                .message("Delete course successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
 }

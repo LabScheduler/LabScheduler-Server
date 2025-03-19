@@ -1,6 +1,7 @@
 package com.example.labschedulerserver.service.implement;
 
 import com.example.labschedulerserver.model.Course;
+import com.example.labschedulerserver.model.CourseSection;
 import com.example.labschedulerserver.model.Semester;
 import com.example.labschedulerserver.payload.request.AddCourseRequest;
 import com.example.labschedulerserver.repository.*;
@@ -34,7 +35,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course addNewCourse(AddCourseRequest request) {
+    public Course addNewCourse(AddCourseRequest request, Integer totalGroup) {
         Semester currentSemester = semesterRepository.findCurrentSemester(LocalDateTime.now()).get();
         Course course = courseRepository.findCoursesBySubjectIdAndClazzIdAndSemesterId(request.getSubjectId(), request.getClassId(), currentSemester.getId());
         if(course != null){
@@ -49,12 +50,22 @@ public class CourseServiceImpl implements CourseService {
                 .semester(currentSemester)
                 .build();
 
-
-        return Course.builder()
-                .semester(currentSemester)
-                .subject(subjectRepository.findById(request.getSubjectId()).get())
-                .clazz(classRepository.findById(request.getClassId()).get())
+        CourseSection courseSection = CourseSection.builder()
+                .course(newCourse)
+                .sectionNumber(0)
+                .totalStudentsInSection(newCourse.getTotalStudents())
                 .build();
+        courseRepository.save(newCourse);
+        for(int i =1; i<= totalGroup; i++){
+            CourseSection newCourseSection = CourseSection.builder()
+                    .course(newCourse)
+                    .sectionNumber(i)
+                    .totalStudentsInSection(newCourse.getTotalStudents()/totalGroup)
+                    .build();
+            courseSectionRepository.save(newCourseSection);
+        }
+        courseSectionRepository.save(courseSection);
+        return newCourse;
     }
 
     @Override
@@ -71,5 +82,12 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course checkCourseExist(Long subjectId, Long classId, Long semesterId) {
         return courseRepository.findCoursesBySubjectIdAndClazzIdAndSemesterId(subjectId, classId, semesterId);
+    }
+
+    @Override
+    public void deleteCourse(Long id) {
+        Course course = courseRepository.findById(id).orElseThrow(()->new RuntimeException("Course not found with id: " + id));
+        courseRepository.delete(course);
+
     }
 }
