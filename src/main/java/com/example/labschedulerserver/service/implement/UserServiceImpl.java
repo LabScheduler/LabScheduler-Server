@@ -5,16 +5,17 @@ import com.example.labschedulerserver.model.Account;
 import com.example.labschedulerserver.model.LecturerAccount;
 import com.example.labschedulerserver.model.ManagerAccount;
 import com.example.labschedulerserver.model.StudentAccount;
+import com.example.labschedulerserver.payload.request.AddLecturerRequest;
+import com.example.labschedulerserver.payload.request.AddManagerRequest;
+import com.example.labschedulerserver.payload.request.AddStudentRequest;
 import com.example.labschedulerserver.payload.response.DataResponse;
 import com.example.labschedulerserver.payload.response.UserResponse;
-import com.example.labschedulerserver.repository.AccountRepository;
-import com.example.labschedulerserver.repository.LecturerAccountRepository;
-import com.example.labschedulerserver.repository.ManagerAccountRepository;
-import com.example.labschedulerserver.repository.StudentAccountRepository;
+import com.example.labschedulerserver.repository.*;
 import com.example.labschedulerserver.service.UserService;
 import com.example.labschedulerserver.ultils.ConvertFromJsonToTypeVariable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -31,6 +32,12 @@ public class UserServiceImpl implements UserService {
     private final ManagerAccountRepository managerAccountRepository;
     private final LecturerAccountRepository lecturerAccountRepository;
     private final StudentAccountRepository studentAccountRepository;
+    private final DepartmentRepository departmentRepository;
+
+    private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
+    private final MajorRepository majorRepository;
+    private final ClassRepository classRepository;
 
     @Override
     public String checkUserIfExist(String email) {
@@ -47,10 +54,97 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Account createAccount(Account account) {
+    public UserResponse createManagerAccount(AddManagerRequest request) {
+        accountRepository.findUserByEmail(request.getEmail()).ifPresent(user->{
+            throw new RuntimeException("User with email: " + request.getEmail() + " already exists");
+        });
+        Account account = Account.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(roleRepository.findRoleByName("MANAGER"))
+                .status(AccountStatus.ACTIVE)
+                .build();
+        ManagerAccount managerAccount = ManagerAccount.builder()
+                .account(account)
+                .fullName(request.getFullName())
+                .code(request.getCode())
+                .phone(request.getPhone())
+                .gender(request.getGender())
+                .build();
         accountRepository.save(account);
-        return null;
+        managerAccountRepository.save(managerAccount);
+        return UserResponse.builder()
+                .userInfo(managerAccount)
+                .email(account.getEmail())
+                .role(account.getRole().getName())
+                .status(AccountStatus.ACTIVE)
+                .id(account.getId())
+                .build();
     }
+
+    @Override
+    public UserResponse createLecturerAccount(AddLecturerRequest request) {
+        accountRepository.findUserByEmail(request.getEmail()).ifPresent(user->{
+            throw new RuntimeException("User with email: " + request.getEmail() + " already exists");
+        });
+        Account account = Account.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(roleRepository.findRoleByName("LECTURER"))
+                .status(AccountStatus.ACTIVE)
+                .build();
+
+        LecturerAccount lecturerAccount = LecturerAccount.builder()
+                .account(account)
+                .fullName(request.getFullName())
+                .code(request.getCode())
+                .phone(request.getPhone())
+                .gender(request.getGender())
+                .department(departmentRepository.findById(Long.valueOf(request.getDepartmentId())).orElseThrow(()-> new RuntimeException("Department not found")))
+                .build();
+
+        accountRepository.save(account);
+        lecturerAccountRepository.save(lecturerAccount);
+        return UserResponse.builder()
+                .userInfo(lecturerAccount)
+                .email(account.getEmail())
+                .role(account.getRole().getName())
+                .status(AccountStatus.ACTIVE)
+                .id(account.getId())
+                .build();
+    }
+
+    @Override
+    public UserResponse createStudentAccount(AddStudentRequest request) {
+        accountRepository.findUserByEmail(request.getEmail()).ifPresent(user->{
+            throw new RuntimeException("User with email: " + request.getEmail() + " already exists");
+        });
+        Account account = Account.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(roleRepository.findRoleByName("STUDENT"))
+                .status(AccountStatus.ACTIVE)
+                .build();
+        StudentAccount studentAccount = StudentAccount.builder()
+                .account(account)
+                .fullName(request.getFullName())
+                .code(request.getCode())
+                .phone(request.getPhone())
+                .gender(request.getGender())
+                .major(majorRepository.findById(Long.valueOf(request.getMajorId())).orElseThrow(()-> new RuntimeException("Major not found")))
+                .clazz(classRepository.findById(Long.valueOf(request.getClassId())).orElseThrow(()-> new RuntimeException("Class not found")))
+                .build();
+        accountRepository.save(account);
+        studentAccountRepository.save(studentAccount);
+        return UserResponse.builder()
+                .userInfo(studentAccount)
+                .email(account.getEmail())
+                .role(account.getRole().getName())
+                .status(AccountStatus.ACTIVE)
+                .id(account.getId())
+                .build();
+    }
+
 
     @Override
     public List<UserResponse> getAllUser() {
@@ -85,6 +179,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponse findById(Long id) {
+        Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
+        return  UserResponse.builder()
+                .email(account.getEmail())
+                .role(account.getRole().getName())
+                .id(account.getId())
+                .status(account.getStatus())
+                .userInfo(getUserInfo(account))
+                .build();
+    }
+
+    @Override
     public Object getUserInfo(Account account) {
         Object userInfo = null;
         switch (account.getRole().getName()){
@@ -102,9 +208,6 @@ public class UserServiceImpl implements UserService {
         return userInfo;
     }
 
-    public void fieldSet(Object object){
-
-    }
     @Override
     public Object updateUserInfo(Long id, Map<String, Object> payload) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
@@ -136,5 +239,7 @@ public class UserServiceImpl implements UserService {
 
         return userInfo;
     }
+
+
 
 }

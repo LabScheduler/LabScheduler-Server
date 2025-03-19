@@ -4,10 +4,12 @@ import com.example.labschedulerserver.common.AccountStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CurrentTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -29,12 +31,14 @@ public class Account implements UserDetails {
 
     @ManyToOne
     @JoinColumn(name = "role")
-    @JsonIgnore
     private Role role;
 
     @Enumerated(EnumType.STRING)
     private AccountStatus status;
 
+    @Column(name = "created_at")
+    @CurrentTimestamp
+    private Timestamp createdAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
