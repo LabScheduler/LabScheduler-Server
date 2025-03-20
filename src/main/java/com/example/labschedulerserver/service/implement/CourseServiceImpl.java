@@ -4,12 +4,14 @@ import com.example.labschedulerserver.model.Course;
 import com.example.labschedulerserver.model.CourseSection;
 import com.example.labschedulerserver.model.Semester;
 import com.example.labschedulerserver.payload.request.AddCourseRequest;
+import com.example.labschedulerserver.payload.response.CourseInfoResponse;
 import com.example.labschedulerserver.repository.*;
 import com.example.labschedulerserver.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,8 +32,12 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course getCourseById(Long id) {
-        return courseRepository.findById(id).orElseThrow(()->new RuntimeException("Course not found"));
+    public CourseInfoResponse getCourseById(Long id) {
+            return CourseInfoResponse.builder()
+                .course(courseRepository.findById(id).orElseThrow(()->new RuntimeException("Course not found")))
+                .courseSections(courseSectionRepository.findAllByCourseId(id))
+                .build();
+
     }
 
     @Override
@@ -49,22 +55,29 @@ public class CourseServiceImpl implements CourseService {
                 .totalStudents(request.getTotalStudents())
                 .semester(currentSemester)
                 .build();
-
-        CourseSection courseSection = CourseSection.builder()
+        List<CourseSection> courseSections = new ArrayList<>();
+        CourseSection section = CourseSection.builder()
                 .course(newCourse)
                 .sectionNumber(0)
                 .totalStudentsInSection(newCourse.getTotalStudents())
                 .build();
-        courseRepository.save(newCourse);
+        courseSections.add(section);
         for(int i =1; i<= totalGroup; i++){
+            int totalStudent = newCourse.getTotalStudents();
+            int totalStudentInSection = totalStudent/totalGroup;
+            int remainingStudents = totalStudent % totalGroup;
+
+            int studentsInThisSection = totalStudentInSection + (i <= remainingStudents ? 1 : 0);
+
             CourseSection newCourseSection = CourseSection.builder()
                     .course(newCourse)
                     .sectionNumber(i)
-                    .totalStudentsInSection(newCourse.getTotalStudents()/totalGroup)
+                    .totalStudentsInSection(studentsInThisSection)
                     .build();
-            courseSectionRepository.save(newCourseSection);
+            courseSections.add(newCourseSection);
         }
-        courseSectionRepository.save(courseSection);
+        courseRepository.save(newCourse);
+        courseSectionRepository.saveAll(courseSections);
         return newCourse;
     }
 
@@ -73,11 +86,6 @@ public class CourseServiceImpl implements CourseService {
         Course course = courseRepository.findById(id).orElseThrow(()->new RuntimeException("Course not found"));
         courseRepository.deleteById(id);
     }
-
-//    @Override
-//    public Course updateCourse(Integer id, Map<String, Object> payload) {
-//        return null;
-//    }
 
     @Override
     public Course checkCourseExist(Long subjectId, Long classId, Long semesterId) {

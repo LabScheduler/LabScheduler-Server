@@ -1,5 +1,6 @@
 package com.example.labschedulerserver.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +20,7 @@ public class CourseSection {
 
     @ManyToOne
     @JoinColumn(name = "course_id")
+    @JsonIgnore
     private Course course;
 
     @Column(name = "section_number")
@@ -27,6 +29,7 @@ public class CourseSection {
     @Column(name = "total_students_in_section")
     private Integer totalStudentsInSection;
 
-    @OneToMany(mappedBy = "courseSection")
+    @OneToMany(mappedBy = "courseSection",fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Schedule> schedules;
 }
