@@ -7,5 +7,7 @@ import com.example.labschedulerserver.model.Schedule;
 import java.util.List;
 
 public interface ScheduleService {
-    public List<Schedule> createSchedule(List<Course> courses);
+    public List<Schedule> getAllScheduleInSemester(Long semesterId);
+    public List<Schedule> getAllSchedulesInSpecificWeek(Integer weekId);
+    public List<Schedule> allocateSchedule(Long courseId);
 }
