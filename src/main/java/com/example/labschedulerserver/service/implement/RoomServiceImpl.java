@@ -35,6 +35,7 @@ public class RoomServiceImpl implements RoomService {
                 .name(addRoomRequest.getName())
                 .capacity(addRoomRequest.getCapacity())
                 .description(addRoomRequest.getDescription())
+                .status(RoomStatus.AVAILABLE)
                 .build();
         roomRepository.save(room);
         return room;
