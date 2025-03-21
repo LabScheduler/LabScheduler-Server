@@ -1,6 +1,7 @@
 package com.example.labschedulerserver.payload.request;
 
 import com.example.labschedulerserver.model.Department;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,5 +14,6 @@ import lombok.NoArgsConstructor;
 public class AddMajorRequest {
     private String name;
     private String code;
+    @JsonProperty("department_id")
     private Long departmentId;
 }

@@ -7,6 +7,7 @@ import lombok.Data;
 public class AddStudentRequest {
     private String email;
     private String password;
+    @JsonProperty("full_name")
     private String fullName;
     private String code;
     private String phone;

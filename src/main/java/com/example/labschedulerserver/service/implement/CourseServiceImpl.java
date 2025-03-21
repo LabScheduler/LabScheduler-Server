@@ -55,6 +55,10 @@ public class CourseServiceImpl implements CourseService {
                 .totalStudents(request.getTotalStudents())
                 .semester(currentSemester)
                 .build();
+        courseRepository.save(newCourse);
+        if(newCourse.getSubject().getTotalPracticePeriods() ==0){
+            return newCourse;
+        }
         List<CourseSection> courseSections = new ArrayList<>();
         CourseSection section = CourseSection.builder()
                 .course(newCourse)
@@ -76,7 +80,7 @@ public class CourseServiceImpl implements CourseService {
                     .build();
             courseSections.add(newCourseSection);
         }
-        courseRepository.save(newCourse);
+
         courseSectionRepository.saveAll(courseSections);
         return newCourse;
     }

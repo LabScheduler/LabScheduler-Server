@@ -38,7 +38,7 @@ public class ClassController {
                 .build();
         return ResponseEntity.ok(response);
     }
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> createNewClass(@RequestBody AddClassRequest addClassRequest) {
         DataResponse response = DataResponse.<Clazz>builder()
                 .data(classService.addNewClass(addClassRequest))

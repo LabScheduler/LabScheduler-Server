@@ -8,4 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+    public List<Schedule> findByCourseSectionCourseSemesterId(Long semesterId);
 }
