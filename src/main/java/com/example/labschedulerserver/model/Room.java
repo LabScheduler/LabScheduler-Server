@@ -4,6 +4,7 @@ import com.example.labschedulerserver.common.RoomStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -30,11 +31,14 @@ public class Room {
     private String description;
 
     @Column(name = "last_updated")
+    @UpdateTimestamp
     private Timestamp lastUpdated;
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Schedule> schedules;
 
     @OneToMany(mappedBy = "newRoom", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<ScheduleRequest> scheduleRequests;
 }

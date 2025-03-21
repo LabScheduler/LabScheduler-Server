@@ -32,9 +32,8 @@ public class LecturerAccount {
     @JsonIgnore
     private Account account;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "department_id")
-    @JsonIgnore
     private Department department;
 
     @OneToMany(mappedBy = "lecturerAccount",fetch = FetchType.LAZY)

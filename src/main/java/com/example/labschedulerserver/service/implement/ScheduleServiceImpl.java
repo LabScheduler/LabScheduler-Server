@@ -25,6 +25,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Transactional
     public List<Schedule> allocateSchedule(Long courseId) {
+
         return null;
     }
 

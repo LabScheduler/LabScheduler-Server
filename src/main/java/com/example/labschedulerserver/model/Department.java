@@ -21,8 +21,10 @@ public class Department {
     private String name;
 
     @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Major> majors;
 
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department",fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<LecturerAccount> lecturerAccounts;
 }
