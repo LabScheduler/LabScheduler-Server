@@ -54,16 +54,19 @@ public class RoomServiceImpl implements RoomService {
         for (Map.Entry<String, Object> entry : payload.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-
             try {
                 Field field = Room.class.getDeclaredField(ConvertFromJsonToTypeVariable.convert(key));
                 field.setAccessible(true);
-                field.set(tmpRoom, value);
+                if (field.getType().isEnum()) {
+                    Object enumValue = Enum.valueOf((Class<Enum>) field.getType(), value.toString());
+                    field.set(tmpRoom, enumValue);
+                } else {
+                    field.set(tmpRoom, value);
+                }
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new RuntimeException("Field not found");
             }
         }
-        tmpRoom.setLastUpdated(new Timestamp(System.currentTimeMillis()));
         roomRepository.save(tmpRoom);
         return tmpRoom;
     }
