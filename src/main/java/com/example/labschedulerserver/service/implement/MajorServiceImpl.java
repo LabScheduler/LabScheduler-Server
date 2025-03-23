@@ -36,11 +36,11 @@ public class MajorServiceImpl implements MajorService {
         if(major != null){
             throw new RuntimeException("Major already exist");
         }
-        return Major.builder()
+        return majorRepository.save(Major.builder()
                 .name(request.getName())
                 .code(request.getCode())
                 .department(departmentRepository.findById(request.getDepartmentId()).orElseThrow(()-> new RuntimeException("Department not found")))
-                .build();
+                .build());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.labschedulerserver.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,13 +27,16 @@ public class SemesterWeek {
     @Column(name = "end_date")
     private Timestamp endDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "semester_id")
+    @JsonIgnore
     private Semester semester;
 
-    @OneToMany(mappedBy = "semesterWeek")
+    @OneToMany(mappedBy = "semesterWeek", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Schedule> schedules;
 
-    @OneToMany(mappedBy = "newSemesterWeek")
+    @OneToMany(mappedBy = "newSemesterWeek", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<ScheduleRequest> scheduleRequests;
 }

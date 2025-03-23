@@ -192,20 +192,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Object getUserInfo(Account account) {
-        Object userInfo = null;
-        switch (account.getRole().getName()){
-            case "MANAGER":
-                userInfo = managerAccountRepository.findById(account.getId()).orElseThrow(() -> new RuntimeException("Manager not found"));
-                break;
-            case "LECTURER":
-                userInfo = lecturerAccountRepository.findById(account.getId()).orElseThrow(() -> new RuntimeException("Lecturer not found"));
-                break;
-            case "STUDENT":
-                userInfo = studentAccountRepository.findById(account.getId()).orElseThrow(() -> new RuntimeException("Student not found"));
-                break;
-        }
-
-        return userInfo;
+        return switch (account.getRole().getName()) {
+            case "MANAGER" ->
+                    managerAccountRepository.findById(account.getId()).orElseThrow(() -> new RuntimeException("Manager not found"));
+            case "LECTURER" ->
+                    lecturerAccountRepository.findById(account.getId()).orElseThrow(() -> new RuntimeException("Lecturer not found"));
+            case "STUDENT" ->
+                    studentAccountRepository.findById(account.getId()).orElseThrow(() -> new RuntimeException("Student not found"));
+            default -> null;
+        };
     }
 
     @Override

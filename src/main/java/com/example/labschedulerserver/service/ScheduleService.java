@@ -10,4 +10,5 @@ public interface ScheduleService {
     public List<Schedule> getAllScheduleInSemester(Long semesterId);
     public List<Schedule> getAllSchedulesInSpecificWeek(Integer weekId);
     public List<Schedule> allocateSchedule(Long courseId);
+
 }

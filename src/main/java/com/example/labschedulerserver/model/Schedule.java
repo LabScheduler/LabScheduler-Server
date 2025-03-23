@@ -2,6 +2,7 @@ package com.example.labschedulerserver.model;
 
 import com.example.labschedulerserver.common.ScheduleStatus;
 import com.example.labschedulerserver.common.ScheduleType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -48,6 +49,7 @@ public class Schedule {
     @Enumerated(EnumType.STRING)
     private ScheduleStatus scheduleStatus;
 
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule",fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<ScheduleRequest> scheduleRequests;
 }
