@@ -12,7 +12,6 @@ public interface CourseService {
     public CourseInfoResponse getCourseById(Long id);
     public Course addNewCourse(AddCourseRequest request, Integer totalGroup);
     public void deleteCourseById(Long id);
-//    public Course updateCourse(Integer id, Map<String, Object> payload);
     public Course checkCourseExist(Long subjectId, Long classId, Long semesterId);
     public void deleteCourse(Long id);
 }

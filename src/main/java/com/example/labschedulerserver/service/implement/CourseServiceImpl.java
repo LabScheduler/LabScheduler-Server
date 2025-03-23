@@ -9,6 +9,7 @@ import com.example.labschedulerserver.repository.*;
 import com.example.labschedulerserver.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public Course addNewCourse(AddCourseRequest request, Integer totalGroup) {
         Semester currentSemester = semesterRepository.findCurrentSemester(LocalDateTime.now()).get();
         Course course = courseRepository.findCoursesBySubjectIdAndClazzIdAndSemesterId(request.getSubjectId(), request.getClassId(), currentSemester.getId());
@@ -80,7 +82,6 @@ public class CourseServiceImpl implements CourseService {
                     .build();
             courseSections.add(newCourseSection);
         }
-
         courseSectionRepository.saveAll(courseSections);
         return newCourse;
     }

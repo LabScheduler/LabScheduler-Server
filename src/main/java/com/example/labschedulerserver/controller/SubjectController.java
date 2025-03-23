@@ -40,7 +40,7 @@ public class SubjectController {
                 .build();
         return ResponseEntity.ok(response);
     }
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> createNewSubject(@RequestBody AddSubjectRequest request) {
         DataResponse response = DataResponse.<Subject>builder()
                 .data(subjectService.addNewSubject(request))

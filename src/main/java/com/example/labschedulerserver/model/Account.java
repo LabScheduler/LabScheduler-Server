@@ -2,6 +2,7 @@ package com.example.labschedulerserver.model;
 
 import com.example.labschedulerserver.common.AccountStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CurrentTimestamp;
@@ -38,6 +39,7 @@ public class Account implements UserDetails {
 
     @Column(name = "created_at")
     @CurrentTimestamp
+    @JsonProperty("created_at")
     private Timestamp createdAt;
 
     @Override

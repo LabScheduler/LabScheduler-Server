@@ -3,6 +3,7 @@ package com.example.labschedulerserver.model;
 import com.example.labschedulerserver.common.ScheduleStatus;
 import com.example.labschedulerserver.common.ScheduleType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,7 @@ public class Schedule {
 
     @ManyToOne
     @JoinColumn(name = "course_section_id")
+    @JsonProperty("course_section")
     private CourseSection courseSection;
 
     @ManyToOne
@@ -29,27 +31,34 @@ public class Schedule {
     private Room room;
 
     @Column(name = "day_of_week")
+    @JsonProperty("day_of_week")
     private Byte dayOfWeek;
 
     @Column(name = "start_period")
+    @JsonProperty("start_period")
     private Byte startPeriod;
 
     @Column(name = "total_period")
+    @JsonProperty("total_period")
     private Byte totalPeriod;
 
     @ManyToOne
     @JoinColumn(name = "semester_week_id")
+    @JsonProperty("semester_week")
     private SemesterWeek semesterWeek;
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
+    @JsonProperty("schedule_type")
     private ScheduleType scheduleType;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
+    @JsonProperty("schedule_status")
     private ScheduleStatus scheduleStatus;
 
     @OneToMany(mappedBy = "schedule",fetch = FetchType.LAZY)
     @JsonIgnore
+    @JsonProperty("schedule_requests")
     private List<ScheduleRequest> scheduleRequests;
 }
