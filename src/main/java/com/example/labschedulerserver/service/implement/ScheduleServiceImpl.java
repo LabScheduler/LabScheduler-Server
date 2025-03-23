@@ -127,15 +127,15 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Transactional
     public List<Schedule> allocateSchedule(Long courseId) {
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy khóa học với id: " + courseId));
+                .orElseThrow(() -> new RuntimeException("Could not find course with id: " + courseId));
 
         if (course.getSubject().getTotalPracticePeriods() == 0) {
-            throw new RuntimeException("Môn học không có tiết thực hành, không thể phân lịch lab");
+            throw new RuntimeException("Subject dont have any practice periods");
         }
 
         List<CourseSection> courseSections = courseSectionRepository.findAllByCourseId(courseId);
         if (courseSections.isEmpty()) {
-            throw new RuntimeException("Không tìm thấy section nào cho khóa học: " + courseId);
+            throw new RuntimeException("No section found with id: " + courseId);
         }
 
         List<CourseSection> practiceSections = courseSections.stream()
@@ -143,16 +143,16 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .collect(Collectors.toList());
 
         if (practiceSections.isEmpty()) {
-            throw new RuntimeException("Không tìm thấy section thực hành nào cho khóa học: " + courseId);
+            throw new RuntimeException("No practice section found with this course id: " + courseId);
         }
 
         List<SemesterWeek> semesterWeeks = semesterWeekRepository.findBySemesterId(course.getSemester().getId())
                 .stream()
                 .sorted(Comparator.comparing(SemesterWeek::getName))
-                .collect(Collectors.toList());
+                .toList();
         
         if (semesterWeeks.isEmpty()) {
-            throw new RuntimeException("Không tìm thấy tuần học nào cho học kỳ: " + course.getSemester().getId());
+            throw new RuntimeException("Could not found any semester weeks in this semester: " + course.getSemester().getId());
         }
 
         List<Room> availableRooms = roomRepository.findAll().stream()
@@ -162,7 +162,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .collect(Collectors.toList());
         
         if (availableRooms.isEmpty()) {
-            throw new RuntimeException("Không có phòng nào có sẵn với đủ sức chứa cho các section khóa học");
+            throw new RuntimeException("No available room with capacity >= " + getMaxStudentsInSection(practiceSections));
         }
 
         List<Schedule> createdSchedules = new ArrayList<>();
@@ -205,10 +205,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 }
 
                 if (!foundSlot) {
-                    throw new RuntimeException("Không thể tìm thấy time slot phù hợp cho section: " + 
-                                              section.getSectionNumber() + " sau " + sessionsAllocated + 
-                                              " buổi. Không đủ tuần/slot trống để phân bổ toàn bộ " + 
-                                              totalSessionsNeeded + " buổi thực hành.");
+                    throw new RuntimeException("Could not find suitable slot for section: " + section.getSectionNumber());
                 }
 
                 if (sessionsAllocated >= totalSessionsNeeded) {
@@ -221,14 +218,47 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<Schedule> getAllScheduleInSemester(Long semesterId) {
-        return scheduleRepository.findByCourseSectionCourseSemesterId(semesterId);
+    public List<Schedule> getAllScheduleInSemester() {
+        return scheduleRepository.findAllByCurrentSemester();
+    }
+
+    @Override
+    public List<Schedule> getAllScheduleBySemesterId(Long semesterId) {
+        if (semesterId == null) {
+            throw new IllegalArgumentException("Semester ID cannot be null");
+        }
+        return scheduleRepository.findAllBySemesterId(semesterId);
+    }
+
+    @Override
+    public List<Schedule> getAllScheduleByClassId(Long classId) {
+        if (classId == null) {
+            throw new IllegalArgumentException("Class ID cannot be null");
+        }
+        return scheduleRepository.findAllByClassIdInCurrentSemester(classId);
+    }
+
+    @Override
+    public List<Schedule> getAllScheduleByCourseId(Long courseId) {
+        if (courseId == null) {
+            throw new IllegalArgumentException("Course ID cannot be null");
+        }
+        return scheduleRepository.findAllByCourseId(courseId);
+    }
+
+    @Override
+    public List<Schedule> getAllScheduleByLecturerId(Long lecturerId) {
+        if (lecturerId == null) {
+            throw new IllegalArgumentException("Lecturer ID cannot be null");
+        }
+        return scheduleRepository.findAllByLecturerIdInCurrentSemester(lecturerId);
     }
 
     @Override
     public List<Schedule> getAllSchedulesInSpecificWeek(Integer weekId) {
-        return scheduleRepository.findAll().stream()
-                .filter(schedule -> schedule.getSemesterWeek().getId().equals(Long.valueOf(weekId)))
-                .collect(Collectors.toList());
+        if (weekId == null) {
+            throw new IllegalArgumentException("Week ID cannot be null");
+        }
+        return scheduleRepository.findAllByWeekId(weekId.longValue());
     }
 }

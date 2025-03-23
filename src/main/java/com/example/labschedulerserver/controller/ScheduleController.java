@@ -34,13 +34,57 @@ public class ScheduleController {
         }
     }
 
+    @GetMapping
+    public ResponseEntity<?> getAllSchedulesInCurrentSemester() {
+        List<Schedule> schedules = scheduleService.getAllScheduleInSemester();
+        DataResponse response = DataResponse.builder()
+                .data(schedules)
+                .success(true)
+                .message("Successfully retrieved schedules for current semester")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/semester/{semesterId}")
     public ResponseEntity<?> getSchedulesInSemester(@PathVariable Long semesterId) {
-        List<Schedule> schedules = scheduleService.getAllScheduleInSemester(semesterId);
+        List<Schedule> schedules = scheduleService.getAllScheduleBySemesterId(semesterId);
         DataResponse response = DataResponse.builder()
                 .data(schedules)
                 .success(true)
                 .message("Successfully retrieved schedules for semester")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/class/{classId}")
+    public ResponseEntity<?> getSchedulesByClass(@PathVariable Long classId) {
+        List<Schedule> schedules = scheduleService.getAllScheduleByClassId(classId);
+        DataResponse response = DataResponse.builder()
+                .data(schedules)
+                .success(true)
+                .message("Successfully retrieved schedules for class")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/course/{courseId}")
+    public ResponseEntity<?> getSchedulesByCourse(@PathVariable Long courseId) {
+        List<Schedule> schedules = scheduleService.getAllScheduleByCourseId(courseId);
+        DataResponse response = DataResponse.builder()
+                .data(schedules)
+                .success(true)
+                .message("Successfully retrieved schedules for course")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/lecturer/{lecturerId}")
+    public ResponseEntity<?> getSchedulesByLecturer(@PathVariable Long lecturerId) {
+        List<Schedule> schedules = scheduleService.getAllScheduleByLecturerId(lecturerId);
+        DataResponse response = DataResponse.builder()
+                .data(schedules)
+                .success(true)
+                .message("Successfully retrieved schedules for lecturer")
                 .build();
         return ResponseEntity.ok(response);
     }
