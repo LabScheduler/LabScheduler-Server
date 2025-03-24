@@ -3,6 +3,7 @@ package com.example.labschedulerserver.service;
 import com.example.labschedulerserver.model.Clazz;
 import com.example.labschedulerserver.model.Course;
 import com.example.labschedulerserver.model.Schedule;
+import com.example.labschedulerserver.payload.request.CreateScheduleRequest;
 
 import java.util.List;
 
@@ -17,8 +18,12 @@ public interface ScheduleService {
 
     public List<Schedule> getAllScheduleByLecturerId(Long lecturerId);
 
+    public Schedule cancelSchedule(Long scheduleId);
 
-    public List<Schedule> getAllSchedulesInSpecificWeek(Integer weekId);
+    public List<Schedule> getAllSchedulesInSpecificWeek(Long weekId);
+
+    public List<Schedule> createSchedule(CreateScheduleRequest request);
+
 
     public List<Schedule> allocateSchedule(Long courseId);
 

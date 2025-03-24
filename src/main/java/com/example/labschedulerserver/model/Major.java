@@ -31,7 +31,6 @@ public class Major {
 
     @ManyToOne
     @JoinColumn(name = "department_id")
-    @JsonIgnore
     private Department department;
 
 

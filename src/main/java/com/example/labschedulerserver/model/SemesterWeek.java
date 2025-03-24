@@ -1,6 +1,7 @@
 package com.example.labschedulerserver.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,9 +23,11 @@ public class SemesterWeek {
     private String name;
 
     @Column(name = "start_date")
+    @JsonProperty("start_date")
     private Timestamp startDate;
 
     @Column(name = "end_date")
+    @JsonProperty("end_date")
     private Timestamp endDate;
 
     @ManyToOne(fetch = FetchType.LAZY)

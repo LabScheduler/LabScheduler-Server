@@ -4,6 +4,7 @@ import com.example.labschedulerserver.common.RoomStatus;
 import com.example.labschedulerserver.common.ScheduleStatus;
 import com.example.labschedulerserver.common.ScheduleType;
 import com.example.labschedulerserver.model.*;
+import com.example.labschedulerserver.payload.request.CreateScheduleRequest;
 import com.example.labschedulerserver.repository.CourseRepository;
 import com.example.labschedulerserver.repository.CourseSectionRepository;
 import com.example.labschedulerserver.repository.RoomRepository;
@@ -255,7 +256,99 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<Schedule> getAllSchedulesInSpecificWeek(Integer weekId) {
+    public Schedule cancelSchedule(Long scheduleId) {
+        if (scheduleId == null) {
+            throw new IllegalArgumentException("Schedule ID cannot be null");
+        }
+        
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new RuntimeException("Schedule not found with id: " + scheduleId));
+
+        if (schedule.getScheduleStatus() != ScheduleStatus.IN_PROGRESS) {
+            throw new RuntimeException("Cannot cancel schedule with status: " + schedule.getScheduleStatus());
+        }
+        
+        schedule.setScheduleStatus(ScheduleStatus.CANCELLED);
+        return scheduleRepository.save(schedule);
+    }
+
+
+    @Override
+    public List<Schedule> createSchedule(CreateScheduleRequest request) {
+        if (request == null) {
+            throw new IllegalArgumentException("Schedule request cannot be null");
+        }
+
+        CourseSection courseSection = courseSectionRepository.findById(request.getCourseSectionId())
+                .orElseThrow(() -> new RuntimeException("Course section not found with id: " + request.getCourseSectionId()));
+        
+        Room room = roomRepository.findById(request.getRoomId())
+                .orElseThrow(() -> new RuntimeException("Room not found with id: " + request.getRoomId()));
+        
+        if (room.getStatus() != RoomStatus.AVAILABLE) {
+            throw new RuntimeException("Room is not available: " + room.getName());
+        }
+        
+        SemesterWeek semesterWeek = semesterWeekRepository.findById(request.getSemesterWeekId())
+                .orElseThrow(() -> new RuntimeException("Semester week not found with id: " + request.getSemesterWeekId()));
+        
+
+        if (request.getDayOfWeek() < 2 || request.getDayOfWeek() > 7) {
+            throw new RuntimeException("Day of week must be between 1 and 7");
+        }
+
+        if (request.getStartPeriod() < 1 || request.getStartPeriod() > 8) {
+            throw new RuntimeException("Start period must be between 1 and 8");
+        }
+        
+        if (request.getTotalPeriod() < 1 || request.getTotalPeriod() > 8) {
+            throw new RuntimeException("Total period must be between 1 and 8");
+        }
+        
+        if (request.getStartPeriod() + request.getTotalPeriod() - 1 > 8) {
+            throw new RuntimeException("Schedule cannot end after period 8");
+        }
+
+        List<Schedule> existingSchedules = scheduleRepository.findAllByCurrentSemester();
+        
+        boolean hasConflict = existingSchedules.stream()
+                .filter(schedule -> schedule.getScheduleStatus() == ScheduleStatus.IN_PROGRESS)
+                .anyMatch(schedule -> 
+                    schedule.getSemesterWeek().getId().equals(semesterWeek.getId()) &&
+                    schedule.getDayOfWeek().equals(request.getDayOfWeek()) &&
+                    ((schedule.getStartPeriod() <= request.getStartPeriod() && 
+                      schedule.getStartPeriod() + schedule.getTotalPeriod() - 1 >= request.getStartPeriod()) ||
+                     (schedule.getStartPeriod() <= request.getStartPeriod() + request.getTotalPeriod() - 1 && 
+                      schedule.getStartPeriod() + schedule.getTotalPeriod() - 1 >= request.getStartPeriod() + request.getTotalPeriod() - 1) ||
+                     (request.getStartPeriod() <= schedule.getStartPeriod() && 
+                      request.getStartPeriod() + request.getTotalPeriod() - 1 >= schedule.getStartPeriod())) &&
+                    (schedule.getRoom().getId().equals(room.getId()) ||
+                     (schedule.getCourseSection().getCourse().getClazz().getId().equals(courseSection.getCourse().getClazz().getId()) ||
+                      schedule.getCourseSection().getCourse().getLecturerAccount().getAccountId().equals(courseSection.getCourse().getLecturerAccount().getAccountId()))
+                    )
+                );
+        
+        if (hasConflict) {
+            throw new RuntimeException("Schedule conflicts with existing schedules");
+        }
+
+        Schedule schedule = Schedule.builder()
+                .courseSection(courseSection)
+                .room(room)
+                .dayOfWeek(request.getDayOfWeek())
+                .startPeriod(request.getStartPeriod())
+                .totalPeriod(request.getTotalPeriod())
+                .semesterWeek(semesterWeek)
+                .scheduleType(request.getType())
+                .scheduleStatus(ScheduleStatus.IN_PROGRESS)
+                .build();
+        
+        Schedule savedSchedule = scheduleRepository.save(schedule);
+        return Collections.singletonList(savedSchedule);
+    }
+
+    @Override
+    public List<Schedule> getAllSchedulesInSpecificWeek(Long weekId) {
         if (weekId == null) {
             throw new IllegalArgumentException("Week ID cannot be null");
         }

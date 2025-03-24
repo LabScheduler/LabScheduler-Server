@@ -1,6 +1,7 @@
 package com.example.labschedulerserver.controller;
 
 import com.example.labschedulerserver.model.Schedule;
+import com.example.labschedulerserver.payload.request.CreateScheduleRequest;
 import com.example.labschedulerserver.payload.response.DataResponse;
 import com.example.labschedulerserver.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -90,7 +91,7 @@ public class ScheduleController {
     }
 
     @GetMapping("/week/{weekId}")
-    public ResponseEntity<?> getSchedulesInWeek(@PathVariable Integer weekId) {
+    public ResponseEntity<?> getSchedulesInWeek(@PathVariable Long weekId) {
         List<Schedule> schedules = scheduleService.getAllSchedulesInSpecificWeek(weekId);
         DataResponse response = DataResponse.builder()
                 .data(schedules)
@@ -98,5 +99,43 @@ public class ScheduleController {
                 .message("Successfully retrieved schedules for week")
                 .build();
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createSchedule(@RequestBody CreateScheduleRequest request) {
+        try {
+            List<Schedule> schedules = scheduleService.createSchedule(request);
+            DataResponse response = DataResponse.builder()
+                    .data(schedules)
+                    .success(true)
+                    .message("Successfully created schedule")
+                    .build();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            DataResponse response = DataResponse.builder()
+                    .success(false)
+                    .message("Failed to create schedule: " + e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @PatchMapping("/cancel/{scheduleId}")
+    public ResponseEntity<?> cancelSchedule(@PathVariable Long scheduleId) {
+        try {
+            Schedule schedule = scheduleService.cancelSchedule(scheduleId);
+            DataResponse response = DataResponse.builder()
+                    .data(schedule)
+                    .success(true)
+                    .message("Successfully cancelled schedule")
+                    .build();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            DataResponse response = DataResponse.builder()
+                    .success(false)
+                    .message("Failed to cancel schedule: " + e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 }
