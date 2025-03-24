@@ -35,7 +35,7 @@ public class Subject {
     @JsonProperty("total_practice_periods")
     private Integer totalPracticePeriods;
 
-    @OneToMany(mappedBy = "subject",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy ="subject",fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Course> courses;
 }
