@@ -1,13 +1,11 @@
 package com.example.labschedulerserver.model;
 
-import com.example.labschedulerserver.common.RequestStatus;
 import com.example.labschedulerserver.common.RequestType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -15,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Table(name = "schedule_request")
-public class ScheduleRequest {
+public class ManagerRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,6 +31,10 @@ public class ScheduleRequest {
     @JoinColumn(name = "new_room_id")
     @JsonProperty("new_room")
     private Room newRoom;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
 
     @ManyToOne
     @JoinColumn(name = "new_semester_week_id")
@@ -63,6 +65,6 @@ public class ScheduleRequest {
     private Timestamp createdAt;
 
     @OneToOne(mappedBy = "request")
-    @JsonProperty("schedule_request_log")
-    private ScheduleRequestLog scheduleRequestLog;
+    @JsonProperty("manager_request_log")
+    private ManagerRequestLog managerRequestLog;
 }

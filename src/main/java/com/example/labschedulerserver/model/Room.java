@@ -9,7 +9,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -43,5 +42,5 @@ public class Room {
     @OneToMany(mappedBy = "newRoom", fetch = FetchType.LAZY)
     @JsonIgnore
     @JsonProperty("schedule_requests")
-    private List<ScheduleRequest> scheduleRequests;
+    private List<ManagerRequest> managerRequests;
 }

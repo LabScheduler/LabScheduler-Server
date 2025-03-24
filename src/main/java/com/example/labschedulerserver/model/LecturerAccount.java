@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -45,6 +44,6 @@ public class LecturerAccount {
 
     @OneToMany(mappedBy = "lecturerAccount",fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<ScheduleRequest> scheduleRequests;
+    private List<ManagerRequest> managerRequests;
 
 }

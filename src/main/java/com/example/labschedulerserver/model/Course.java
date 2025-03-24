@@ -43,5 +43,9 @@ public class Course {
     @OneToMany(mappedBy = "course")
     private List<CourseSection> courseSections;
 
+    @OneToMany(mappedBy = "course",fetch = FetchType.LAZY)
+    @JsonProperty("manager_requests")
+    @JsonIgnore
+    private List<ManagerRequest> managerRequests;
 
 }

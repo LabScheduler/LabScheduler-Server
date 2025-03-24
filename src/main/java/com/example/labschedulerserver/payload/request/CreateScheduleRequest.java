@@ -2,6 +2,7 @@ package com.example.labschedulerserver.payload.request;
 
 import com.example.labschedulerserver.common.ScheduleStatus;
 import com.example.labschedulerserver.common.ScheduleType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,11 +13,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CreateScheduleRequest {
+    @JsonProperty("course_section_id")
     private Long courseSectionId;
+    @JsonProperty("room_id")
     private Long roomId;
+    @JsonProperty("semester_week_id")
     private Long semesterWeekId;
+    @JsonProperty("day_of_week")
     private Byte dayOfWeek;
+    @JsonProperty("start_period")
     private Byte startPeriod;
+    @JsonProperty("total_period")
     private Byte totalPeriod;
     private ScheduleType type;
 }

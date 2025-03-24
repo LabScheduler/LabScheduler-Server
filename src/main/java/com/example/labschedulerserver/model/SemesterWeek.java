@@ -7,7 +7,6 @@ import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -41,5 +40,5 @@ public class SemesterWeek {
 
     @OneToMany(mappedBy = "newSemesterWeek", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<ScheduleRequest> scheduleRequests;
+    private List<ManagerRequest> managerRequests;
 }

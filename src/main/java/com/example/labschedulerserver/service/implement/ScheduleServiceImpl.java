@@ -294,7 +294,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         
 
         if (request.getDayOfWeek() < 2 || request.getDayOfWeek() > 7) {
-            throw new RuntimeException("Day of week must be between 1 and 7");
+            throw new RuntimeException("Day of week must be between 2 and 7");
         }
 
         if (request.getStartPeriod() < 1 || request.getStartPeriod() > 8) {

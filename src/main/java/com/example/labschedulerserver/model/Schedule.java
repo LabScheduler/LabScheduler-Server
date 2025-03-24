@@ -8,7 +8,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -60,5 +59,5 @@ public class Schedule {
     @OneToMany(mappedBy = "schedule",fetch = FetchType.LAZY)
     @JsonIgnore
     @JsonProperty("schedule_requests")
-    private List<ScheduleRequest> scheduleRequests;
+    private List<ManagerRequest> managerRequests;
 }
