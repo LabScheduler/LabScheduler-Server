@@ -1,15 +1,11 @@
-FROM openjdk:23-jdk as builder
+# Stage 1
+FROM maven:3.9.4-eclipse-temurin-21 as build
 WORKDIR /app
-COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
-RUN chmod +x mvnw
-RUN ./mvnw dependency:go-offline
-COPY src ./src
-RUN ./mvnw clean package -DskipTests
+COPY . .
+RUN mvn clean package -DskipTests -T 1C
 
-# Run stage
-FROM openjdk:23-jdk
+# Stage 2
+FROM openjdk:21-jdk-slim
 WORKDIR /app
-COPY --from=builder /app/target/*.jar app.jar
-EXPOSE 8080
+COPY --from=build /app/target/LabScheduler-Server-0.0.1-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]

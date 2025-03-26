@@ -96,7 +96,7 @@ CREATE TABLE `Course` (
 CREATE TABLE `Course_Section` (
                                   `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                                   `course_id` BIGINT NOT NULL,
-                                  `section_number` Int UNIQUE NOT NULL,
+                                  `section_number` Int NOT NULL,
                                   `total_students_in_section` Int NOT NULL,
                                   FOREIGN KEY (`course_id`) REFERENCES `Course`(`id`) ON DELETE CASCADE
 );
@@ -131,7 +131,7 @@ CREATE TABLE `Schedule` (
                             `status` ENUM ('IN_PROGRESS', 'CANCELLED') NOT NULL
 );
 
-CREATE TABLE `Schedule_Request` (
+CREATE TABLE `Lecturer_Request` (
                                     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                                     `lecturer_id` BIGINT NOT NULL,
                                     `schedule_id` BIGINT,
@@ -148,7 +148,7 @@ CREATE TABLE `Schedule_Request` (
                                            (type = 'CHANGE_SCHEDULE' AND schedule_id IS NOT NULL))
 );
 
-CREATE TABLE `Schedule_Request_Log` (
+CREATE TABLE `Lecturer_Request_Log` (
                                         `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                                         `request_id` BIGINT NOT NULL,
                                         `status` ENUM ('PENDING', 'ACCEPT', 'REJECT') NOT NULL,
@@ -186,10 +186,10 @@ ALTER TABLE `Schedule` ADD FOREIGN KEY (`course_section_id`) REFERENCES `Course_
 ALTER TABLE `Schedule` ADD FOREIGN KEY (`room_id`) REFERENCES `Room` (`id`);
 ALTER TABLE `Schedule` ADD FOREIGN KEY (`semester_week_id`) REFERENCES `Semester_Week` (`id`);
 
-ALTER TABLE `Schedule_Request` ADD FOREIGN KEY (`schedule_id`) REFERENCES `Schedule` (`id`);
-ALTER TABLE `Schedule_Request` ADD FOREIGN KEY (`lecturer_id`) REFERENCES `Lecturer_Account` (`account_id`);
-ALTER TABLE `Schedule_Request` ADD FOREIGN KEY (`new_room_id`) REFERENCES `Room` (`id`);
-ALTER TABLE `Schedule_Request` ADD FOREIGN KEY (`new_semester_week_id`) REFERENCES `Semester_Week` (`id`);
+ALTER TABLE `Lecturer_Request` ADD FOREIGN KEY (`schedule_id`) REFERENCES `Schedule` (`id`);
+ALTER TABLE `Lecturer_Request` ADD FOREIGN KEY (`lecturer_id`) REFERENCES `Lecturer_Account` (`account_id`);
+ALTER TABLE `Lecturer_Request` ADD FOREIGN KEY (`new_room_id`) REFERENCES `Room` (`id`);
+ALTER TABLE `Lecturer_Request` ADD FOREIGN KEY (`new_semester_week_id`) REFERENCES `Semester_Week` (`id`);
 
-ALTER TABLE `Schedule_Request_Log` ADD FOREIGN KEY (`request_id`) REFERENCES `Schedule_Request` (`id`);
-ALTER TABLE `Schedule_Request_Log` ADD FOREIGN KEY (`manager_id`) REFERENCES `Manager_Account` (`account_id`);
+ALTER TABLE `Lecturer_Request_Log` ADD FOREIGN KEY (`request_id`) REFERENCES `Lecturer_Request` (`id`);
+ALTER TABLE `Lecturer_Request_Log` ADD FOREIGN KEY (`manager_id`) REFERENCES `Manager_Account` (`account_id`);

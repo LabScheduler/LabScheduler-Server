@@ -1,52 +1,42 @@
-version: "3.8"
-
 services:
-  db:
-    image: mysql:8
-    container_name: labscheduler_db
-    restart: always
-    networks:
-      - labscheduler-network
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-labscheduler
     environment:
       MYSQL_ROOT_PASSWORD: 123
       MYSQL_DATABASE: labscheduler
-      MYSQL_USER: labscheduler
-      MYSQL_PASSWORD: labscheduler
     ports:
-      - 3306:3306
+      - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
-      - mysql_data:/var/lib/mysql
-
-  springboot-app:
-    container_name: labscheduler-springboot-app
-    restart: on-failure:3
+      - labscheduler-data:/var/lib/mysql
     networks:
       - labscheduler-network
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - 8080:8080
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/labscheduler?allowPublicKeyRetrieval=true&useSSL=false
-      SPRING_DATASOURCE_USERNAME: labscheduler
-      SPRING_DATASOURCE_PASSWORD: labscheduler
-      SERVER_PORT: 8080
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+
+  app:
+    build: .   # build from Dockerfile
+    container_name: labscheduler-app
     depends_on:
-      db:
+      mysql:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "http://localhost:8080/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_URL=jdbc:mysql://mysql:3306/labscheduler
+      - DB_USERNAME=root
+      - DB_PASSWORD=123
+    networks:
+      - labscheduler-network
+
+volumes:
+  labscheduler-data:
 
 networks:
   labscheduler-network:
     driver: bridge
 
-volumes:
-  mysql_data:
+# docker-compose up --build -d
