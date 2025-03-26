@@ -1,6 +1,5 @@
 package com.example.labschedulerserver.controller;
 
-import com.example.labschedulerserver.common.RequestStatus;
 import com.example.labschedulerserver.model.LecturerRequest;
 import com.example.labschedulerserver.model.LecturerRequestLog;
 import com.example.labschedulerserver.payload.request.ProcessRequest;
@@ -100,7 +99,7 @@ public class LecturerRequestController {
     @GetMapping("/{requestId}/log")
     public ResponseEntity<?> getRequestLogByRequestId(@PathVariable Long requestId) {
         try {
-            LecturerRequestLog log = lecturerRequestService.getRequestLogByRequestId(requestId);
+            LecturerRequestLog log = lecturerRequestService.getRequestLog(requestId);
             DataResponse response = DataResponse.builder()
                     .data(log)
                     .success(true)
@@ -121,11 +120,7 @@ public class LecturerRequestController {
             @PathVariable Long requestId,
             @RequestBody ProcessRequest processRequest) {
         try {
-            LecturerRequestLog log = lecturerRequestService.processRequest(
-                    requestId,
-                    processRequest.getManagerId(),
-                    RequestStatus.valueOf(processRequest.getStatus())
-            );
+            LecturerRequestLog log = lecturerRequestService.processRequest(processRequest);
             DataResponse response = DataResponse.builder()
                     .data(log)
                     .success(true)

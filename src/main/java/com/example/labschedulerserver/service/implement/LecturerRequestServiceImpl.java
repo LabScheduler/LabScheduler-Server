@@ -1,20 +1,15 @@
 package com.example.labschedulerserver.service.implement;
 
 import com.example.labschedulerserver.common.RequestStatus;
-import com.example.labschedulerserver.common.RequestType;
-import com.example.labschedulerserver.common.ScheduleStatus;
-import com.example.labschedulerserver.common.ScheduleType;
-import com.example.labschedulerserver.model.*;
+import com.example.labschedulerserver.model.LecturerRequest;
+import com.example.labschedulerserver.model.LecturerRequestLog;
+import com.example.labschedulerserver.model.Schedule;
+import com.example.labschedulerserver.payload.request.ProcessRequest;
 import com.example.labschedulerserver.repository.*;
 import com.example.labschedulerserver.service.LecturerRequestService;
-import com.example.labschedulerserver.ultils.RequestUtils;
-import com.example.labschedulerserver.ultils.ScheduleUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -33,6 +28,7 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
 
     @Override
     public LecturerRequest createScheduleRequest(LecturerRequest request) {
+        Schedule schedule = Schedule.builder().build();
         return null;
     }
 
@@ -57,27 +53,17 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
     }
 
     @Override
-    public LecturerRequestLog processRequest(Long requestId, Long managerId, RequestStatus status) {
+    public LecturerRequestLog processRequest(ProcessRequest processRequest) {
         return null;
     }
 
     @Override
-    public LecturerRequestLog getRequestLogByRequestId(Long requestId) {
+    public LecturerRequestLog getRequestLog(Long requestId) {
         return null;
     }
 
     @Override
     public void cancelRequest(Long requestId) {
 
-    }
-
-    @Override
-    public Schedule addScheduleFromRequest(LecturerRequest request) {
-        return null;
-    }
-
-    @Override
-    public Schedule rescheduleFromRequest(LecturerRequest request) {
-        return null;
     }
 }
