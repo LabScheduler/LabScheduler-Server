@@ -40,5 +40,5 @@ public class SemesterWeek {
 
     @OneToMany(mappedBy = "newSemesterWeek", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<ManagerRequest> managerRequests;
+    private List<LecturerRequest> lecturerRequests;
 }

@@ -41,6 +41,6 @@ public class Room {
 
     @OneToMany(mappedBy = "newRoom", fetch = FetchType.LAZY)
     @JsonIgnore
-    @JsonProperty("schedule_requests")
-    private List<ManagerRequest> managerRequests;
+    @JsonProperty("lecturer_requests")
+    private List<LecturerRequest> lecturerRequests;
 }

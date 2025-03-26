@@ -44,6 +44,6 @@ public class LecturerAccount {
 
     @OneToMany(mappedBy = "lecturerAccount",fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<ManagerRequest> managerRequests;
+    private List<LecturerRequest> lecturerRequests;
 
 }

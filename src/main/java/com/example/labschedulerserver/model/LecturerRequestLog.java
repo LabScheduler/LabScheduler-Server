@@ -16,15 +16,15 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "schedule_request_log")
-public class ManagerRequestLog {
+@Table(name = "lecturer_request_log")
+public class LecturerRequestLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
     @JoinColumn(name = "request_id")
-    private ManagerRequest request;
+    private LecturerRequest request;
 
     @Enumerated(EnumType.STRING)
     private RequestStatus status;

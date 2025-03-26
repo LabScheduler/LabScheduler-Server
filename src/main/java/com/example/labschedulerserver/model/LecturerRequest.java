@@ -4,6 +4,7 @@ import com.example.labschedulerserver.common.RequestType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 
@@ -12,8 +13,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "schedule_request")
-public class ManagerRequest {
+@Table(name = "lecturer_request")
+public class LecturerRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -62,9 +63,10 @@ public class ManagerRequest {
 
     @Column(name = "created_at")
     @JsonProperty("created_at")
+    @UpdateTimestamp
     private Timestamp createdAt;
 
     @OneToOne(mappedBy = "request")
-    @JsonProperty("manager_request_log")
-    private ManagerRequestLog managerRequestLog;
+    @JsonProperty("lecturer_request_log")
+    private LecturerRequestLog lecturerRequestLog;
 }

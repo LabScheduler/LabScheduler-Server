@@ -58,6 +58,6 @@ public class Schedule {
 
     @OneToMany(mappedBy = "schedule",fetch = FetchType.LAZY)
     @JsonIgnore
-    @JsonProperty("schedule_requests")
-    private List<ManagerRequest> managerRequests;
+    @JsonProperty("lecturer_requests")
+    private List<LecturerRequest> lecturerRequests;
 }
