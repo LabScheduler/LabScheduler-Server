@@ -1,5 +1,5 @@
 INSERT INTO role (name)
-    value
+    VALUE
     ('MANAGER'),
     ('LECTURER'),
     ('STUDENT');
@@ -14,30 +14,30 @@ VALUES
     ('manager1@manager.ptithcm.edu.vn', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'MANAGER', 'ACTIVE'),
     ('n22dccn086@student.ptithcm.edu.vn', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'STUDENT', 'ACTIVE');
 
-INSERT INTO Department (id, name) VALUES (1, 'Khoa Công nghệ thông tin');
-INSERT INTO Department (id, name) VALUES (2, 'Khoa Kinh tế');
-INSERT INTO Department (id, name) VALUES (3, 'Khoa Khoa học xã hội');
-INSERT INTO Department (id, name) VALUES (4, 'Khoa Ngoại ngữ');
-INSERT INTO Department (id, name) VALUES (5, 'Khoa Luật');
+INSERT INTO department (id, name) VALUES (1, 'Khoa Công nghệ thông tin');
+INSERT INTO department (id, name) VALUES (2, 'Khoa Kinh tế');
+INSERT INTO department (id, name) VALUES (3, 'Khoa Khoa học xã hội');
+INSERT INTO department (id, name) VALUES (4, 'Khoa Ngoại ngữ');
+INSERT INTO department (id, name) VALUES (5, 'Khoa Luật');
 
-INSERT INTO Major (id, code, name, department_id) VALUES (1, 'CNTT', 'Công nghệ thông tin', 1);
-INSERT INTO Major (id, code, name, department_id) VALUES (2, 'KTPM', 'Kỹ thuật phần mềm', 1);
-INSERT INTO Major (id, code, name, department_id) VALUES (3, 'QTKD', 'Quản trị kinh doanh', 2);
-INSERT INTO Major (id, code, name, department_id) VALUES (4, 'KTKT', 'Kế toán - Kiểm toán', 2);
-INSERT INTO Major (id, code, name, department_id) VALUES (5, 'XHNV', 'Xã hội học', 3);
-INSERT INTO Major (id, code, name, department_id) VALUES (6, 'TAV', 'Ngôn ngữ Anh', 4);
-INSERT INTO Major (id, code, name, department_id) VALUES (7, 'LQT', 'Luật Quốc tế', 5);
-INSERT INTO Major (id, code, name, department_id) VALUES (8, 'LDS', 'Luật Dân sự', 5);
+INSERT INTO major (id, code, name, department_id) VALUES (1, 'CNTT', 'Công nghệ thông tin', 1);
+INSERT INTO major (id, code, name, department_id) VALUES (2, 'KTPM', 'Kỹ thuật phần mềm', 1);
+INSERT INTO major (id, code, name, department_id) VALUES (3, 'QTKD', 'Quản trị kinh doanh', 2);
+INSERT INTO major (id, code, name, department_id) VALUES (4, 'KTKT', 'Kế toán - Kiểm toán', 2);
+INSERT INTO major (id, code, name, department_id) VALUES (5, 'XHNV', 'Xã hội học', 3);
+INSERT INTO major (id, code, name, department_id) VALUES (6, 'TAV', 'Ngôn ngữ Anh', 4);
+INSERT INTO major (id, code, name, department_id) VALUES (7, 'LQT', 'Luật Quốc tế', 5);
+INSERT INTO major (id, code, name, department_id) VALUES (8, 'LDS', 'Luật Dân sự', 5);
 
-INSERT INTO Class ( name,major_id) VALUES ('D22CQCN01-N',1);
+INSERT INTO class (name, major_id) VALUES ('D22CQCN01-N', 1);
 
 INSERT INTO student_account (account_id, full_name, code, phone, gender, major_id, class_id)
 VALUES
-    (7, 'Ho Cong Toan', 'N22DCCN086', '0123456789',1,1,1);
+    (7, 'Ho Cong Toan', 'N22DCCN086', '0123456789', 1, 1, 1);
 
 INSERT INTO manager_account (account_id, full_name, code, phone, gender)
 VALUES
-    (6, 'Son Dinh', 'MANAGER001', '0123123123',1);
+    (6, 'Son Dinh', 'MANAGER001', '0123123123', 1);
 
 INSERT INTO lecturer_account (account_id, code, full_name, department_id, phone, gender)
 VALUES
@@ -47,14 +47,13 @@ VALUES
     (4, 'LECTURER004', 'Nguyen Hai', 1, '0444444444', 1),
     (5, 'LECTURER005', 'Nguyen Van Nhat', 1, '0555555555', 1);
 
-
-INSERT INTO Semester (id, name, start_date, end_date)
+INSERT INTO semester (id, name, start_date, end_date)
 VALUES
     (1, '2024-1', '2024-08-01', '2024-12-30'),
     (2, '2024-2', '2024-12-31', '2025-05-31'),
     (3, '2025-1', '2025-08-01', '2025-12-30');
 
-INSERT INTO Semester_Week (id, name, start_date, end_date, semester_id)
+INSERT INTO semester_week (id, name, start_date, end_date, semester_id)
 VALUES
     (1, 'Tuần 1', '2024-08-05', '2024-08-11', 1),
     (2, 'Tuần 2', '2024-08-12', '2024-08-18', 1),
@@ -117,8 +116,7 @@ VALUES
     (59, 'Tuần 59', '2025-11-17', '2025-11-23', 3),
     (60, 'Tuần 60', '2025-11-24', '2025-11-30', 3);
 
-
-INSERT INTO Subject (id, code, name, total_credits, total_theory_periods, total_practice_periods)
+INSERT INTO subject (id, code, name, total_credits, total_theory_periods, total_practice_periods)
 VALUES
     (1, 'INT1306', 'Cấu trúc dữ liệu và giải thuật', 3, 30, 15),
     (2, 'INT1310', 'Lập trình hướng đối tượng', 4, 40, 20),
@@ -128,27 +126,21 @@ VALUES
     (6, 'INT1601', 'Mạng máy tính', 3, 30, 15),
     (7, 'INT1702', 'Phát triển ứng dụng Web', 4, 40, 20);
 
-INSERT INTO Course ( subject_id, class_id, semester_id, lecturer_id, total_students)
+INSERT INTO course (subject_id, class_id, semester_id, lecturer_id, total_students)
 VALUES
-    ( 1, 1, 1, 1, 80),  -- Cấu trúc dữ liệu và giải thuật, lớp 1, kỳ 2024-1, GV Huynh Trong Thua
-    ( 2, 1, 1, 2, 80),  -- Lập trình hướng đối tượng, lớp 1, kỳ 2024-1, GV Luu Nguyen Ky Thu
-    ( 3, 1, 1, 3, 80), -- Cơ sở dữ liệu, lớp 1, kỳ 2025-1, GV Ha Thanh
-    ( 4, 1, 1, 4, 80), -- Toán rời rạc, lớp 1, kỳ 2025-1, GV Nguyen Hai
-    ( 5, 1, 1, 5, 80), -- Trí tuệ nhân tạo, lớp 1, kỳ 2025-2, GV Nguyen Van Nhat
-    ( 6, 1, 1, 1, 80),  -- Mạng máy tính, lớp 1, kỳ 2025-2, GV Huynh Trong Thua
-    ( 7, 1, 1, 2, 80);  -- Phát triển ứng dụng Web, lớp 1, kỳ 2025-2, GV Luu Nguyen Ky Thu
+    (1, 1, 1, 1, 80),  -- Cấu trúc dữ liệu và giải thuật, lớp 1, kỳ 2024-1, GV Huynh Trong Thua
+    (2, 1, 1, 2, 80),  -- Lập trình hướng đối tượng, lớp 1, kỳ 2024-1, GV Luu Nguyen Ky Thu
+    (3, 1, 1, 3, 80),  -- Cơ sở dữ liệu, lớp 1, kỳ 2025-1, GV Ha Thanh
+    (4, 1, 1, 4, 80),  -- Toán rời rạc, lớp 1, kỳ 2025-1, GV Nguyen Hai
+    (5, 1, 1, 5, 80),  -- Trí tuệ nhân tạo, lớp 1, kỳ 2025-2, GV Nguyen Van Nhat
+    (6, 1, 1, 1, 80),  -- Mạng máy tính, lớp 1, kỳ 2025-2, GV Huynh Trong Thua
+    (7, 1, 1, 2, 80);  -- Phát triển ứng dụng Web, lớp 1, kỳ 2025-2, GV Luu Nguyen Ky Thu
 
-INSERT INTO Room (id, name, capacity, status, description, last_updated)
+INSERT INTO room (id, name, capacity, status, description, last_updated)
 VALUES
-    (1, '2B11',40, 'AVAILABLE', '', '2025-03-01 10:00:00'),
+    (1, '2B11', 40, 'AVAILABLE', '', '2025-03-01 10:00:00'),
     (2, '2B12', 40, 'AVAILABLE', '', '2025-03-01 10:30:00'),
     (3, '2B21', 40, 'AVAILABLE', '', '2025-03-01 11:00:00'),
     (4, '2B22', 40, 'REPAIRING', '', '2025-03-02 08:00:00'),
     (5, '2B31', 40, 'AVAILABLE', '', '2025-03-01 12:00:00'),
     (6, '2B32', 40, 'AVAILABLE', '', '2025-03-02 09:00:00');
-
--- INSERT INTO Schedule (course_section_id, room_id, day_of_week, start_period, total_period, type, semester_week_id, status)
--- VALUES
---     (1, 1, 2, 1, 3, 'THEORY', 5, 'IN_PROGRESS'),
---     (2, 2, 4, 4, 2, 'PRACTICE', 6, 'IN_PROGRESS'),
---     (3, 3, 6, 2, 3, 'THEORY', 7, 'IN_PROGRESS');

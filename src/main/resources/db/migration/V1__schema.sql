@@ -1,8 +1,8 @@
-CREATE TABLE `Role` (
+CREATE TABLE `role` (
                         `name` varchar(36) PRIMARY KEY
 );
 
-CREATE TABLE `Permission`(
+CREATE TABLE `permission`(
                              `name` varchar(72) PRIMARY KEY
 );
 
@@ -10,11 +10,11 @@ CREATE TABLE `role_permission` (
                                    `role_name` VARCHAR(255),
                                    `permission_name` VARCHAR(255),
                                    PRIMARY KEY (`role_name`, `permission_name`),
-                                   FOREIGN KEY (`role_name`) REFERENCES `Role`(`name`) ON DELETE CASCADE,
-                                   FOREIGN KEY (`permission_name`) REFERENCES `Permission`(`name`) ON DELETE CASCADE
+                                   FOREIGN KEY (`role_name`) REFERENCES `role`(`name`) ON DELETE CASCADE,
+                                   FOREIGN KEY (`permission_name`) REFERENCES `permission`(`name`) ON DELETE CASCADE
 );
 
-CREATE TABLE `Account` (
+CREATE TABLE `account` (
                            `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                            `email` varchar(50) UNIQUE NOT NULL,
                            `password` varchar(255) NOT NULL,
@@ -23,25 +23,25 @@ CREATE TABLE `Account` (
                            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE `Department` (
+CREATE TABLE `department` (
                               `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                               `name` varchar(50) UNIQUE NOT NULL
 );
 
-CREATE TABLE `Major` (
+CREATE TABLE `major` (
                          `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                          `code` varchar(255) UNIQUE NOT NULL,
                          `name` varchar(255) UNIQUE NOT NULL,
                          `department_id` BIGINT NOT NULL
 );
 
-CREATE TABLE `Class` (
+CREATE TABLE `class` (
                          `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                          `name` varchar(100) UNIQUE NOT NULL,
                          `major_id` BIGINT NOT NULL
 );
 
-CREATE TABLE `Student_Account` (
+CREATE TABLE `student_account` (
                                    `account_id` BIGINT PRIMARY KEY,
                                    `full_name` varchar(100) NOT NULL,
                                    `code` varchar(36) UNIQUE NOT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE `Student_Account` (
                                    `class_id` BIGINT NOT NULL
 );
 
-CREATE TABLE `Lecturer_Account` (
+CREATE TABLE `lecturer_account` (
                                     `account_id` BIGINT PRIMARY KEY,
                                     `full_name` varchar(100) NOT NULL,
                                     `code` varchar(36) UNIQUE NOT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE `Lecturer_Account` (
                                     `department_id` BIGINT NOT NULL
 );
 
-CREATE TABLE `Manager_Account` (
+CREATE TABLE `manager_account` (
                                    `account_id` BIGINT PRIMARY KEY,
                                    `full_name` varchar(100) NOT NULL,
                                    `code` varchar(36) UNIQUE NOT NULL,
@@ -68,14 +68,14 @@ CREATE TABLE `Manager_Account` (
                                    `gender` bit NOT NULL
 );
 
-CREATE TABLE `Semester` (
+CREATE TABLE `semester` (
                             `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                             `name` varchar(36) UNIQUE NOT NULL,
                             `start_date` timestamp NOT NULL,
                             `end_date` timestamp NOT NULL
 );
 
-CREATE TABLE `Subject` (
+CREATE TABLE `subject` (
                            `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                            `code` varchar(36) UNIQUE NOT NULL,
                            `name` varchar(100) UNIQUE NOT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE `Subject` (
                            `total_practice_periods` BIGINT NOT NULL
 );
 
-CREATE TABLE `Course` (
+CREATE TABLE `course` (
                           `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                           `subject_id` BIGINT NOT NULL,
                           `class_id` BIGINT NOT NULL,
@@ -93,15 +93,15 @@ CREATE TABLE `Course` (
                           `total_students` Int NOT NULL
 );
 
-CREATE TABLE `Course_Section` (
+CREATE TABLE `course_section` (
                                   `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                                   `course_id` BIGINT NOT NULL,
                                   `section_number` Int NOT NULL,
                                   `total_students_in_section` Int NOT NULL,
-                                  FOREIGN KEY (`course_id`) REFERENCES `Course`(`id`) ON DELETE CASCADE
+                                  FOREIGN KEY (`course_id`) REFERENCES `course`(`id`) ON DELETE CASCADE
 );
 
-CREATE TABLE `Room` (
+CREATE TABLE `room` (
                         `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                         `name` varchar(36) UNIQUE NOT NULL,
 --                         `location` varchar(36) NOT NULL,
@@ -111,7 +111,7 @@ CREATE TABLE `Room` (
                         `last_updated` datetime NOT NULL
 );
 
-CREATE TABLE `Semester_Week` (
+CREATE TABLE `semester_week` (
                                  `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                                  `name` varchar(100) NOT NULL,
                                  `start_date` timestamp NOT NULL,
@@ -119,7 +119,7 @@ CREATE TABLE `Semester_Week` (
                                  `semester_id` BIGINT NOT NULL
 );
 
-CREATE TABLE `Schedule` (
+CREATE TABLE `schedule` (
                             `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                             `course_section_id` BIGINT NOT NULL,
                             `room_id` BIGINT NOT NULL,
@@ -131,7 +131,7 @@ CREATE TABLE `Schedule` (
                             `status` ENUM ('IN_PROGRESS', 'CANCELLED') NOT NULL
 );
 
-CREATE TABLE `Lecturer_Request` (
+CREATE TABLE `lecturer_request` (
                                     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                                     `lecturer_id` BIGINT NOT NULL,
                                     `schedule_id` BIGINT,
@@ -141,14 +141,14 @@ CREATE TABLE `Lecturer_Request` (
                                     `new_start_period` Int NOT NULL,
                                     `new_total_period` Int NOT NULL,
                                     `reason` varchar(255) NOT NULL,
-                                    `type` ENUM ('NEW_SCHEDULE', 'CHANGE_SCHEDULE') NOT NULL,
+                                    `type` ENUM ('NEW_schedule', 'CHANGE_schedule') NOT NULL,
                                     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                    CHECK ((type = 'NEW_SCHEDULE' AND schedule_id IS NULL)
+                                    CHECK ((type = 'NEW_schedule' AND schedule_id IS NULL)
                                         OR
-                                           (type = 'CHANGE_SCHEDULE' AND schedule_id IS NOT NULL))
+                                           (type = 'CHANGE_schedule' AND schedule_id IS NOT NULL))
 );
 
-CREATE TABLE `Lecturer_Request_Log` (
+CREATE TABLE `lecturer_request_log` (
                                         `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                                         `request_id` BIGINT NOT NULL,
                                         `status` ENUM ('PENDING', 'ACCEPT', 'REJECT') NOT NULL,
@@ -158,38 +158,38 @@ CREATE TABLE `Lecturer_Request_Log` (
 
 
 
-ALTER TABLE `Account` ADD FOREIGN KEY (`role`) REFERENCES `Role` (`name`);
+ALTER TABLE `account` ADD FOREIGN KEY (`role`) REFERENCES `role` (`name`);
 
-ALTER TABLE `Student_Account` ADD FOREIGN KEY (`account_id`) REFERENCES `Account` (`id`);
-ALTER TABLE `Student_Account` ADD FOREIGN KEY (`major_id`) REFERENCES `Major` (`id`);
-ALTER TABLE `Student_Account` ADD FOREIGN KEY (`class_id`) REFERENCES `Class` (`id`);
+ALTER TABLE `student_account` ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`);
+ALTER TABLE `student_account` ADD FOREIGN KEY (`major_id`) REFERENCES `major` (`id`);
+ALTER TABLE `student_account` ADD FOREIGN KEY (`class_id`) REFERENCES `class` (`id`);
 
-ALTER TABLE `Lecturer_Account` ADD FOREIGN KEY (`account_id`) REFERENCES `Account` (`id`);
-ALTER TABLE `Lecturer_Account` ADD FOREIGN KEY (`department_id`) REFERENCES `Department` (`id`);
+ALTER TABLE `lecturer_account` ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`);
+ALTER TABLE `lecturer_account` ADD FOREIGN KEY (`department_id`) REFERENCES `department` (`id`);
 
-ALTER TABLE `Manager_Account` ADD FOREIGN KEY (`account_id`) REFERENCES `Account` (`id`);
+ALTER TABLE `manager_account` ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`);
 
-ALTER TABLE `Major` ADD FOREIGN KEY (`department_id`) REFERENCES `Department` (`id`);
+ALTER TABLE `major` ADD FOREIGN KEY (`department_id`) REFERENCES `department` (`id`);
 
-ALTER TABLE `Class` ADD FOREIGN KEY (`major_id`) REFERENCES `Major` (`id`);
+ALTER TABLE `class` ADD FOREIGN KEY (`major_id`) REFERENCES `major` (`id`);
 
-ALTER TABLE `Semester_Week` ADD FOREIGN KEY (`semester_id`) REFERENCES `Semester` (`id`);
+ALTER TABLE `semester_week` ADD FOREIGN KEY (`semester_id`) REFERENCES `semester` (`id`);
 
-ALTER TABLE `Course` ADD FOREIGN KEY (`subject_id`) REFERENCES `Subject` (`id`);
-ALTER TABLE `Course` ADD FOREIGN KEY (`class_id`) REFERENCES `Class` (`id`);
-ALTER TABLE `Course` ADD FOREIGN KEY (`semester_id`) REFERENCES `Semester` (`id`);
-ALTER TABLE `Course` ADD FOREIGN KEY (`lecturer_id`) REFERENCES `Lecturer_Account` (`account_id`);
+ALTER TABLE `course` ADD FOREIGN KEY (`subject_id`) REFERENCES `subject` (`id`);
+ALTER TABLE `course` ADD FOREIGN KEY (`class_id`) REFERENCES `class` (`id`);
+ALTER TABLE `course` ADD FOREIGN KEY (`semester_id`) REFERENCES `semester` (`id`);
+ALTER TABLE `course` ADD FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer_account` (`account_id`);
 
-ALTER TABLE `Course_Section` ADD FOREIGN KEY (`course_id`) REFERENCES `Course` (`id`) ON DELETE CASCADE;
+ALTER TABLE `course_section` ADD FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `Schedule` ADD FOREIGN KEY (`course_section_id`) REFERENCES `Course_Section` (`id`);
-ALTER TABLE `Schedule` ADD FOREIGN KEY (`room_id`) REFERENCES `Room` (`id`);
-ALTER TABLE `Schedule` ADD FOREIGN KEY (`semester_week_id`) REFERENCES `Semester_Week` (`id`);
+ALTER TABLE `schedule` ADD FOREIGN KEY (`course_section_id`) REFERENCES `course_section` (`id`);
+ALTER TABLE `schedule` ADD FOREIGN KEY (`room_id`) REFERENCES `room` (`id`);
+ALTER TABLE `schedule` ADD FOREIGN KEY (`semester_week_id`) REFERENCES `semester_week` (`id`);
 
-ALTER TABLE `Lecturer_Request` ADD FOREIGN KEY (`schedule_id`) REFERENCES `Schedule` (`id`);
-ALTER TABLE `Lecturer_Request` ADD FOREIGN KEY (`lecturer_id`) REFERENCES `Lecturer_Account` (`account_id`);
-ALTER TABLE `Lecturer_Request` ADD FOREIGN KEY (`new_room_id`) REFERENCES `Room` (`id`);
-ALTER TABLE `Lecturer_Request` ADD FOREIGN KEY (`new_semester_week_id`) REFERENCES `Semester_Week` (`id`);
+ALTER TABLE `lecturer_request` ADD FOREIGN KEY (`schedule_id`) REFERENCES `schedule` (`id`);
+ALTER TABLE `lecturer_request` ADD FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer_account` (`account_id`);
+ALTER TABLE `lecturer_request` ADD FOREIGN KEY (`new_room_id`) REFERENCES `room` (`id`);
+ALTER TABLE `lecturer_request` ADD FOREIGN KEY (`new_semester_week_id`) REFERENCES `semester_week` (`id`);
 
-ALTER TABLE `Lecturer_Request_Log` ADD FOREIGN KEY (`request_id`) REFERENCES `Lecturer_Request` (`id`);
-ALTER TABLE `Lecturer_Request_Log` ADD FOREIGN KEY (`manager_id`) REFERENCES `Manager_Account` (`account_id`);
+ALTER TABLE `lecturer_request_log` ADD FOREIGN KEY (`request_id`) REFERENCES `lecturer_request` (`id`);
+ALTER TABLE `lecturer_request_log` ADD FOREIGN KEY (`manager_id`) REFERENCES `manager_account` (`account_id`);
