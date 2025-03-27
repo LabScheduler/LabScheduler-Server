@@ -21,7 +21,6 @@ public class Clazz {
 
     @ManyToOne
     @JoinColumn(name = "major_id")
-    @JsonIgnore
     private Major major;
 
     @OneToMany(mappedBy = "clazz")

@@ -1,9 +1,8 @@
 package com.example.labschedulerserver.controller;
 
 import com.example.labschedulerserver.model.Clazz;
-import com.example.labschedulerserver.model.Room;
-import com.example.labschedulerserver.payload.request.AddClassRequest;
-import com.example.labschedulerserver.payload.request.AddRoomRequest;
+import com.example.labschedulerserver.payload.request.Class.AddClassRequest;
+import com.example.labschedulerserver.payload.request.Class.UpdateClassRequest;
 import com.example.labschedulerserver.payload.response.DataResponse;
 import com.example.labschedulerserver.service.ClassService;
 import lombok.RequiredArgsConstructor;
@@ -59,10 +58,10 @@ public class ClassController {
     }
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<?> updateRoomById(@PathVariable Long id,@RequestBody Map<String, Object> mp) {
+    public ResponseEntity<?> updateRoomById(@PathVariable Long id,@RequestBody UpdateClassRequest updateClassRequest) {
         DataResponse response = DataResponse.builder()
                 .success(true)
-                .data(classService.updateClass(id,mp))
+                .data(classService.updateClass(id,updateClassRequest))
                 .message("Update class successfully")
                 .build();
         return ResponseEntity.ok(response);
