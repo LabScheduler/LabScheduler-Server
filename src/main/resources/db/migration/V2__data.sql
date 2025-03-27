@@ -126,15 +126,15 @@ VALUES
     (6, 'INT1601', 'Mạng máy tính', 3, 30, 15),
     (7, 'INT1702', 'Phát triển ứng dụng Web', 4, 40, 20);
 
-INSERT INTO course (subject_id, class_id, semester_id, lecturer_id, total_students)
+INSERT INTO course (subject_id, class_id, semester_id, lecturer_id,group_number, total_students)
 VALUES
-    (1, 1, 1, 1, 80),  -- Cấu trúc dữ liệu và giải thuật, lớp 1, kỳ 2024-1, GV Huynh Trong Thua
-    (2, 1, 1, 2, 80),  -- Lập trình hướng đối tượng, lớp 1, kỳ 2024-1, GV Luu Nguyen Ky Thu
-    (3, 1, 1, 3, 80),  -- Cơ sở dữ liệu, lớp 1, kỳ 2025-1, GV Ha Thanh
-    (4, 1, 1, 4, 80),  -- Toán rời rạc, lớp 1, kỳ 2025-1, GV Nguyen Hai
-    (5, 1, 1, 5, 80),  -- Trí tuệ nhân tạo, lớp 1, kỳ 2025-2, GV Nguyen Van Nhat
-    (6, 1, 1, 1, 80),  -- Mạng máy tính, lớp 1, kỳ 2025-2, GV Huynh Trong Thua
-    (7, 1, 1, 2, 80);  -- Phát triển ứng dụng Web, lớp 1, kỳ 2025-2, GV Luu Nguyen Ky Thu
+    (1, 1, 1, 1,1 ,80),  -- Cấu trúc dữ liệu và giải thuật, lớp 1, kỳ 2024-1, GV Huynh Trong Thua
+    (2, 1, 1, 2, 1,80),  -- Lập trình hướng đối tượng, lớp 1, kỳ 2024-1, GV Luu Nguyen Ky Thu
+    (3, 1, 1, 3, 1,180),  -- Cơ sở dữ liệu, lớp 1, kỳ 2025-1, GV Ha Thanh
+    (4, 1, 1, 4, 1,80),  -- Toán rời rạc, lớp 1, kỳ 2025-1, GV Nguyen Hai
+    (5, 1, 1, 5, 1,80),  -- Trí tuệ nhân tạo, lớp 1, kỳ 2025-2, GV Nguyen Van Nhat
+    (6, 1, 1, 1, 1,80),  -- Mạng máy tính, lớp 1, kỳ 2025-2, GV Huynh Trong Thua
+    (7, 1, 1, 2, 1,80);  -- Phát triển ứng dụng Web, lớp 1, kỳ 2025-2, GV Luu Nguyen Ky Thu
 
 INSERT INTO room (id, name, capacity, status, description, last_updated)
 VALUES

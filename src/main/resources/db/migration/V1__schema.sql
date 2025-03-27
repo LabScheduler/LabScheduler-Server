@@ -90,6 +90,7 @@ CREATE TABLE `course` (
                           `class_id` BIGINT NOT NULL,
                           `semester_id` BIGINT NOT NULL,
                           `lecturer_id` BIGINT NOT NULL,
+                           `group_number` Int NOT NULL,
                           `total_students` Int NOT NULL
 );
 
@@ -121,37 +122,41 @@ CREATE TABLE `semester_week` (
 
 CREATE TABLE `schedule` (
                             `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-                            `course_section_id` BIGINT NOT NULL,
+                            `course_id` BIGINT ,
+                            `course_section_id` BIGINT,
                             `room_id` BIGINT NOT NULL,
                             `day_of_week` TINYINT NOT NULL CHECK (day_of_week BETWEEN 1 AND 7),
                             `start_period` Int NOT NULL,
                             `total_period` Int NOT NULL,
                             `type` ENUM ('THEORY', 'PRACTICE') NOT NULL,
                             `semester_week_id` BIGINT NOT NULL,
-                            `status` ENUM ('IN_PROGRESS', 'CANCELLED') NOT NULL
+                            `status` ENUM ('IN_PROGRESS', 'CANCELLED') NOT NULL,
+                            FOREIGN KEY (`course_id`) REFERENCES `course`(`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `lecturer_request` (
                                     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                                     `lecturer_id` BIGINT NOT NULL,
                                     `schedule_id` BIGINT,
+                                    `course_id` BIGINT NOT NULL,
                                     `new_room_id` BIGINT NOT NULL,
                                     `new_semester_week_id` BIGINT,
                                     `new_day_of_week` TINYINT NOT NULL CHECK (new_day_of_week BETWEEN 1 AND 7),
                                     `new_start_period` Int NOT NULL,
                                     `new_total_period` Int NOT NULL,
                                     `reason` varchar(255) NOT NULL,
-                                    `type` ENUM ('NEW_schedule', 'CHANGE_schedule') NOT NULL,
+                                    `type` ENUM ('ADD_SCHEDULE', 'RESCHEDULE') NOT NULL,
                                     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                    CHECK ((type = 'NEW_schedule' AND schedule_id IS NULL)
+                                    CHECK ((type = 'ADD_SCHEDULE' AND schedule_id IS NULL)
                                         OR
-                                           (type = 'CHANGE_schedule' AND schedule_id IS NOT NULL))
+                                           (type = 'RESCHEDULE' AND schedule_id IS NOT NULL)),
+                                    FOREIGN KEY (`course_id`) REFERENCES `course`(`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `lecturer_request_log` (
                                         `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                                         `request_id` BIGINT NOT NULL,
-                                        `status` ENUM ('PENDING', 'ACCEPT', 'REJECT') NOT NULL,
+                                        `status` ENUM ('PENDING', 'APPROVED', 'REJECT') NOT NULL,
                                         `manager_id` BIGINT NOT NULL,
                                         `replied_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
