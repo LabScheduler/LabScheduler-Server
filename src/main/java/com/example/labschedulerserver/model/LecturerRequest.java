@@ -58,8 +58,8 @@ public class LecturerRequest {
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
-    @JsonProperty("request_type")
-    private RequestType requestType;
+    @JsonProperty("type")
+    private RequestType type;
 
     @Column(name = "created_at")
     @JsonProperty("created_at")

@@ -1,15 +1,25 @@
 package com.example.labschedulerserver.controller;
 
+import com.example.labschedulerserver.common.RequestType;
+import com.example.labschedulerserver.model.LecturerAccount;
 import com.example.labschedulerserver.model.LecturerRequest;
 import com.example.labschedulerserver.model.LecturerRequestLog;
+import com.example.labschedulerserver.model.Room;
+import com.example.labschedulerserver.model.Schedule;
+import com.example.labschedulerserver.model.SemesterWeek;
+import com.example.labschedulerserver.model.Course;
+import com.example.labschedulerserver.payload.request.LecturerScheduleRequest;
 import com.example.labschedulerserver.payload.request.ProcessRequest;
 import com.example.labschedulerserver.payload.response.DataResponse;
 import com.example.labschedulerserver.service.LecturerRequestService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 @RestController
 @RequestMapping("/api/lecturer-request")
@@ -18,13 +28,13 @@ public class LecturerRequestController {
     private final LecturerRequestService lecturerRequestService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createScheduleRequest(@RequestBody LecturerRequest request) {
+    public ResponseEntity<?> createScheduleRequest(@RequestBody LecturerScheduleRequest request) {
         try {
-            LecturerRequest savedRequest = lecturerRequestService.createScheduleRequest(request);
+            LecturerRequest createdRequest = lecturerRequestService.createScheduleRequest(request);
             DataResponse response = DataResponse.builder()
-                    .data(savedRequest)
+                    .data(createdRequest)
                     .success(true)
-                    .message("Successfully created schedule request")
+                    .message("Schedule request created successfully")
                     .build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -42,7 +52,7 @@ public class LecturerRequestController {
         DataResponse response = DataResponse.builder()
                 .data(requests)
                 .success(true)
-                .message("Successfully retrieved all pending requests")
+                .message("Retrieved all pending requests successfully")
                 .build();
         return ResponseEntity.ok(response);
     }
@@ -53,7 +63,7 @@ public class LecturerRequestController {
         DataResponse response = DataResponse.builder()
                 .data(requests)
                 .success(true)
-                .message("Successfully retrieved all requests")
+                .message("Retrieved all requests successfully")
                 .build();
         return ResponseEntity.ok(response);
     }
@@ -65,13 +75,13 @@ public class LecturerRequestController {
             DataResponse response = DataResponse.builder()
                     .data(requests)
                     .success(true)
-                    .message("Successfully retrieved requests for lecturer")
+                    .message("Retrieved lecturer requests successfully")
                     .build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             DataResponse response = DataResponse.builder()
                     .success(false)
-                    .message("Failed to retrieve requests: " + e.getMessage())
+                    .message("Failed to retrieve lecturer requests: " + e.getMessage())
                     .build();
             return ResponseEntity.badRequest().body(response);
         }
@@ -84,7 +94,7 @@ public class LecturerRequestController {
             DataResponse response = DataResponse.builder()
                     .data(request)
                     .success(true)
-                    .message("Successfully retrieved request")
+                    .message("Retrieved request details successfully")
                     .build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -97,13 +107,13 @@ public class LecturerRequestController {
     }
 
     @GetMapping("/{requestId}/log")
-    public ResponseEntity<?> getRequestLogByRequestId(@PathVariable Long requestId) {
+    public ResponseEntity<?> getRequestLog(@PathVariable Long requestId) {
         try {
             LecturerRequestLog log = lecturerRequestService.getRequestLog(requestId);
             DataResponse response = DataResponse.builder()
                     .data(log)
                     .success(true)
-                    .message("Successfully retrieved request log")
+                    .message("Retrieved request log successfully")
                     .build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -116,15 +126,14 @@ public class LecturerRequestController {
     }
 
     @PostMapping("/{requestId}/process")
-    public ResponseEntity<?> processRequest(
-            @PathVariable Long requestId,
-            @RequestBody ProcessRequest processRequest) {
+    public ResponseEntity<?> processRequest(@PathVariable Long requestId, @RequestBody ProcessRequest processRequest) {
         try {
+            processRequest.setRequestId(requestId);
             LecturerRequestLog log = lecturerRequestService.processRequest(processRequest);
             DataResponse response = DataResponse.builder()
                     .data(log)
                     .success(true)
-                    .message("Successfully processed request")
+                    .message("Request processed successfully")
                     .build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -142,7 +151,7 @@ public class LecturerRequestController {
             lecturerRequestService.cancelRequest(requestId);
             DataResponse response = DataResponse.builder()
                     .success(true)
-                    .message("Successfully cancelled request")
+                    .message("Request cancelled successfully")
                     .build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {

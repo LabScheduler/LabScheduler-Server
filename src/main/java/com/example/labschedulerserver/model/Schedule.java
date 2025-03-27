@@ -21,6 +21,10 @@ public class Schedule {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
+
+    @ManyToOne
     @JoinColumn(name = "course_section_id")
     @JsonProperty("course_section")
     private CourseSection courseSection;

@@ -15,5 +15,5 @@ public interface LecturerRequestRepository extends JpaRepository<LecturerRequest
     List<LecturerRequest> findByLecturerRequestLogIsNull();
     
     @Query("SELECT r FROM LecturerRequest r WHERE r.lecturerAccount.accountId = :lecturerId")
-    List<LecturerRequest> findByLecturerAccountAccountId(@Param("lecturerId") Long lecturerId);
+    List<LecturerRequest> findByLecturerAccountId(@Param("lecturerId") Long lecturerId);
 }

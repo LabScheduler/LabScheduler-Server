@@ -2,13 +2,14 @@ package com.example.labschedulerserver.service;
 
 import com.example.labschedulerserver.model.LecturerRequest;
 import com.example.labschedulerserver.model.LecturerRequestLog;
+import com.example.labschedulerserver.payload.request.LecturerScheduleRequest;
 import com.example.labschedulerserver.payload.request.ProcessRequest;
 
 import java.util.List;
 
 public interface LecturerRequestService {
     //Create a schedule request
-    LecturerRequest createScheduleRequest(LecturerRequest request);
+    LecturerRequest createScheduleRequest(LecturerScheduleRequest request);
     
     //Get all pending manager schedule requests
     List<LecturerRequest> getAllPendingRequests();

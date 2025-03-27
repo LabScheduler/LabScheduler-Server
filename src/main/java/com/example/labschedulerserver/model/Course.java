@@ -36,6 +36,10 @@ public class Course {
     @JsonProperty("lecturer_account")
     private LecturerAccount lecturerAccount;
 
+    @Column(name = "group_number")
+    @JsonProperty("group_number")
+    private Integer groupNumber;
+
     @Column(name = "total_students")
     @JsonProperty("total_students")
     private Integer totalStudents;
@@ -47,5 +51,9 @@ public class Course {
     @JsonProperty("lecturer_requests")
     @JsonIgnore
     private List<LecturerRequest> lecturerRequests;
+
+    @OneToMany(mappedBy = "course",fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Schedule> schedules;
 
 }

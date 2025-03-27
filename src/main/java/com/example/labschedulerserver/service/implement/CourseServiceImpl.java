@@ -61,12 +61,6 @@ public class CourseServiceImpl implements CourseService {
             return newCourse;
         }
         List<CourseSection> courseSections = new ArrayList<>();
-        CourseSection section = CourseSection.builder()
-                .course(newCourse)
-                .sectionNumber(0)
-                .totalStudentsInSection(newCourse.getTotalStudents())
-                .build();
-        courseSections.add(section);
         for(int i =1; i<= totalGroup; i++){
             int totalStudent = newCourse.getTotalStudents();
             int totalStudentInSection = totalStudent/totalGroup;
