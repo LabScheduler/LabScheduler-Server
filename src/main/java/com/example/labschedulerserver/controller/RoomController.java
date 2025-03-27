@@ -19,63 +19,99 @@ public class RoomController {
 
     @GetMapping
     public ResponseEntity<?> getAllRoom() {
-        List<Room> rooms = roomService.getAllRoom();
-        DataResponse response = DataResponse.builder()
-                .data(rooms)
-                .success(true)
-                .message("Get all rooms successfully")
-                .build();
-        return ResponseEntity.ok(response);
+        try{
+            List<Room> rooms = roomService.getAllRoom();
+            DataResponse response = DataResponse.builder()
+                    .data(rooms)
+                    .success(true)
+                    .message("Get all rooms successfully")
+                    .build();
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            DataResponse response = DataResponse.builder()
+                    .data(null)
+                    .success(false)
+                    .message("Get all rooms failed")
+                    .build();
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
-        DataResponse response = DataResponse.<Room>builder()
-                .data(roomService.getRoomById(id))
-                .success(true)
-                .message("Get room by id successfully")
-                .build();
-        return ResponseEntity.ok(response);
+        try{
+            DataResponse response = DataResponse.<Room>builder()
+                    .data(roomService.getRoomById(id))
+                    .success(true)
+                    .message("Get room by id successfully")
+                    .build();
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            DataResponse response = DataResponse.builder()
+                    .data(null)
+                    .success(false)
+                    .message("Get room by id failed")
+                    .build();
+            return ResponseEntity.badRequest().body(response);
+        }
     }
+
     @PostMapping("/create")
     public ResponseEntity<?> createNewRoom(@RequestBody AddRoomRequest addRoomRequest) {
-        DataResponse response = DataResponse.<Room>builder()
-                .data(roomService.addNewRoom(addRoomRequest))
-                .success(true)
-                .message("Add new room successfully")
-                .build();
-        return ResponseEntity.ok(response);
+        try{
+            DataResponse response = DataResponse.<Room>builder()
+                    .data(roomService.addNewRoom(addRoomRequest))
+                    .success(true)
+                    .message("Add new room successfully")
+                    .build();
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            DataResponse response = DataResponse.builder()
+                    .data(null)
+                    .success(false)
+                    .message("Add new room failed")
+                    .build();
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteRoomById(@PathVariable Long id) {
-        roomService.deleteRoomById(id);
-        DataResponse response = DataResponse.builder()
-                .success(true)
-                .message("Delete room successfully")
-                .build();
-        return ResponseEntity.ok(response);
+        try{
+            roomService.deleteRoomById(id);
+            DataResponse response = DataResponse.builder()
+                    .success(true)
+                    .message("Delete room successfully")
+                    .build();
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            DataResponse response = DataResponse.builder()
+                    .success(false)
+                    .message("Delete room failed")
+                    .build();
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     @PatchMapping("/update/{id}")
     public ResponseEntity<?> updateRoomById(@PathVariable Long id,@RequestBody Map<String, Object> payload) {
-        DataResponse response = DataResponse.builder()
-                .success(true)
-                .data(roomService.updateRoomById(id,payload))
-                .message("Update room successfully")
-                .build();
-        return ResponseEntity.ok(response);
+        try{
+            DataResponse response = DataResponse.builder()
+                    .success(true)
+                    .data(roomService.updateRoomById(id,payload))
+                    .message("Update room successfully")
+                    .build();
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            DataResponse response = DataResponse.builder()
+                    .success(false)
+                    .message("Update room failed")
+                    .build();
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
-    @GetMapping("/find/{name}")
-    public ResponseEntity<?> findRoomByName(@PathVariable String name) {
-        DataResponse response = DataResponse.<Room>builder()
-                .data(roomService.findByName(name))
-                .success(true)
-                .message("Get room by name successfully")
-                .build();
-        return ResponseEntity.ok(response);
-    }
+
 
 
 }
