@@ -12,7 +12,15 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 //    @Query(value = "SELECT EXISTS (SELECT 1 FROM Course WHERE subject_id = ?1 AND class_id = ?2 AND semester_id = ?3)", nativeQuery = true)
 //    public boolean checkCourseExist(Integer subjectId, Integer classId, Integer semesterId);
 
+    //Check if exist
     public Course findCoursesBySubjectIdAndClazzIdAndSemesterId(Long subjectId, Long classId, Long semesterId);
 
     public List<Course> findAllBySemesterId(Long semesterId);
+
+    public List<Course> findAllByClazzId(Long classId);
+
+    public List<Course> findAllBySubjectIdAndSemesterId(Long subjectId, Long semesterId);
+
+
+
 }

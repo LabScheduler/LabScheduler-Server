@@ -1,15 +1,12 @@
 package com.example.labschedulerserver.controller;
 
-import com.example.labschedulerserver.model.Course;
-import com.example.labschedulerserver.payload.request.AddCourseRequest;
+import com.example.labschedulerserver.payload.request.Course.CreateCourseRequest;
+import com.example.labschedulerserver.payload.request.Course.UpdateCourseRequest;
 import com.example.labschedulerserver.payload.response.DataResponse;
 import com.example.labschedulerserver.service.CourseService;
-import com.example.labschedulerserver.service.SemesterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/course")
@@ -18,11 +15,42 @@ public class CourseController {
     private final CourseService courseService;
 
     @GetMapping
-    public ResponseEntity<?> getAllCourseInSemester(@RequestParam("semester_id") Long semesterId) {
+    public ResponseEntity<?> getAllCourse() {
         DataResponse response = DataResponse.builder()
                 .success(true)
-                .data(courseService.getAllCoursesInSemester(semesterId).stream())
-                .message("Get all courses in semester successfully")
+                .data(courseService.getAllCourse())
+                .message("Get all courses in current semester successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(params = "semester_id")
+    public ResponseEntity<?> getAllCourseBySemester(@RequestParam("semester_id") Long semesterId) {
+        DataResponse response = DataResponse.builder()
+                .success(true)
+                .data(courseService.getAllCourseBySemester(semesterId))
+                .message("Get all courses by semester successfully")
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(params = "class_id")
+    public ResponseEntity<?> getAllCourse(@RequestParam("class_id") Long classId) {
+        DataResponse response = DataResponse.builder()
+                .success(true)
+                .data(courseService.getAllCourse(classId))
+                .message("Get all courses by class successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(params = {"subject_id", "semester_id"})
+    public ResponseEntity<?> getAllCourse(@RequestParam("subject_id") Long subjectId, @RequestParam("semester_id") Long semesterId) {
+        DataResponse response = DataResponse.builder()
+                .success(true)
+                .data(courseService.getAllCourse(subjectId, semesterId))
+                .message("Get all courses by subject and semester successfully")
                 .build();
         return ResponseEntity.ok(response);
     }
@@ -38,10 +66,10 @@ public class CourseController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createCourse(@RequestBody AddCourseRequest request, @RequestParam("total_group") Integer totalGroup) {
+    public ResponseEntity<?> createCourse(@RequestBody CreateCourseRequest request, @RequestParam("total_group") Integer totalGroup) {
         DataResponse response = DataResponse.builder()
                 .success(true)
-                .data(courseService.addNewCourse(request,totalGroup))
+                .data(courseService.createCourse(request, totalGroup))
                 .message("Create course successfully")
                 .build();
         return ResponseEntity.ok(response);
@@ -53,6 +81,16 @@ public class CourseController {
         DataResponse response = DataResponse.builder()
                 .success(true)
                 .message("Delete course successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<?> updateCourse(@PathVariable Long id, @RequestBody UpdateCourseRequest request) {
+        DataResponse response = DataResponse.builder()
+                .success(true)
+                .data(courseService.updateCourse(id, request))
+                .message("Update course successfully")
                 .build();
         return ResponseEntity.ok(response);
     }

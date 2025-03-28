@@ -1,4 +1,4 @@
-package com.example.labschedulerserver.payload.request;
+package com.example.labschedulerserver.payload.request.Course;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AddCourseRequest {
+public class CreateCourseRequest {
     @JsonProperty("subject_id")
     private Long subjectId;
     @JsonProperty("class_id")

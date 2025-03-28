@@ -1,17 +1,23 @@
 package com.example.labschedulerserver.service;
 
 import com.example.labschedulerserver.model.Course;
-import com.example.labschedulerserver.payload.request.AddCourseRequest;
-import com.example.labschedulerserver.payload.response.CourseInfoResponse;
+import com.example.labschedulerserver.payload.request.Course.CreateCourseRequest;
+import com.example.labschedulerserver.payload.request.Course.UpdateCourseRequest;
+import com.example.labschedulerserver.payload.response.CourseResponse;
 
 import java.util.List;
-import java.util.Map;
 
 public interface CourseService {
-    public List<Course> getAllCoursesInSemester(Long semesterId);
-    public CourseInfoResponse getCourseById(Long id);
-    public Course addNewCourse(AddCourseRequest request, Integer totalGroup);
-    public void deleteCourseById(Long id);
-    public Course checkCourseExist(Long subjectId, Long classId, Long semesterId);
+    public List<CourseResponse> getAllCourse();
+    public List<CourseResponse> getAllCourseBySemester(Long semesterId);
+    public List<CourseResponse> getAllCourse(Long classId);
+    public List<CourseResponse> getAllCourse(Long subjectId, Long semesterId);
+
+    public CourseResponse getCourseById(Long id);
+
+    public CourseResponse createCourse(CreateCourseRequest request, Integer totalGroup);
     public void deleteCourse(Long id);
+    public Course checkCourseExist(Long subjectId, Long classId, Long semesterId);
+
+    public CourseResponse updateCourse(Long id, UpdateCourseRequest request);
 }
