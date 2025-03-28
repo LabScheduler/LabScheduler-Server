@@ -41,9 +41,9 @@ public class SubjectController {
         return ResponseEntity.ok(response);
     }
     @PostMapping("/create")
-    public ResponseEntity<?> createNewSubject(@RequestBody AddSubjectRequest request) {
+    public ResponseEntity<?> createSubject(@RequestBody AddSubjectRequest request) {
         DataResponse response = DataResponse.<Subject>builder()
-                .data(subjectService.addNewSubject(request))
+                .data(subjectService.createSubject(request))
                 .success(true)
                 .message("Add new class successfully")
                 .build();
@@ -52,12 +52,12 @@ public class SubjectController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteSubject(@PathVariable Long id) {
-        subjectService.deleteSubject(id);
-        DataResponse response = DataResponse.builder()
-                .success(true)
-                .message("Delete class successfully")
-                .build();
-        return ResponseEntity.ok(response);
+            subjectService.deleteSubject(id);
+            DataResponse response = DataResponse.builder()
+                    .success(true)
+                    .message("Delete class successfully")
+                    .build();
+            return ResponseEntity.ok(response);
     }
     @PatchMapping("/update/{id}")
     public ResponseEntity<?> updateSubjectById(@PathVariable Long id,@RequestBody Map<String, Object> mp) {

@@ -1,5 +1,9 @@
 package com.example.labschedulerserver.service.implement;
 
+import com.example.labschedulerserver.exception.BadRequestException;
+import com.example.labschedulerserver.exception.FieldNotFoundException;
+import com.example.labschedulerserver.exception.ForbiddenException;
+import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.model.Room;
 import com.example.labschedulerserver.model.Subject;
 import com.example.labschedulerserver.payload.request.AddSubjectRequest;
@@ -26,10 +30,14 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Subject getSubjectById(Long id){
-        return subjectRepository.findById(id).orElseThrow(()->new RuntimeException("Subject not found"));
-    };
+        return subjectRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Subject not found with id: "+ id));
+    }
+
     @Override
-    public Subject addNewSubject(AddSubjectRequest request){
+    public Subject createSubject(AddSubjectRequest request){
+        if(subjectRepository.findByCode(request.getCode()).isPresent()){
+            throw new RuntimeException("Subject already exists with code: "+ request.getCode());
+        }
         Subject subject = Subject.builder()
                 .code(request.getCode())
                 .name(request.getName())
@@ -37,28 +45,31 @@ public class SubjectServiceImpl implements SubjectService {
                 .totalTheoryPeriods(request.getTotalTheoryPeriods())
                 .totalPracticePeriods(request.getTotalPracticePeriods())
                 .build();
-        subjectRepository.save(subject);
-        return subject;
-    };
+        return subjectRepository.save(subject);
+    }
+
     @Override
     public void deleteSubject(Long id){
-        Subject subject = subjectRepository.findById(id).orElseThrow(()->new RuntimeException("Subject not found"));
-        subjectRepository.delete(subject);
-    };
+        Subject subject = subjectRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Subject not found"));
+        try{
+            subjectRepository.delete(subject);
+        }catch (Exception e){
+            throw new BadRequestException("Can not delete subject");
+        }
+    }
     @Override
     public Subject updateSubject(Long id, Map<String,Object> mp){
-        Subject subject = subjectRepository.findById(id).orElseThrow(()->new RuntimeException("Subject not found"));
+        Subject subject = subjectRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Subject not found"));
 
         for (Map.Entry<String, Object> entry : mp.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-
             try {
                 Field field = Subject.class.getDeclaredField(ConvertFromJsonToTypeVariable.convert(ConvertFromJsonToTypeVariable.convert(key)));
                 field.setAccessible(true);
                 field.set(subject, value);
             } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException("Field not found");
+                throw new FieldNotFoundException("Field not found");
             }
         }
         subjectRepository.save(subject);
@@ -67,7 +78,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public Subject getSubjectByName(String name){
         return subjectRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Subject not found with name: " + name));
+                .orElseThrow(() -> new ResourceNotFoundException("Subject not found with name: " + name));
     }
 
 }

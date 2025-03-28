@@ -14,7 +14,7 @@ public interface SubjectService {
 
     public Subject getSubjectById(Long id);
 
-    public Subject addNewSubject(AddSubjectRequest request);
+    public Subject createSubject(AddSubjectRequest request);
 
     public void deleteSubject(Long id);
 
