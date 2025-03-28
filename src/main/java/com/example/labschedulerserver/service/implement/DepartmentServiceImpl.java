@@ -1,5 +1,7 @@
 package com.example.labschedulerserver.service.implement;
 
+import com.example.labschedulerserver.exception.BadRequestException;
+import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.model.Department;
 import com.example.labschedulerserver.repository.DepartmentRepository;
 import com.example.labschedulerserver.service.DepartmentService;
@@ -26,25 +28,23 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Department addNewDepartment(Department department) {
-        boolean exist = departmentRepository.existsByName(department.getName());
-        if (exist) {
-            throw new RuntimeException("Department already exist");
+    public Department createDepartment(Department department) {
+        if(departmentRepository.existsByName(department.getName())){
+            throw new BadRequestException("Department already exists");
         }
         Department newDepartment = Department.builder().name(department.getName()).build();
-        departmentRepository.save(newDepartment);
-        return newDepartment;
+        return departmentRepository.save(newDepartment);
     }
 
     @Override
     public void deleteDepartmentById(Long id) {
-        Department department = departmentRepository.findById(id).orElseThrow(()-> new RuntimeException("Department not found"));
+        Department department = departmentRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Department not found"));
         departmentRepository.delete(department);
     }
 
     @Override
     public Department updateDepartment(Long id, Map<String, Object> payload) {
-        Department department = departmentRepository.findById(id).orElseThrow(()-> new RuntimeException("Department not found with id: " + id));
+        Department department = departmentRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Department not found with id: " + id));
         department.setName((String) payload.get("name"));
         departmentRepository.save(department);
         return department;

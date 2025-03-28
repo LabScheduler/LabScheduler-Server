@@ -40,7 +40,7 @@ public class DepartmentController {
     @PostMapping("/create")
     public ResponseEntity<?> createNewDepartment(@RequestBody Department department) {
         DataResponse response = DataResponse.<Department>builder()
-                .data(departmentService.addNewDepartment(department))
+                .data(departmentService.createDepartment(department))
                 .success(true)
                 .message("Add new department successfully")
                 .build();

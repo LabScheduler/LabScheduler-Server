@@ -8,7 +8,7 @@ import java.util.Map;
 public interface DepartmentService {
     public List<Department> getAllDepartment();
     public Department getDepartmentById(Long id);
-    public Department addNewDepartment(Department department);
+    public Department createDepartment(Department department);
     public void deleteDepartmentById(Long id);
     public Department updateDepartment(Long id, Map<String, Object> payload);
 }
