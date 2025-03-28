@@ -29,8 +29,9 @@ public class Major {
     @JsonIgnore
     private List<StudentAccount> studentAccounts;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
+    @JsonIgnore
     private Department department;
 
 

@@ -1,5 +1,7 @@
 package com.example.labschedulerserver.service.implement;
 
+import com.example.labschedulerserver.exception.FieldNotFoundException;
+import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.model.Major;
 import com.example.labschedulerserver.payload.request.AddMajorRequest;
 import com.example.labschedulerserver.repository.DepartmentRepository;
@@ -27,11 +29,11 @@ public class MajorServiceImpl implements MajorService {
 
     @Override
     public Major getMajorById(Long id) {
-        return majorRepository.findById(id).orElseThrow(()-> new RuntimeException("Major not found with id: " + id));
+        return majorRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Major not found with id: " + id));
     }
 
     @Override
-    public Major createNewMajor(AddMajorRequest request) {
+    public Major createMajor(AddMajorRequest request) {
         Major major = majorRepository.findMajorByName(request.getName());
         if(major != null){
             throw new RuntimeException("Major already exist");
@@ -39,12 +41,12 @@ public class MajorServiceImpl implements MajorService {
         return majorRepository.save(Major.builder()
                 .name(request.getName())
                 .code(request.getCode())
-                .department(departmentRepository.findById(request.getDepartmentId()).orElseThrow(()-> new RuntimeException("Department not found")))
+                .department(departmentRepository.findById(request.getDepartmentId()).orElseThrow(()-> new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId())))
                 .build());
     }
 
     @Override
-    public void deleteMajorById(Long id) {
+    public void deleteMajor(Long id) {
         if(!majorRepository.existsById(id)){
             throw new RuntimeException("Major not found with id: " + id);
         }
@@ -53,7 +55,7 @@ public class MajorServiceImpl implements MajorService {
 
     @Override
     public Major updateMajor(Long id, Map<String, Object> payload) {
-        Major major = majorRepository.findById(id).orElseThrow(()-> new RuntimeException("Major not found with id: " + id));
+        Major major = majorRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Major not found with id: " + id));
 
         for (Map.Entry<String, Object> entry : payload.entrySet()) {
             String key = entry.getKey();
@@ -64,10 +66,9 @@ public class MajorServiceImpl implements MajorService {
                 field.setAccessible(true);
                 field.set(major, value);
             } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException("Field not found");
+                throw new FieldNotFoundException(key +" "+ value);
             }
         }
-        majorRepository.save(major);
-        return major;
+        return majorRepository.save(major);
     }
 }

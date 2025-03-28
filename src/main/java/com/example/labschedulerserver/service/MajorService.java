@@ -11,9 +11,9 @@ public interface MajorService {
 
     Major getMajorById(Long id);
 
-    Major createNewMajor(AddMajorRequest request);
+    Major createMajor(AddMajorRequest request);
 
-    void deleteMajorById(Long id);
+    void deleteMajor(Long id);
 
     Major updateMajor(Long id, Map<String, Object> payload);
 }

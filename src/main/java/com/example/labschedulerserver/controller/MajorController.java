@@ -28,6 +28,17 @@ public class MajorController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getMajorById(@PathVariable Long id){
+        Major major = majorService.getMajorById(id);
+        DataResponse response = DataResponse.builder()
+                .data(major)
+                .success(true)
+                .message("Get major by id successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     @PatchMapping("/update/{id}")
     public ResponseEntity<?> updateMajor(@PathVariable Long id,@RequestBody Map<String,Object> payload){
         Major major = majorService.updateMajor(id,payload);
@@ -41,7 +52,7 @@ public class MajorController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteMajor(@PathVariable Long id){
-        majorService.deleteMajorById(id);
+        majorService.deleteMajor(id);
         DataResponse response = DataResponse.builder()
                 .success(true)
                 .message("Delete major successfully")
@@ -51,7 +62,7 @@ public class MajorController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createNewMajor(@RequestBody AddMajorRequest request){
-        Major newMajor = majorService.createNewMajor(request);
+        Major newMajor = majorService.createMajor(request);
         DataResponse response = DataResponse.builder()
                 .data(newMajor)
                 .success(true)
