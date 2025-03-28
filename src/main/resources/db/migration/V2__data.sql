@@ -4,7 +4,7 @@ INSERT INTO role (name)
     ('LECTURER'),
     ('STUDENT');
 
-INSERT INTO account (email, password, role, status)
+INSERT INTO account (email, password, role, status) #pass =123
 VALUES
     ('gv1@lecturer.ptithcm.edu.vn', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER', 'ACTIVE'),
     ('gv2@lecturer.ptithcm.edu.vn', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER', 'ACTIVE'),
