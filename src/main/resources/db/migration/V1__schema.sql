@@ -78,7 +78,7 @@ CREATE TABLE `semester` (
 CREATE TABLE `subject` (
                            `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                            `code` varchar(36) UNIQUE NOT NULL,
-                           `name` varchar(100) UNIQUE NOT NULL,
+                           `name` varchar(100) NOT NULL,
                            `total_credits` Int NOT NULL,
                            `total_theory_periods` BIGINT NOT NULL,
                            `total_practice_periods` BIGINT NOT NULL

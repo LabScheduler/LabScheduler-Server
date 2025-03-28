@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST, message));
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({Exception.class, RuntimeException.class})
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"));
@@ -60,6 +60,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(HttpStatus.BAD_REQUEST, "Field not found: " + ex.getMessage()));
     }
+
 
 
 }

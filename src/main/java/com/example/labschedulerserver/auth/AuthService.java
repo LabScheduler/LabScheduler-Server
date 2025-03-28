@@ -1,5 +1,7 @@
 package com.example.labschedulerserver.auth;
 
+import com.example.labschedulerserver.exception.ResourceNotFoundException;
+import com.example.labschedulerserver.exception.UnauthorizedException;
 import com.example.labschedulerserver.model.*;
 import com.example.labschedulerserver.repository.RoleRepository;
 import com.example.labschedulerserver.service.JwtService;
@@ -25,9 +27,9 @@ public class AuthService {
         try{
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
         }catch (Exception e){
-            throw new AuthenticationCredentialsNotFoundException("Invalid email or password");
+            throw new UnauthorizedException("Invalid email or password");
         }
-        Account user = userService.getUserByEmail(authRequest.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
+        Account user = userService.getUserByEmail(authRequest.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Object userInfo = userService.getUserInfo(user);
 
         return AuthResponse.builder()
