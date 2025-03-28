@@ -1,7 +1,8 @@
 package com.example.labschedulerserver.service.implement;
 
+import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.model.Semester;
-import com.example.labschedulerserver.payload.response.SemesterResponse;
+import com.example.labschedulerserver.model.SemesterWeek;
 import com.example.labschedulerserver.repository.SemesterRepository;
 import com.example.labschedulerserver.service.SemesterService;
 import lombok.RequiredArgsConstructor;
@@ -22,20 +23,20 @@ public class SemesterServiceImpl implements SemesterService {
     }
 
     @Override
-    public List<SemesterResponse> getAllSemesters() {
-        List<Semester> semesters = semesterRepository.findAll();
-
-        List<SemesterResponse> semesterResponses = new ArrayList<>();
-        for(Semester semester: semesters){
-            SemesterResponse semesterResponse = SemesterResponse.builder()
-                    .id(semester.getId())
-                    .name(semester.getName())
-                    .startDate(semester.getStartDate())
-                    .endDate(semester.getEndDate())
-                    .semesterWeeks(semester.getSemesterWeeks())
-                    .build();
-            semesterResponses.add(semesterResponse);
-        }
-        return semesterResponses;
+    public List<Semester> getAllSemesters() {
+        return semesterRepository.findAll();
     }
+
+//    @Override
+//    public List<SemesterWeek> getAllSemesterWeekInSemester() {
+//        return getCurrentSemester().getSemesterWeeks();
+//    }
+
+    @Override
+    public List<SemesterWeek> getAllSemesterWeekInSemester(Long semesterId) {
+        Semester semester = semesterRepository.findById(semesterId)
+                                              .orElseThrow(()-> new ResourceNotFoundException("Semester not found with id:"+ semesterId ));
+        return semester.getSemesterWeeks();
+    }
+
 }
