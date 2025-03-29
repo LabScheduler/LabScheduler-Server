@@ -1,5 +1,6 @@
 package com.example.labschedulerserver.configuration;
 
+import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.model.Account;
 import com.example.labschedulerserver.service.JwtService;
 import com.example.labschedulerserver.service.RoleService;
@@ -45,7 +46,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write("{\"message\":\"Unauthorized\"}");
+            response.getWriter().write("{\"message\":\"Bro need to authorize\"}");
             return;
         }
 
@@ -54,9 +55,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             username = jwtService.extractUserName(token);
 
             if(username !=null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                String user = userService.checkUserIfExist(username);
-                if(user == null){
-                    throw new RuntimeException("User not found");
+                boolean user = userService.checkUserIfExist(username);
+                if(!user){
+                    throw new ResourceNotFoundException("User not found");
                 }
 
                 UserDetails userDetails = Account.builder()

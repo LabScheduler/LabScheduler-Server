@@ -1,5 +1,6 @@
 package com.example.labschedulerserver.configuration;
 
+import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username ->accountRepository.findUserByEmail(username).orElseThrow(()-> new RuntimeException("User not found"));
+        return username ->accountRepository.findByEmail(username).orElseThrow(()-> new ResourceNotFoundException("User not found"));
     }
 
     @Bean

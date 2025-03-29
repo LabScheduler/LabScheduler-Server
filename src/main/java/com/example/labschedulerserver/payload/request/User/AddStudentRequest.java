@@ -1,10 +1,10 @@
-package com.example.labschedulerserver.payload.request;
+package com.example.labschedulerserver.payload.request.User;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class AddManagerRequest {
+public class AddStudentRequest {
     private String email;
     private String password;
     @JsonProperty("full_name")
@@ -12,4 +12,8 @@ public class AddManagerRequest {
     private String code;
     private String phone;
     private Boolean gender;
+    @JsonProperty("major_id")
+    private Long majorId;
+    @JsonProperty("class_id")
+    private Long classId;
 }

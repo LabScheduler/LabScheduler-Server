@@ -15,12 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class AuthResponse {
-    private Long id;
     private String token;
-    private String email;
-    private Role role;
-    private String status;
-    @JsonProperty("account_info")
-    private Object accountInfo;
+    @JsonProperty("user_info")
+    private Object userInfo;
 
 }

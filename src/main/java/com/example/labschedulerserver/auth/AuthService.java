@@ -3,6 +3,7 @@ package com.example.labschedulerserver.auth;
 import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.exception.UnauthorizedException;
 import com.example.labschedulerserver.model.*;
+import com.example.labschedulerserver.payload.response.User.UserMapper;
 import com.example.labschedulerserver.repository.RoleRepository;
 import com.example.labschedulerserver.service.JwtService;
 import com.example.labschedulerserver.service.UserService;
@@ -29,16 +30,12 @@ public class AuthService {
         }catch (Exception e){
             throw new UnauthorizedException("Invalid email or password");
         }
-        Account user = userService.getUserByEmail(authRequest.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Object userInfo = userService.getUserInfo(user);
+        Account user = userService.findByEmail(authRequest.getEmail());
+
 
         return AuthResponse.builder()
-                .id(user.getId())
-                .status(user.getStatus().toString())
                 .token(jwtService.generateToken(user))
-                .email(user.getEmail())
-                .role(user.getRole())
-                .accountInfo(userInfo)
+                .userInfo(UserMapper.mapUserToResponse(user,userService.getUserInfo(user.getId())))
                 .build();
     }
 }
