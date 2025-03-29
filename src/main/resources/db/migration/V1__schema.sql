@@ -165,14 +165,14 @@ CREATE TABLE `lecturer_request_log` (
 
 ALTER TABLE `account` ADD FOREIGN KEY (`role`) REFERENCES `role` (`name`);
 
-ALTER TABLE `student_account` ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`);
+ALTER TABLE `student_account` ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE;
 ALTER TABLE `student_account` ADD FOREIGN KEY (`major_id`) REFERENCES `major` (`id`);
 ALTER TABLE `student_account` ADD FOREIGN KEY (`class_id`) REFERENCES `class` (`id`);
 
-ALTER TABLE `lecturer_account` ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`);
+ALTER TABLE `lecturer_account` ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE;
 ALTER TABLE `lecturer_account` ADD FOREIGN KEY (`department_id`) REFERENCES `department` (`id`);
 
-ALTER TABLE `manager_account` ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`);
+ALTER TABLE `manager_account` ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `major` ADD FOREIGN KEY (`department_id`) REFERENCES `department` (`id`);
 
