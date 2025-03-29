@@ -16,6 +16,7 @@ services:
       - labscheduler-data:/var/lib/mysql
     networks:
       - labscheduler-network
+    restart: always
 
   app:
     build: .   # build from Dockerfile
