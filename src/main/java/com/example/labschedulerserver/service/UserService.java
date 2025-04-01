@@ -29,4 +29,10 @@ public interface UserService {
 
     public Account lockAccount(Long userId);
 
+    public boolean changePassword(Long userId, String oldPassword, String newPassword);
+
+    public boolean forgotPassword(String email);
+
+    public boolean verifyOtp(String email, String otp);
+
 }

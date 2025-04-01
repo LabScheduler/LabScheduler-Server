@@ -19,12 +19,12 @@ spring:
       ddl-auto: none
     show-sql: true
 
-  # Mail server configuration
-  # mail:
-  #   host: smtp.gmail.com
-  #   port: 587
-  #   username:
-  #   password:
-  #   properties:
-  #     mail.smtp.auth: true
-  #     mail.smtp.starttls.enable: true
+#   Mail server configuration
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: hocongtoan987@gmail.com
+    password: nghl ucud oazm jodb
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true

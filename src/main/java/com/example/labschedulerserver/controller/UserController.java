@@ -98,6 +98,26 @@ public class UserController {
         return ResponseEntity.ok(dataResponse);
     }
 
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestParam String email) {
+        DataResponse dataResponse = DataResponse.builder()
+                .data(userService.forgotPassword(email))
+                .message("Send email successfully")
+                .success(true)
+                .build();
+        return ResponseEntity.ok(dataResponse);
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@RequestParam String email, @RequestParam String otp) {
+        DataResponse dataResponse = DataResponse.builder()
+                .data(userService.verifyOtp(email, otp))
+                .message("Verify OTP successfully")
+                .success(true)
+                .build();
+        return ResponseEntity.ok(dataResponse);
+    }
+
 
 
 }

@@ -12,6 +12,8 @@ import com.example.labschedulerserver.payload.request.User.AddStudentRequest;
 import com.example.labschedulerserver.payload.response.User.ManagerResponse;
 import com.example.labschedulerserver.payload.response.User.UserMapper;
 import com.example.labschedulerserver.repository.*;
+import com.example.labschedulerserver.service.EmailSenderService;
+import com.example.labschedulerserver.service.OtpService;
 import com.example.labschedulerserver.service.UserService;
 import com.example.labschedulerserver.ultils.ConvertFromJsonToTypeVariable;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +40,8 @@ public class UserServiceImpl implements UserService {
     private final MajorRepository majorRepository;
     private final ClassRepository classRepository;
 
+    private final OtpService otpService;
+    private final EmailSenderService emailSenderService;
 
     @Override
     public boolean checkUserIfExist(String email) {
@@ -295,6 +299,35 @@ public Object updateUserInfo(Long userId, Map<String, Object> payload) {
         account.setStatus(AccountStatus.LOCKED);
         return accountRepository.save(account);
     }
+
+    @Override
+    public boolean changePassword(Long userId, String oldPassword, String newPassword) {
+        Account account = accountRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+        if (!passwordEncoder.matches(oldPassword, account.getPassword())) {
+            throw new BadRequestException("Old password is incorrect");
+        }
+        if (newPassword == null || newPassword.isEmpty()) {
+            throw new BadRequestException("New password is required");
+        }
+        account.setPassword(passwordEncoder.encode(newPassword));
+        return true;
+    }
+
+    @Override
+    public boolean forgotPassword(String email) {
+        String otp = otpService.generateOtp(email);
+        emailSenderService.sendOtp(email, otp);
+        return true;
+    }
+
+    @Override
+    public boolean verifyOtp(String email, String otp) {
+        if (!otpService.validateOtp(email, otp)) {
+            throw new BadRequestException("Invalid OTP");
+        }
+        return true;
+    }
+
 
 
 }
