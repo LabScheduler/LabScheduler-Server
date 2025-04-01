@@ -17,7 +17,14 @@ services:
     networks:
       - labscheduler-network
     restart: always
-
+  memcached:
+    image: memcached:1.6
+    container_name: memcached-labscheduler
+    ports:
+      - "11211:11211"
+    networks:
+      - labscheduler-network
+    restart: always
   app:
     build: .   # build from Dockerfile
     container_name: labscheduler-app
