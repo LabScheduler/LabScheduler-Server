@@ -118,6 +118,16 @@ public class UserController {
         return ResponseEntity.ok(dataResponse);
     }
 
+    @PatchMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestParam String email, @RequestParam(value = "old_password") String oldPassword, @RequestParam(value = "new_password") String newPassword) {
+        DataResponse dataResponse = DataResponse.builder()
+                .data(userService.changePassword(email, oldPassword, newPassword))
+                .message("Change password successfully")
+                .success(true)
+                .build();
+        return ResponseEntity.ok(dataResponse);
+    }
+
 
 
 }

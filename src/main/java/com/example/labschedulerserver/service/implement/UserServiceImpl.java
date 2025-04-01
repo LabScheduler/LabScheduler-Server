@@ -328,6 +328,17 @@ public Object updateUserInfo(Long userId, Map<String, Object> payload) {
         return true;
     }
 
-
-
+    @Override
+    public boolean changePassword(String email, String oldPassword, String newPassword) {
+        Account account = accountRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+        if (!passwordEncoder.matches(oldPassword, account.getPassword())) {
+            throw new BadRequestException("Old password is incorrect");
+        }
+        if (newPassword == null || newPassword.isEmpty()) {
+            throw new BadRequestException("New password is required");
+        }
+        account.setPassword(passwordEncoder.encode(newPassword));
+        accountRepository.save(account);
+        return true;
+    }
 }

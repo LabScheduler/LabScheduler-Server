@@ -35,4 +35,6 @@ public interface UserService {
 
     public boolean verifyOtp(String email, String otp);
 
+    public boolean changePassword(String email, String oldPassword, String newPassword);
+
 }
