@@ -1,4 +1,4 @@
-package com.example.labschedulerserver.ultils;
+package com.example.labschedulerserver.utils;
 
 public class ConvertFromJsonToTypeVariable {
     public static String convert(String json) {
