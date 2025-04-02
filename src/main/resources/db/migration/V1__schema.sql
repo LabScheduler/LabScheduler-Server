@@ -70,6 +70,7 @@ CREATE TABLE `manager_account` (
 
 CREATE TABLE `semester` (
                             `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+                            `code` varchar(36) UNIQUE NOT NULL,
                             `name` varchar(36) UNIQUE NOT NULL,
                             `start_date` timestamp NOT NULL,
                             `end_date` timestamp NOT NULL
@@ -131,6 +132,7 @@ CREATE TABLE `schedule` (
                             `type` ENUM ('THEORY', 'PRACTICE') NOT NULL,
                             `semester_week_id` BIGINT NOT NULL,
                             `status` ENUM ('IN_PROGRESS', 'CANCELLED') NOT NULL,
+                            `study_date` TIMESTAMP NOT NULL,
                             FOREIGN KEY (`course_id`) REFERENCES `course`(`id`) ON DELETE CASCADE
 );
 
