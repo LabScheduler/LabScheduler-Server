@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CreateScheduleRequest {
+    @JsonProperty("course_id")
+    private Long courseId;
     @JsonProperty("course_section_id")
     private Long courseSectionId;
     @JsonProperty("room_id")

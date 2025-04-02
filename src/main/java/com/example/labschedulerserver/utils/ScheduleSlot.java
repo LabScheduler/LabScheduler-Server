@@ -1,4 +1,4 @@
-package com.example.labschedulerserver.ultils;
+package com.example.labschedulerserver.utils;
 
 import com.example.labschedulerserver.model.Room;
 import com.example.labschedulerserver.model.SemesterWeek;

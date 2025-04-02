@@ -7,17 +7,12 @@ import com.example.labschedulerserver.payload.request.Class.UpdateClassRequest;
 import com.example.labschedulerserver.repository.ClassRepository;
 import com.example.labschedulerserver.repository.MajorRepository;
 import com.example.labschedulerserver.service.ClassService;
-import com.example.labschedulerserver.ultils.ConvertFromJsonToTypeVariable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

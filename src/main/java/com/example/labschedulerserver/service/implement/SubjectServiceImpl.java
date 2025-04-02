@@ -2,19 +2,16 @@ package com.example.labschedulerserver.service.implement;
 
 import com.example.labschedulerserver.exception.BadRequestException;
 import com.example.labschedulerserver.exception.FieldNotFoundException;
-import com.example.labschedulerserver.exception.ForbiddenException;
 import com.example.labschedulerserver.exception.ResourceNotFoundException;
-import com.example.labschedulerserver.model.Room;
 import com.example.labschedulerserver.model.Subject;
 import com.example.labschedulerserver.payload.request.AddSubjectRequest;
 import com.example.labschedulerserver.repository.SubjectRepository;
 import com.example.labschedulerserver.service.SubjectService;
-import com.example.labschedulerserver.ultils.ConvertFromJsonToTypeVariable;
+import com.example.labschedulerserver.utils.ConvertFromJsonToTypeVariable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 

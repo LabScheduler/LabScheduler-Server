@@ -7,7 +7,7 @@ import com.example.labschedulerserver.model.Room;
 import com.example.labschedulerserver.payload.request.AddRoomRequest;
 import com.example.labschedulerserver.repository.RoomRepository;
 import com.example.labschedulerserver.service.RoomService;
-import com.example.labschedulerserver.ultils.ConvertFromJsonToTypeVariable;
+import com.example.labschedulerserver.utils.ConvertFromJsonToTypeVariable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -44,7 +44,8 @@ public class Course {
     @JsonProperty("total_students")
     private Integer totalStudents;
 
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<CourseSection> courseSections;
 
     @OneToMany(mappedBy = "course",fetch = FetchType.LAZY)
