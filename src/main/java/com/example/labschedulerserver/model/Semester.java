@@ -1,6 +1,7 @@
 package com.example.labschedulerserver.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,12 +21,17 @@ public class Semester {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String code;
+
+    @Column(name = "name")
     private String name;
 
     @Column(name = "start_date")
+    @JsonProperty("start_date")
     private Timestamp startDate;
 
     @Column(name = "end_date")
+    @JsonProperty("end_date")
     private Timestamp endDate;
 
     @OneToMany(mappedBy = "semester",fetch = FetchType.LAZY)

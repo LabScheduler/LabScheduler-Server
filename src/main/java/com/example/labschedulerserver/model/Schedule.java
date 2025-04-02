@@ -5,8 +5,12 @@ import com.example.labschedulerserver.common.ScheduleType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
@@ -60,8 +64,10 @@ public class Schedule {
     @JsonProperty("schedule_status")
     private ScheduleStatus scheduleStatus;
 
-    @OneToMany(mappedBy = "schedule",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
     @JsonIgnore
     @JsonProperty("lecturer_requests")
     private List<LecturerRequest> lecturerRequests;
+    @JsonProperty("study_date")
+    private Timestamp studyDate;
 }
