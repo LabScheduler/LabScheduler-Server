@@ -51,7 +51,7 @@ public class UserMapper {
                         .major(studentAccount.getMajor().getName())
                         .build();
             }
-            default -> throw new ForbiddenException("idk wtf is this hehe");
+            default -> throw new ForbiddenException("Tralalelo Tralala");
         };
     }
 }
