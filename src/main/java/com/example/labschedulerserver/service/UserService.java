@@ -5,6 +5,7 @@ import com.example.labschedulerserver.payload.request.User.AddLecturerRequest;
 import com.example.labschedulerserver.payload.request.User.AddManagerRequest;
 import com.example.labschedulerserver.payload.request.User.AddStudentRequest;
 import com.example.labschedulerserver.payload.response.User.ManagerResponse;
+import com.example.labschedulerserver.payload.response.User.StudentResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -36,5 +37,7 @@ public interface UserService {
     public boolean verifyOtp(String email, String otp);
 
     public boolean changePassword(String email, String oldPassword, String newPassword);
+
+    public List<Object> filterStudent(Long classId, Long majorId, String code);
 
 }

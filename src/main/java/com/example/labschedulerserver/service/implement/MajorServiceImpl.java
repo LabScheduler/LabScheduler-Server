@@ -7,7 +7,7 @@ import com.example.labschedulerserver.payload.request.AddMajorRequest;
 import com.example.labschedulerserver.repository.DepartmentRepository;
 import com.example.labschedulerserver.repository.MajorRepository;
 import com.example.labschedulerserver.service.MajorService;
-import com.example.labschedulerserver.ultils.ConvertFromJsonToTypeVariable;
+import com.example.labschedulerserver.utils.ConvertFromJsonToTypeVariable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

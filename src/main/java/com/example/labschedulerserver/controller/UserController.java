@@ -128,6 +128,17 @@ public class UserController {
         return ResponseEntity.ok(dataResponse);
     }
 
-
-
+    @GetMapping("/filter-student")
+    public ResponseEntity<?> filterStudent(
+            @RequestParam(value = "class_id", required = false) Long classId,
+            @RequestParam(value = "major_id", required = false) Long majorId,
+            @RequestParam(value = "code", required = false) String code
+    ) {
+        DataResponse dataResponse = DataResponse.builder()
+                .data(userService.filterStudent(classId, majorId, code))
+                .message("Filter student successfully")
+                .success(true)
+                .build();
+        return ResponseEntity.ok(dataResponse);
+    }
 }

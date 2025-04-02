@@ -10,15 +10,17 @@ import com.example.labschedulerserver.payload.request.User.AddLecturerRequest;
 import com.example.labschedulerserver.payload.request.User.AddManagerRequest;
 import com.example.labschedulerserver.payload.request.User.AddStudentRequest;
 import com.example.labschedulerserver.payload.response.User.ManagerResponse;
+import com.example.labschedulerserver.payload.response.User.StudentResponse;
 import com.example.labschedulerserver.payload.response.User.UserMapper;
 import com.example.labschedulerserver.repository.*;
 import com.example.labschedulerserver.service.EmailSenderService;
 import com.example.labschedulerserver.service.OtpService;
 import com.example.labschedulerserver.service.UserService;
-import com.example.labschedulerserver.ultils.ConvertFromJsonToTypeVariable;
+import com.example.labschedulerserver.utils.ConvertFromJsonToTypeVariable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -72,6 +74,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public ManagerResponse createManager(AddManagerRequest request) {
         if (accountRepository.existsByEmail(request.getCode() + "@manager.ptithcm.edu.vn")) {
             throw new RuntimeException("User already exists");
@@ -106,6 +109,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public Object createLecturer(AddLecturerRequest request) {
         if (accountRepository.existsByEmail(request.getCode() + "@lecturer.ptithcm.edu.vn")) {
             throw new BadRequestException("User already exists");
@@ -143,6 +147,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public Object createStudent(AddStudentRequest request) {
         if (accountRepository.existsByEmail(request.getCode() + "@student.ptithcm.edu.vn")) {
             throw new BadRequestException("User already exists");
@@ -200,6 +205,7 @@ public class UserServiceImpl implements UserService {
     }
 
 @Override
+@Transactional
 public Object updateUserInfo(Long userId, Map<String, Object> payload) {
     Account user = accountRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
     Object userInfo = getUserInfo(userId);
@@ -315,6 +321,9 @@ public Object updateUserInfo(Long userId, Map<String, Object> payload) {
 
     @Override
     public boolean forgotPassword(String email) {
+        if (!accountRepository.existsByEmail(email)) {
+            throw new ResourceNotFoundException("User not found with email: " + email);
+        }
         String otp = otpService.generateOtp(email);
         emailSenderService.sendOtp(email, otp);
         return true;
@@ -340,5 +349,19 @@ public Object updateUserInfo(Long userId, Map<String, Object> payload) {
         account.setPassword(passwordEncoder.encode(newPassword));
         accountRepository.save(account);
         return true;
+    }
+
+    @Override
+    public List<Object> filterStudent(Long classId, Long majorId, String code) {
+        List<StudentAccount> students = studentAccountRepository.filterStudents(classId, majorId, code);
+        if (students.isEmpty()) {
+            throw new ResourceNotFoundException("No students found with the given criteria");
+        }
+        List<Account> accounts = students.stream().map(StudentAccount::getAccount).toList();
+
+        return students.stream().map(student -> {
+            Account account = accounts.get(students.indexOf(student));
+            return UserMapper.mapUserToResponse(account, student);
+        }).toList();
     }
 }
