@@ -1,34 +1,31 @@
 package com.example.labschedulerserver.service;
 
-import com.example.labschedulerserver.model.LecturerRequest;
 import com.example.labschedulerserver.model.LecturerRequestLog;
 import com.example.labschedulerserver.payload.request.LecturerScheduleRequest;
 import com.example.labschedulerserver.payload.request.ProcessRequest;
+import com.example.labschedulerserver.payload.response.LecturerRequest.LecturerRequestResponse;
 
 import java.util.List;
 
 public interface LecturerRequestService {
-    //Create a schedule request
-    LecturerRequest createScheduleRequest(LecturerScheduleRequest request);
+    //lecturer create new schedule request
+    LecturerRequestResponse createScheduleRequest(LecturerScheduleRequest request);
     
-    //Get all pending manager schedule requests
-    List<LecturerRequest> getAllPendingRequests();
+    //manager will get all pending requests
+    List<LecturerRequestResponse> getAllPendingRequests();
     
-    //Get all manager request
-    List<LecturerRequest> getAllRequests();
+    //manager will get all requests
+    List<LecturerRequestResponse> getAllRequests();
     
-    //Get schedule requests by lecturer ID
-    List<LecturerRequest> getRequestsByLecturerId(Long lecturerId);
+    //get requests from lecturer
+    List<LecturerRequestResponse> getRequestsByLecturerId(Long lecturerId);
     
-    //Get schedule request by ID
-    LecturerRequest getRequestById(Long requestId);
-    
-    //Get request logs by request ID
-    LecturerRequestLog getRequestLog(Long requestId);
+    //get request by id
+    LecturerRequestResponse getRequestById(Long requestId);
 
-    //Process a schedule request (approve or reject)
-    LecturerRequestLog processRequest(ProcessRequest request);
+    //manager will process the request (approve/reject)
+    LecturerRequestResponse processRequest(ProcessRequest request);
     
-    //Cancel a pending request
+    //lecturer can cancel their request
     void cancelRequest(Long requestId);
 }

@@ -2,325 +2,164 @@ package com.example.labschedulerserver.service.implement;
 
 import com.example.labschedulerserver.common.RequestStatus;
 import com.example.labschedulerserver.common.RequestType;
-import com.example.labschedulerserver.common.ScheduleStatus;
 import com.example.labschedulerserver.common.ScheduleType;
+import com.example.labschedulerserver.exception.BadRequestException;
+import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.model.*;
+import com.example.labschedulerserver.payload.request.CreateScheduleRequest;
 import com.example.labschedulerserver.payload.request.LecturerScheduleRequest;
 import com.example.labschedulerserver.payload.request.ProcessRequest;
-import com.example.labschedulerserver.repository.*;
+import com.example.labschedulerserver.payload.response.LecturerRequest.LecturerRequestMapper;
+import com.example.labschedulerserver.payload.response.LecturerRequest.LecturerRequestResponse;
+import com.example.labschedulerserver.repository.LecturerAccountRepository;
+import com.example.labschedulerserver.repository.LecturerRequestLogRepository;
+import com.example.labschedulerserver.repository.LecturerRequestRepository;
+import com.example.labschedulerserver.repository.ManagerAccountRepository;
+import com.example.labschedulerserver.service.EmailSenderService;
 import com.example.labschedulerserver.service.LecturerRequestService;
-import com.example.labschedulerserver.utils.RequestUtils;
-import com.example.labschedulerserver.utils.ScheduleUtils;
+import com.example.labschedulerserver.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class LecturerRequestServiceImpl implements LecturerRequestService {
-    private final ScheduleRepository scheduleRepository;
+
     private final LecturerRequestRepository lecturerRequestRepository;
     private final LecturerRequestLogRepository lecturerRequestLogRepository;
     private final LecturerAccountRepository lecturerAccountRepository;
     private final ManagerAccountRepository managerAccountRepository;
-    private final RoomRepository roomRepository;
-    private final SemesterWeekRepository semesterWeekRepository;
-    private final CourseSectionRepository courseSectionRepository;
-    private final CourseRepository courseRepository;
+    private final ScheduleService scheduleService;
+    private final EmailSenderService emailSenderService;
 
     @Override
-    @Transactional
-    public LecturerRequest createScheduleRequest(LecturerScheduleRequest requestPayload) {
-        LecturerAccount lecturer = lecturerAccountRepository.findById(requestPayload.getLecturerId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lecturer not found"));
-                
-        LecturerRequest request = buildLecturerRequest(requestPayload, lecturer);
-                
-        if (request.getType() == RequestType.ADD_SCHEDULE) {
-            validateAddScheduleRequest(request, lecturer);
-        } else if (request.getType() == RequestType.RESCHEDULE) {
-            validateRescheduleRequest(request, lecturer);
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request type");
-        }
-        
-        return lecturerRequestRepository.save(request);
-    }
-    
-    private LecturerRequest buildLecturerRequest(LecturerScheduleRequest payload, LecturerAccount lecturer) {
-        LecturerRequest request = new LecturerRequest();
-        request.setLecturerAccount(lecturer);
-        
-        if (payload.getScheduleId() != null) {
-            Schedule schedule = new Schedule();
-            schedule.setId(payload.getScheduleId());
-            request.setSchedule(schedule);
-        }
-        
-        if (payload.getCourseId() != null) {
-            Course course = new Course();
-            course.setId(payload.getCourseId());
-            request.setCourse(course);
-        }
-        
-        if (payload.getRoomId() != null) {
-            Room room = new Room();
-            room.setId(payload.getRoomId());
-            request.setNewRoom(room);
-        }
-        
-        if (payload.getSemesterWeekId() != null) {
-            SemesterWeek semesterWeek = new SemesterWeek();
-            semesterWeek.setId(payload.getSemesterWeekId());
-            request.setNewSemesterWeek(semesterWeek);
-        }
-        
-        request.setNewDayOfWeek(payload.getNewDayOfWeek());
-        request.setNewStartPeriod(payload.getNewStartPeriod());
-        request.setNewTotalPeriod(payload.getNewTotalPeriod());
-        request.setReason(payload.getReason());
-        
-        try {
-            request.setType(RequestType.valueOf(payload.getType().toUpperCase()));
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request type. Must be ADD_SCHEDULE or RESCHEDULE");
-        }
-        
-        return request;
-    }
-
-    private void validateAddScheduleRequest(LecturerRequest request, LecturerAccount lecturer) {
-        Course course = courseRepository.findById(request.getCourse().getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
-        request.setCourse(course);
-        
-        if (!RequestUtils.isLecturerTeachingCourse(course, lecturer)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Lecturer not assigned to this course");
-        }
-        
-        if (!RequestUtils.hasValidReason(request)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Reason is required");
-        }
-        
-        validateScheduleParameters(request, null, course);
-    }
-
-    private void validateRescheduleRequest(LecturerRequest request, LecturerAccount lecturer) {
-        Schedule schedule = scheduleRepository.findById(request.getSchedule().getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Schedule not found"));
-        request.setSchedule(schedule);
-        
-        if (!RequestUtils.isLecturerTeachingSchedule(schedule, lecturer)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Lecturer not assigned to this schedule");
-        }
-        
-        if (!RequestUtils.hasValidReason(request)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Reason is required");
-        }
-        
-        if (!RequestUtils.hasRescheduleChanges(request)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No schedule changes specified");
-        }
-        
-        Course course = schedule.getCourseSection().getCourse();
-        validateScheduleParameters(request, schedule.getId(), course);
-    }
-
-    private void validateScheduleParameters(LecturerRequest request, Long excludedScheduleId, Course course) {
-        byte dayOfWeek = request.getNewDayOfWeek() != null ? request.getNewDayOfWeek() : 0;
-        byte startPeriod = request.getNewStartPeriod() != null ? request.getNewStartPeriod() : 0;
-        byte totalPeriod = request.getNewTotalPeriod() != null ? request.getNewTotalPeriod() : 0;
-        
-        if (!ScheduleUtils.isValidDayOfWeek(dayOfWeek)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid day of week");
-        }
-        
-        if (!ScheduleUtils.isValidPeriod(startPeriod)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid start period");
-        }
-        
-        if (!ScheduleUtils.isValidTotalPeriods(startPeriod, totalPeriod)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid total periods");
-        }
-        
-        Room room = null;
-        if (request.getNewRoom() != null) {
-            room = roomRepository.findById(request.getNewRoom().getId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found"));
-            request.setNewRoom(room);
-        }
-        
-        SemesterWeek week = null;
-        if (request.getNewSemesterWeek() != null) {
-            week = semesterWeekRepository.findById(request.getNewSemesterWeek().getId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Semester week not found"));
-            request.setNewSemesterWeek(week);
-        }
-        
-        if (room == null || week == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Room and semester week are required");
-        }
-        
-        List<Schedule> existingSchedules = scheduleRepository.findAll();
-        
-        if (ScheduleUtils.hasScheduleConflict(existingSchedules, week, dayOfWeek, startPeriod, totalPeriod, room, course, excludedScheduleId)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Schedule conflicts with existing schedules");
-        }
-    }
-
-    @Override
-    public List<LecturerRequest> getAllPendingRequests() {
-        return lecturerRequestRepository.findByLecturerRequestLogIsNull();
-    }
-
-    @Override
-    public List<LecturerRequest> getAllRequests() {
-        return lecturerRequestRepository.findAll();
-    }
-
-    @Override
-    public List<LecturerRequest> getRequestsByLecturerId(Long lecturerId) {
-        LecturerAccount lecturer = lecturerAccountRepository.findById(lecturerId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lecturer not found"));
-        
-        return lecturerRequestRepository.findByLecturerAccountId(lecturerId);
-    }
-
-    @Override
-    public LecturerRequest getRequestById(Long requestId) {
-        return lecturerRequestRepository.findById(requestId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Request not found"));
-    }
-
-    @Override
-    @Transactional
-    public LecturerRequestLog processRequest(ProcessRequest processRequest) {
-        LecturerRequest request = lecturerRequestRepository.findById(processRequest.getRequestId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Request not found"));
-        
-        ManagerAccount manager = managerAccountRepository.findById(processRequest.getManagerId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manager not found"));
-        
-        if (request.getLecturerRequestLog() != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request already processed");
-        }
-        
-        RequestStatus status;
-        try {
-            status = RequestStatus.valueOf(processRequest.getStatus().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status. Must be APPROVED or REJECTED");
-        }
-        
-        LecturerRequestLog log = LecturerRequestLog.builder()
-                .request(request)
-                .managerAccount(manager)
-                .status(status)
+    public LecturerRequestResponse createScheduleRequest(LecturerScheduleRequest request) {
+        LecturerRequest lecturerRequest = LecturerRequest.builder()
+                .lecturerAccount(LecturerAccount.builder()
+                        .accountId(request.getLecturerId())
+                        .build())
+                .course(Course.builder()
+                        .id(request.getCourseId())
+                        .build())
+                .schedule(Schedule.builder()
+                        .id(request.getScheduleId())
+                        .build())
+                .courseSection(CourseSection.builder()
+                        .id(request.getCourseSectionId())
+                        .build())
+                .newRoom(Room.builder()
+                        .id(request.getNewRoomId())
+                        .build())
+                .newSemesterWeek(SemesterWeek.builder()
+                        .id(request.getNewSemesterWeekId())
+                        .build())
+                .newDayOfWeek(request.getNewDayOfWeek())
+                .newStartPeriod(request.getNewStartPeriod())
+                .newTotalPeriod(request.getNewTotalPeriod())
+                .reason(request.getReason())
+                .type(RequestType.valueOf(request.getType()))
                 .build();
-        
-        log = lecturerRequestLogRepository.save(log);
-        
-        if (status == RequestStatus.APPROVED) {
-            if (request.getType() == RequestType.ADD_SCHEDULE) {
-                createNewSchedule(request);
-            } else if (request.getType() == RequestType.RESCHEDULE) {
-                updateExistingSchedule(request);
-            }
-        }
-        
-        return log;
+
+        LecturerRequestLog lecturerRequestLog = LecturerRequestLog.builder()
+                .request(lecturerRequest)
+                .status(RequestStatus.PENDING)
+                .build();
+
+        LecturerRequest newRequest = lecturerRequestRepository.save(lecturerRequest);
+        LecturerRequestLog newRequestLog = lecturerRequestLogRepository.save(lecturerRequestLog);
+
+        return LecturerRequestMapper.toResponse(newRequest, newRequestLog);
     }
 
-    private void createNewSchedule(LecturerRequest request) {
-        Course course = courseRepository.findById(request.getCourse().getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
-        
-        CourseSection courseSection = createOrGetCourseSection(course);
-        courseSection = courseSectionRepository.save(courseSection);
-        
-        Schedule schedule = Schedule.builder()
-                .courseSection(courseSection)
-                .room(request.getNewRoom())
-                .dayOfWeek(request.getNewDayOfWeek())
-                .startPeriod(request.getNewStartPeriod())
-                .totalPeriod(request.getNewTotalPeriod())
-                .semesterWeek(request.getNewSemesterWeek())
-                .scheduleType(determineScheduleType(course))
-                .scheduleStatus(ScheduleStatus.IN_PROGRESS)
-                .build();
-        
-        scheduleRepository.save(schedule);
+    @Override
+    public List<LecturerRequestResponse> getAllPendingRequests() {
+        List<LecturerRequest> lecturerRequest = lecturerRequestRepository.getAllPendingRequests();
+        return lecturerRequest.stream()
+                .map(request -> {
+                    LecturerRequestLog latestLog = request.getLecturerRequestLog();
+                    return LecturerRequestMapper.toResponse(request, latestLog);
+                })
+                .collect(Collectors.toList());
     }
-    
-    private CourseSection createOrGetCourseSection(Course course) {
-        List<CourseSection> sections = course.getCourseSections();
-        
-        if (sections == null || sections.isEmpty()) {
-            return CourseSection.builder()
-                    .course(course)
-                    .sectionNumber(1)
-                    .totalStudentsInSection(course.getTotalStudents())
+
+    @Override
+    public List<LecturerRequestResponse> getAllRequests() {
+        return lecturerRequestRepository.findAll().stream()
+                .map(request -> {
+                    LecturerRequestLog latestLog = request.getLecturerRequestLog();
+                    return LecturerRequestMapper.toResponse(request, latestLog);
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<LecturerRequestResponse> getRequestsByLecturerId(Long lecturerId) {
+        return lecturerRequestRepository
+                .findAllByLecturerAccount(lecturerAccountRepository.findById(lecturerId).orElseThrow(() -> new ResourceNotFoundException("Lecturer Not Found")))
+                .stream().map(request -> {
+                    LecturerRequestLog latestLog = request.getLecturerRequestLog();
+                    return LecturerRequestMapper.toResponse(request, latestLog);
+                }).collect(Collectors.toList());
+    }
+
+    @Override
+    public LecturerRequestResponse getRequestById(Long requestId) {
+        LecturerRequest request = lecturerRequestRepository.findById(requestId).orElseThrow(() -> new ResourceNotFoundException("Request Not Found"));
+        return LecturerRequestMapper.toResponse(request, request.getLecturerRequestLog());
+    }
+
+    @Override
+    public LecturerRequestResponse processRequest(ProcessRequest request) {
+        LecturerRequest lecturerRequest = lecturerRequestRepository.findById(request.getRequestId()).orElseThrow(() -> new ResourceNotFoundException("Request Not Found"));
+        if(lecturerRequest.getLecturerRequestLog().getStatus() != RequestStatus.PENDING) {
+            throw new BadRequestException("Request has already been processed");
+        }
+
+        LecturerRequestLog lecturerRequestLog = LecturerRequestLog.builder()
+                .request(lecturerRequest)
+                .managerAccount(managerAccountRepository.findById(request.getManagerId()).orElseThrow(() -> new ResourceNotFoundException("Manager Not Found")))
+                .status(RequestStatus.valueOf(request.getStatus()))
+                .repliedAt(new Timestamp(System.currentTimeMillis()))
+                .build();
+
+        if(request.getStatus().equals(RequestStatus.APPROVED)) {
+            CreateScheduleRequest scheduleRequest = CreateScheduleRequest.builder()
+                    .courseId(lecturerRequest.getCourse().getId())
+                    .courseSectionId(lecturerRequest.getCourseSection().getId())
+                    .roomId(lecturerRequest.getNewRoom().getId())
+                    .semesterWeekId(lecturerRequest.getNewSemesterWeek().getId())
+                    .dayOfWeek(lecturerRequest.getNewDayOfWeek())
+                    .startPeriod(lecturerRequest.getNewStartPeriod())
+                    .totalPeriod(lecturerRequest.getNewTotalPeriod())
+                    .type(ScheduleType.PRACTICE)
                     .build();
-        }
-        
-        int maxSectionNumber = sections.stream()
-                .mapToInt(CourseSection::getSectionNumber)
-                .max()
-                .orElse(0);
-        
-        return CourseSection.builder()
-                .course(course)
-                .sectionNumber(maxSectionNumber + 1)
-                .totalStudentsInSection(course.getTotalStudents())
-                .build();
-    }
-    
-    private ScheduleType determineScheduleType(Course course) {
-        return course.getSubject().getTotalPracticePeriods() > 0 
-                ? ScheduleType.PRACTICE 
-                : ScheduleType.THEORY;
-    }
+            try{
+                scheduleService.createSchedule(scheduleRequest);
+            } catch (Exception e) {
+                throw new BadRequestException("Failed to create schedule: " + e.getMessage());
+            }
+            emailSenderService.sendEmail(lecturerRequest.getLecturerAccount().getAccount().getEmail(),"Notice of your request",
+                    "Your request has been approved. The new schedule has been created.");
 
-    private void updateExistingSchedule(LecturerRequest request) {
-        Schedule schedule = scheduleRepository.findById(request.getSchedule().getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Schedule not found"));
-        
-        Optional.ofNullable(request.getNewRoom()).ifPresent(schedule::setRoom);
-        Optional.ofNullable(request.getNewSemesterWeek()).ifPresent(schedule::setSemesterWeek);
-        Optional.ofNullable(request.getNewDayOfWeek()).ifPresent(schedule::setDayOfWeek);
-        Optional.ofNullable(request.getNewStartPeriod()).ifPresent(schedule::setStartPeriod);
-        Optional.ofNullable(request.getNewTotalPeriod()).ifPresent(schedule::setTotalPeriod);
-        
-        scheduleRepository.save(schedule);
+        }
+        else if(request.getStatus().equals(RequestStatus.REJECTED)) {
+            emailSenderService.sendEmail(lecturerRequest.getLecturerAccount().getAccount().getEmail(),"Notice of your request",
+                    "Your request has been rejected.");
+        }
+        return LecturerRequestMapper.toResponse(lecturerRequest, lecturerRequestLog);
     }
 
     @Override
-    public LecturerRequestLog getRequestLog(Long requestId) {
-        LecturerRequest request = lecturerRequestRepository.findById(requestId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Request not found"));
-        
-        if (request.getLecturerRequestLog() == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Request log not found");
-        }
-        
-        return request.getLecturerRequestLog();
-    }
-
-    @Override
-    @Transactional
     public void cancelRequest(Long requestId) {
-        LecturerRequest request = lecturerRequestRepository.findById(requestId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Request not found"));
-        
-        if (request.getLecturerRequestLog() != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot cancel processed request");
+        LecturerRequest request = lecturerRequestRepository.findById(requestId).orElseThrow(() -> new ResourceNotFoundException("Request Not Found"));
+        if (request.getLecturerRequestLog().getStatus() == RequestStatus.PENDING) {
+            lecturerRequestRepository.delete(request);
+        } else {
+            throw new BadRequestException("Cannot cancel a request that is already processed");
         }
-        
-        lecturerRequestRepository.delete(request);
     }
 }

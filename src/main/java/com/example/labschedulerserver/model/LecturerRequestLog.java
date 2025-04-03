@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 @Builder
 @Entity
 @Table(name = "lecturer_request_log")
-public class LecturerRequestLog {
+public class    LecturerRequestLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,6 +36,5 @@ public class LecturerRequestLog {
 
     @Column(name = "replied_at")
     @JsonProperty("replied_at")
-    @UpdateTimestamp
     private Timestamp repliedAt;
 }

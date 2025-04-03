@@ -1,5 +1,6 @@
 package com.example.labschedulerserver.model;
 
+import com.example.labschedulerserver.common.RequestStatus;
 import com.example.labschedulerserver.common.RequestType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -36,6 +37,9 @@ public class LecturerRequest {
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
+
+    @ManyToOne
+    private CourseSection courseSection;
 
     @ManyToOne
     @JoinColumn(name = "new_semester_week_id")
