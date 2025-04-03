@@ -2,26 +2,27 @@ package com.example.labschedulerserver.service;
 
 import com.example.labschedulerserver.model.Schedule;
 import com.example.labschedulerserver.payload.request.CreateScheduleRequest;
+import com.example.labschedulerserver.payload.response.Schedule.ScheduleResponse;
 
 import java.util.List;
 
 public interface ScheduleService {
 
-    List<Schedule> allocateSchedule(Long courseId);
+    List<ScheduleResponse> allocateSchedule(Long courseId);
 
-    List<Schedule> getAllScheduleInSemester();
+    List<ScheduleResponse> getAllScheduleInSemester();
 
-    List<Schedule> getAllScheduleBySemesterId(Long semesterId);
+    List<ScheduleResponse> getAllScheduleBySemesterId(Long semesterId);
 
-    List<Schedule> getAllScheduleByClassId(Long classId);
+    List<ScheduleResponse> getAllScheduleByClassId(Long classId);
 
-    List<Schedule> getAllScheduleByCourseId(Long courseId);
+    List<ScheduleResponse> getAllScheduleByCourseId(Long courseId);
 
-    List<Schedule> getAllScheduleByLecturerId(Long lecturerId);
+    List<ScheduleResponse> getAllScheduleByLecturerId(Long lecturerId);
 
-    List<Schedule> createSchedule(CreateScheduleRequest request);
+    ScheduleResponse createSchedule(CreateScheduleRequest request);
 
-    Schedule cancelSchedule(Long scheduleId);
+    ScheduleResponse cancelSchedule(Long scheduleId);
 
-    List<Schedule> getAllSchedulesInSpecificWeek(Long weekId);
+    List<ScheduleResponse> getAllSchedulesInSpecificWeek(Long weekId);
 }

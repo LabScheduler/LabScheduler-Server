@@ -3,6 +3,7 @@ package com.example.labschedulerserver.controller;
 import com.example.labschedulerserver.model.Schedule;
 import com.example.labschedulerserver.payload.request.CreateScheduleRequest;
 import com.example.labschedulerserver.payload.response.DataResponse;
+import com.example.labschedulerserver.payload.response.Schedule.ScheduleResponse;
 import com.example.labschedulerserver.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class ScheduleController {
     @PostMapping("/allocate")
     public ResponseEntity<?> allocateSchedule(@RequestParam("course_id") Long courseId) {
         try {
-            List<Schedule> schedules = scheduleService.allocateSchedule(courseId);
+            List<ScheduleResponse> schedules = scheduleService.allocateSchedule(courseId);
             DataResponse response = DataResponse.builder()
                     .data(schedules)
                     .success(true)
@@ -37,7 +38,7 @@ public class ScheduleController {
 
     @GetMapping
     public ResponseEntity<?> getAllSchedulesInCurrentSemester() {
-        List<Schedule> schedules = scheduleService.getAllScheduleInSemester();
+        List<ScheduleResponse> schedules = scheduleService.getAllScheduleInSemester();
         DataResponse response = DataResponse.builder()
                 .data(schedules)
                 .success(true)
@@ -48,7 +49,7 @@ public class ScheduleController {
 
     @GetMapping("/semester/{semesterId}")
     public ResponseEntity<?> getSchedulesInSemester(@PathVariable Long semesterId) {
-        List<Schedule> schedules = scheduleService.getAllScheduleBySemesterId(semesterId);
+        List<ScheduleResponse> schedules = scheduleService.getAllScheduleBySemesterId(semesterId);
         DataResponse response = DataResponse.builder()
                 .data(schedules)
                 .success(true)
@@ -59,7 +60,7 @@ public class ScheduleController {
 
     @GetMapping("/class/{classId}")
     public ResponseEntity<?> getSchedulesByClass(@PathVariable Long classId) {
-        List<Schedule> schedules = scheduleService.getAllScheduleByClassId(classId);
+        List<ScheduleResponse> schedules = scheduleService.getAllScheduleByClassId(classId);
         DataResponse response = DataResponse.builder()
                 .data(schedules)
                 .success(true)
@@ -70,7 +71,7 @@ public class ScheduleController {
 
     @GetMapping("/course/{courseId}")
     public ResponseEntity<?> getSchedulesByCourse(@PathVariable Long courseId) {
-        List<Schedule> schedules = scheduleService.getAllScheduleByCourseId(courseId);
+        List<ScheduleResponse> schedules = scheduleService.getAllScheduleByCourseId(courseId);
         DataResponse response = DataResponse.builder()
                 .data(schedules)
                 .success(true)
@@ -81,7 +82,7 @@ public class ScheduleController {
 
     @GetMapping("/lecturer/{lecturerId}")
     public ResponseEntity<?> getSchedulesByLecturer(@PathVariable Long lecturerId) {
-        List<Schedule> schedules = scheduleService.getAllScheduleByLecturerId(lecturerId);
+        List<ScheduleResponse> schedules = scheduleService.getAllScheduleByLecturerId(lecturerId);
         DataResponse response = DataResponse.builder()
                 .data(schedules)
                 .success(true)
@@ -92,7 +93,7 @@ public class ScheduleController {
 
     @GetMapping("/week/{weekId}")
     public ResponseEntity<?> getSchedulesInWeek(@PathVariable Long weekId) {
-        List<Schedule> schedules = scheduleService.getAllSchedulesInSpecificWeek(weekId);
+        List<ScheduleResponse> schedules = scheduleService.getAllSchedulesInSpecificWeek(weekId);
         DataResponse response = DataResponse.builder()
                 .data(schedules)
                 .success(true)
@@ -104,7 +105,7 @@ public class ScheduleController {
     @PostMapping("/create")
     public ResponseEntity<?> createSchedule(@RequestBody CreateScheduleRequest request) {
         try {
-            List<Schedule> schedules = scheduleService.createSchedule(request);
+            ScheduleResponse schedules = scheduleService.createSchedule(request);
             DataResponse response = DataResponse.builder()
                     .data(schedules)
                     .success(true)
@@ -123,7 +124,7 @@ public class ScheduleController {
     @PatchMapping("/cancel/{scheduleId}")
     public ResponseEntity<?> cancelSchedule(@PathVariable Long scheduleId) {
         try {
-            Schedule schedule = scheduleService.cancelSchedule(scheduleId);
+            ScheduleResponse schedule = scheduleService.cancelSchedule(scheduleId);
             DataResponse response = DataResponse.builder()
                     .data(schedule)
                     .success(true)
