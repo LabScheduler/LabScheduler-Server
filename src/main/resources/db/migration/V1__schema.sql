@@ -141,6 +141,7 @@ CREATE TABLE `lecturer_request` (
                                     `lecturer_id` BIGINT NOT NULL,
                                     `schedule_id` BIGINT,
                                     `course_id` BIGINT NOT NULL,
+                                    `course_section_id` BIGINT,
                                     `new_room_id` BIGINT NOT NULL,
                                     `new_semester_week_id` BIGINT,
                                     `new_day_of_week` TINYINT NOT NULL CHECK (new_day_of_week BETWEEN 1 AND 7),
@@ -158,8 +159,8 @@ CREATE TABLE `lecturer_request` (
 CREATE TABLE `lecturer_request_log` (
                                         `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                                         `request_id` BIGINT NOT NULL,
-                                        `status` ENUM ('PENDING', 'APPROVED', 'REJECT') NOT NULL,
-                                        `manager_id` BIGINT NOT NULL,
+                                        `manager_id` BIGINT,
+                                        `status` ENUM ('PENDING', 'APPROVED', 'REJECT','CANCELED') NOT NULL DEFAULT 'PENDING',
                                         `replied_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -197,6 +198,7 @@ ALTER TABLE `lecturer_request` ADD FOREIGN KEY (`schedule_id`) REFERENCES `sched
 ALTER TABLE `lecturer_request` ADD FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer_account` (`account_id`);
 ALTER TABLE `lecturer_request` ADD FOREIGN KEY (`new_room_id`) REFERENCES `room` (`id`);
 ALTER TABLE `lecturer_request` ADD FOREIGN KEY (`new_semester_week_id`) REFERENCES `semester_week` (`id`);
+ALTER TABLE `lecturer_request` ADD FOREIGN KEY (`course_section_id`) REFERENCES `course_section` (`id`);
 
 ALTER TABLE `lecturer_request_log` ADD FOREIGN KEY (`request_id`) REFERENCES `lecturer_request` (`id`);
 ALTER TABLE `lecturer_request_log` ADD FOREIGN KEY (`manager_id`) REFERENCES `manager_account` (`account_id`);

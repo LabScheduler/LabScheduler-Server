@@ -153,7 +153,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         //Get room
         Room room = roomRepository.findById(request.getRoomId())
-                .orElseThrow(() -> new ResourceNotFoundException( "Room not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
 
         //Get semester week
         SemesterWeek semesterWeek = semesterWeekRepository.findById(request.getSemesterWeekId())
