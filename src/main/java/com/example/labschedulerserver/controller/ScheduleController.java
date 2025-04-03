@@ -104,7 +104,6 @@ public class ScheduleController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createSchedule(@RequestBody CreateScheduleRequest request) {
-        try {
             ScheduleResponse schedules = scheduleService.createSchedule(request);
             DataResponse response = DataResponse.builder()
                     .data(schedules)
@@ -112,18 +111,10 @@ public class ScheduleController {
                     .message("Successfully created schedule")
                     .build();
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            DataResponse response = DataResponse.builder()
-                    .success(false)
-                    .message("Failed to create schedule: " + e.getMessage())
-                    .build();
-            return ResponseEntity.badRequest().body(response);
-        }
     }
 
     @PatchMapping("/cancel/{scheduleId}")
     public ResponseEntity<?> cancelSchedule(@PathVariable Long scheduleId) {
-        try {
             ScheduleResponse schedule = scheduleService.cancelSchedule(scheduleId);
             DataResponse response = DataResponse.builder()
                     .data(schedule)
@@ -131,12 +122,5 @@ public class ScheduleController {
                     .message("Successfully cancelled schedule")
                     .build();
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            DataResponse response = DataResponse.builder()
-                    .success(false)
-                    .message("Failed to cancel schedule: " + e.getMessage())
-                    .build();
-            return ResponseEntity.badRequest().body(response);
-        }
     }
 }

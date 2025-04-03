@@ -1,6 +1,5 @@
 package com.example.labschedulerserver.service;
 
-import com.example.labschedulerserver.model.Schedule;
 import com.example.labschedulerserver.payload.request.CreateScheduleRequest;
 import com.example.labschedulerserver.payload.response.Schedule.ScheduleResponse;
 
