@@ -26,4 +26,18 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         message.setText("Your OTP code is: " + otp + "\n" + "This code is valid for 5 minutes.");
         mailSender.send(message);
     }
+
+    @Override
+    public void sendEmail(String to, String subject, String body) {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+        try {
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(body, true);
+            mailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send email", e);
+        }
+    }
 }
