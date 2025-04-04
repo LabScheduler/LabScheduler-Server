@@ -139,7 +139,6 @@ CREATE TABLE `schedule` (
 CREATE TABLE `lecturer_request` (
                                     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                                     `lecturer_id` BIGINT NOT NULL,
-                                    `schedule_id` BIGINT,
                                     `course_id` BIGINT NOT NULL,
                                     `course_section_id` BIGINT,
                                     `new_room_id` BIGINT NOT NULL,
@@ -148,11 +147,8 @@ CREATE TABLE `lecturer_request` (
                                     `new_start_period` Int NOT NULL,
                                     `new_total_period` Int NOT NULL,
                                     `reason` varchar(255) NOT NULL,
-                                    `type` ENUM ('ADD_SCHEDULE', 'RESCHEDULE') NOT NULL,
+                                    `type` ENUM ('ADD_SCHEDULE') NOT NULL,
                                     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                    CHECK ((type = 'ADD_SCHEDULE' AND schedule_id IS NULL)
-                                        OR
-                                           (type = 'RESCHEDULE' AND schedule_id IS NOT NULL)),
                                     FOREIGN KEY (`course_id`) REFERENCES `course`(`id`) ON DELETE CASCADE
 );
 
@@ -194,7 +190,6 @@ ALTER TABLE `schedule` ADD FOREIGN KEY (`course_section_id`) REFERENCES `course_
 ALTER TABLE `schedule` ADD FOREIGN KEY (`room_id`) REFERENCES `room` (`id`);
 ALTER TABLE `schedule` ADD FOREIGN KEY (`semester_week_id`) REFERENCES `semester_week` (`id`);
 
-ALTER TABLE `lecturer_request` ADD FOREIGN KEY (`schedule_id`) REFERENCES `schedule` (`id`);
 ALTER TABLE `lecturer_request` ADD FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer_account` (`account_id`);
 ALTER TABLE `lecturer_request` ADD FOREIGN KEY (`new_room_id`) REFERENCES `room` (`id`);
 ALTER TABLE `lecturer_request` ADD FOREIGN KEY (`new_semester_week_id`) REFERENCES `semester_week` (`id`);

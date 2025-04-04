@@ -64,10 +64,6 @@ public class Schedule {
     @JsonProperty("schedule_status")
     private ScheduleStatus scheduleStatus;
 
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
-    @JsonIgnore
-    @JsonProperty("lecturer_requests")
-    private List<LecturerRequest> lecturerRequests;
     @JsonProperty("study_date")
     private Timestamp studyDate;
 }
