@@ -2,25 +2,26 @@
 
 A comprehensive solution for managing and automatically allocating laboratory practice sessions for educational institutions.
 
+## Overview
+Lab Scheduler Server provides an automated scheduling system for laboratory practice sessions in educational institutions. It efficiently schedules lab sessions across multiple sections while ensuring there are no conflicts and that resources are optimally utilized.
+
 ## Features
 
 ### Account Management
-- User registration and authentication
-- Three levels of accounts: Manager, Lecturer, Student
-- JWT-based authentication
+- User registration and authentication with JWT
+- Three user roles: Manager, Lecturer, and Student
 - Role-based access control with appropriate permissions
 - Account status management (active/locked)
 
 ### Schedule Management
-- Automated scheduling of practice sessions based on predefined rules
-- Section-based sequential allocation of practice sessions
-- Conflict detection and resolution
+- Automated scheduling of practice sessions with sequential allocation
+- Intelligent conflict detection and resolution
 - Room capacity and availability management
-- Viewing schedules by various filters (semester, class, course, lecturer)
+- Multiple view options: by semester, class, course, lecturer, or week
 
 ### Request Management
-- Lecturer schedule change request creation
-- Manager approval/rejection workflow
+- Lecturers can create schedule change requests
+- Managers can approve or reject requests through workflow
 - Request tracking and history
 - Email notifications for request status changes
 
@@ -32,14 +33,16 @@ A comprehensive solution for managing and automatically allocating laboratory pr
 
 ## Technology Stack
 - Java 23
-- Spring Boot
+- Spring Boot 3.4.1
 - Spring Data JPA
 - Spring Security
-- MySQL
+- MySQL 8.0
 - Hibernate
 - Maven
 - JWT
-- Flyway (for database migrations)
+- Flyway (database migrations)
+- Memcached
+- Docker & Docker Compose
 
 ## Project Structure
 ```
@@ -47,20 +50,25 @@ A comprehensive solution for managing and automatically allocating laboratory pr
 ├── src/
 │   ├── main/
 │   │   ├── java/com/example/labschedulerserver/
-│   │   │   ├── auth/           # Authentication components
-│   │   │   ├── common/         # Common enums and constants
-│   │   │   ├── controller/     # REST API controllers
-│   │   │   ├── exception/      # Custom exceptions
-│   │   │   ├── model/          # Domain models/entities
-│   │   │   ├── payload/        # Request/Response DTOs
-│   │   │   ├── repository/     # Data access layer
-│   │   │   ├── service/        # Business logic
-│   │   │   └── utils/          # Utility classes
+│   │   │   ├── auth/                # Authentication components
+│   │   │   ├── common/              # Enums and constants
+│   │   │   ├── configuration/       # Application configuration
+│   │   │   ├── controller/          # REST API controllers
+│   │   │   ├── exception/           # Custom exceptions
+│   │   │   ├── model/               # Domain models/entities
+│   │   │   ├── payload/             # Request/Response DTOs
+│   │   │   ├── repository/          # Data access layer
+│   │   │   ├── service/             # Business logic
+│   │   │   └── utils/               # Utility classes
 │   │   └── resources/
-│   │       ├── db/migration/   # Flyway migration scripts
-│   │       └── application.properties
-│   └── test/                   # Unit and integration tests
-└── pom.xml                     # Maven configuration
+│   │       ├── db/migration/        # Flyway migration scripts
+│   │       └── application.yml      # Application configuration
+│   └── test/                        # Unit and integration tests
+├── .mvn/                            # Maven wrapper
+├── docker-compose.yml               # Docker Compose configuration
+├── Dockerfile                       # Docker build configuration
+├── pom.xml                          # Maven dependencies
+└── .env                             # Environment variables
 ```
 
 ## Getting Started
@@ -68,9 +76,12 @@ A comprehensive solution for managing and automatically allocating laboratory pr
 ### Prerequisites
 - JDK 23
 - Maven
-- MySQL database
+- MySQL 8.0 (optional if using Docker)
+- Docker and Docker Compose (optional)
 
 ### Installation
+
+#### Option 1: Local Setup
 1. Clone the repository:
 ```
 git clone https://github.com/yourusername/LabScheduler-Server.git
@@ -82,37 +93,47 @@ cd LabScheduler-Server
 mvn clean install
 ```
 
-### Configuration
-Create or edit `application.properties` in the `src/main/resources` directory:
-
-```properties
-# Database Configuration
-spring.datasource.url=jdbc:mysql://localhost:3306/lab_scheduler
-spring.datasource.username=your_username
-spring.datasource.password=your_password
-
-# JWT Configuration
-app.jwt.secret=your-jwt-secret-key
-app.jwt.expiration=86400000
-
-# Email Configuration
-spring.mail.host=smtp.example.com
-spring.mail.port=587
-spring.mail.username=your-email@example.com
-spring.mail.password=your-email-password
+3. Configure your database in `src/main/resources/application.yml` or via environment variables:
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/labscheduler
+    username: your_username
+    password: your_password
 ```
 
-## Running the Service
-
-Development mode:
+4. Run the application:
 ```
 mvn spring-boot:run
 ```
 
-Production mode:
+#### Option 2: Docker Setup
+1. Clone the repository:
 ```
-java -jar target/labscheduler-server.jar --spring.profiles.active=prod
+git clone https://github.com/yourusername/LabScheduler-Server.git
+cd LabScheduler-Server
 ```
+
+2. Start the application using Docker Compose:
+```
+docker-compose up --build -d
+```
+
+This will:
+- Start a MySQL 8.0 container
+- Start a Memcached container
+- Build and start the application container
+- Connect all services via a Docker network
+
+### Docker Configuration
+The project includes:
+- `Dockerfile`: Multi-stage build process for the application
+- `docker-compose.yml`: Orchestrates MySQL, Memcached, and application containers
+
+Default database credentials in Docker environment:
+- Database URL: jdbc:mysql://mysql:3306/labscheduler
+- Username: root
+- Password: 123
 
 ## Scheduling Algorithm
 
@@ -122,16 +143,16 @@ java -jar target/labscheduler-server.jar --spring.profiles.active=prod
 3. Practice sessions are scheduled consecutively across weeks for the same section
 4. No overlap between sections - only one section practices per week
 5. Each practice session occupies either 4 morning or 4 afternoon periods
-6. Room capacity must be sufficient for the section
+6. Room capacity must be sufficient for the section size
 7. Rooms cannot be double-booked
 
 ### Algorithm Flow
-1. Calculate required practice sessions for each section
+1. Calculate required practice sessions for each section based on total practice periods
 2. Process sections sequentially (section 1, then section 2, etc.)
 3. For each section:
    - Find optimal consecutive weeks with the same day, room, and time
    - Schedule all required sessions for that section
-   - Remove used weeks from available weeks
+   - Remove used weeks from available weeks to prevent section overlap
 4. Move to the next section once the current one is fully scheduled
 
 ## API Documentation
@@ -157,20 +178,23 @@ java -jar target/labscheduler-server.jar --spring.profiles.active=prod
 - `PATCH /api/lecturer-request/cancel/{requestId}`: Cancel a request
 
 ## Database Migration
-The project uses Flyway for database migrations. Initial schema and test data are provided in:
+The project uses Flyway for database migrations:
 - `V1__schema.sql`: Database schema
 - `V2__data.sql`: Initial test data
 
-## Best Practices for Using the System
-1. **For Administrators**: Run the schedule allocation at the beginning of each semester
-2. **For Lecturers**: Submit schedule change requests early for better processing
-3. **Always check for conflicts**: Before manually creating schedules, check for potential conflicts
+Migrations run automatically on application startup.
 
 ## Troubleshooting
-Common issues:
+
+### Common Issues
 - **No available slots**: Try adjusting room availability or adding more rooms
 - **Scheduling conflicts**: Check existing schedules for overlaps
 - **Insufficient consecutive weeks**: Ensure there are enough consecutive weeks in the semester for each section
+
+### Docker Issues
+- **Container not starting**: Check container logs with `docker logs <container-name>`
+- **Database connection issues**: Ensure MySQL container is healthy with `docker ps`
+- **Application not connecting to database**: Verify the database URL in application configuration
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
