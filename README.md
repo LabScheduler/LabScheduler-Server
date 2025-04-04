@@ -1,4 +1,4 @@
-# Lab Scheduler Server
+# Lab Scheduler Server [![wakatime](https://wakatime.com/badge/user/fc05717b-168a-4ca3-ba2a-970e2d8d681f/project/f1c879fd-0b0e-452f-86aa-4cad878dec46.svg)](https://wakatime.com/badge/user/fc05717b-168a-4ca3-ba2a-970e2d8d681f/project/f1c879fd-0b0e-452f-86aa-4cad878dec46)
 
 A comprehensive solution for managing and automatically allocating laboratory practice sessions for educational institutions.
 
