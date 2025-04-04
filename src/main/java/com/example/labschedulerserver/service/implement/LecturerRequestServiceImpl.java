@@ -11,10 +11,7 @@ import com.example.labschedulerserver.payload.request.LecturerScheduleRequest;
 import com.example.labschedulerserver.payload.request.ProcessRequest;
 import com.example.labschedulerserver.payload.response.LecturerRequest.LecturerRequestMapper;
 import com.example.labschedulerserver.payload.response.LecturerRequest.LecturerRequestResponse;
-import com.example.labschedulerserver.repository.LecturerAccountRepository;
-import com.example.labschedulerserver.repository.LecturerRequestLogRepository;
-import com.example.labschedulerserver.repository.LecturerRequestRepository;
-import com.example.labschedulerserver.repository.ManagerAccountRepository;
+import com.example.labschedulerserver.repository.*;
 import com.example.labschedulerserver.service.EmailSenderService;
 import com.example.labschedulerserver.service.LecturerRequestService;
 import com.example.labschedulerserver.service.ScheduleService;
@@ -23,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,33 +33,26 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
     private final ManagerAccountRepository managerAccountRepository;
     private final ScheduleService scheduleService;
     private final EmailSenderService emailSenderService;
+    private final CourseRepository courseRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final CourseSectionRepository courseSectionRepository;
+    private final RoomRepository roomRepository;
+    private final SemesterWeekRepository semesterWeekRepository;
 
     @Override
     public LecturerRequestResponse createScheduleRequest(LecturerScheduleRequest request) {
         LecturerRequest lecturerRequest = LecturerRequest.builder()
-                .lecturerAccount(LecturerAccount.builder()
-                        .accountId(request.getLecturerId())
-                        .build())
-                .course(Course.builder()
-                        .id(request.getCourseId())
-                        .build())
-                .schedule(Schedule.builder()
-                        .id(request.getScheduleId())
-                        .build())
-                .courseSection(CourseSection.builder()
-                        .id(request.getCourseSectionId())
-                        .build())
-                .newRoom(Room.builder()
-                        .id(request.getNewRoomId())
-                        .build())
-                .newSemesterWeek(SemesterWeek.builder()
-                        .id(request.getNewSemesterWeekId())
-                        .build())
+                .lecturerAccount(lecturerAccountRepository.findById(request.getLecturerId()).orElseThrow(()-> new ResourceNotFoundException("Lecturer Not Found")))
+                .course(courseRepository.findById(request.getCourseId()).orElseThrow(() -> new ResourceNotFoundException("Course Not Found")))
+                .courseSection(courseSectionRepository.findById(request.getCourseSectionId()).orElseThrow(()-> new ResourceNotFoundException("Course Section Not Found")))
+                .newRoom(roomRepository.findById(request.getNewRoomId()).orElseThrow(()-> new ResourceNotFoundException("Room Not Found")))
+                .newSemesterWeek(semesterWeekRepository.findById(request.getNewSemesterWeekId()).orElseThrow(()-> new ResourceNotFoundException("Semester Week Not Found")))
                 .newDayOfWeek(request.getNewDayOfWeek())
                 .newStartPeriod(request.getNewStartPeriod())
                 .newTotalPeriod(request.getNewTotalPeriod())
                 .reason(request.getReason())
                 .type(RequestType.valueOf(request.getType()))
+                .createdAt(new Timestamp(System.currentTimeMillis()))
                 .build();
 
         LecturerRequestLog lecturerRequestLog = LecturerRequestLog.builder()
@@ -72,7 +63,7 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
         LecturerRequest newRequest = lecturerRequestRepository.save(lecturerRequest);
         LecturerRequestLog newRequestLog = lecturerRequestLogRepository.save(lecturerRequestLog);
 
-        return LecturerRequestMapper.toResponse(newRequest, newRequestLog);
+        return LecturerRequestMapper.toResponse(lecturerRequestRepository.save(lecturerRequest), lecturerRequestLogRepository.save(lecturerRequestLog));
     }
 
     @Override
@@ -119,14 +110,13 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
             throw new BadRequestException("Request has already been processed");
         }
 
-        LecturerRequestLog lecturerRequestLog = LecturerRequestLog.builder()
-                .request(lecturerRequest)
-                .managerAccount(managerAccountRepository.findById(request.getManagerId()).orElseThrow(() -> new ResourceNotFoundException("Manager Not Found")))
-                .status(RequestStatus.valueOf(request.getStatus()))
-                .repliedAt(new Timestamp(System.currentTimeMillis()))
-                .build();
+        LecturerRequestLog existingLog = lecturerRequestLogRepository.findByRequestId(lecturerRequest.getId()).get();
 
-        if(request.getStatus().equals(RequestStatus.APPROVED)) {
+        existingLog.setManagerAccount(managerAccountRepository.findById(request.getManagerId()).orElseThrow(() -> new ResourceNotFoundException("Manager Not Found")));
+        existingLog.setStatus(RequestStatus.valueOf(request.getStatus()));
+        existingLog.setRepliedAt(new Timestamp(System.currentTimeMillis()));
+
+        if(request.getStatus().equals("APPROVED")) {
             CreateScheduleRequest scheduleRequest = CreateScheduleRequest.builder()
                     .courseId(lecturerRequest.getCourse().getId())
                     .courseSectionId(lecturerRequest.getCourseSection().getId())
@@ -146,18 +136,20 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
                     "Your request has been approved. The new schedule has been created.");
 
         }
-        else if(request.getStatus().equals(RequestStatus.REJECTED)) {
+        else if(request.getStatus().equals("REJECTED")) {
             emailSenderService.sendEmail(lecturerRequest.getLecturerAccount().getAccount().getEmail(),"Notice of your request",
                     "Your request has been rejected.");
         }
-        return LecturerRequestMapper.toResponse(lecturerRequest, lecturerRequestLog);
+        lecturerRequestLogRepository.save(existingLog);
+        return LecturerRequestMapper.toResponse(lecturerRequest, existingLog);
     }
 
     @Override
     public void cancelRequest(Long requestId) {
         LecturerRequest request = lecturerRequestRepository.findById(requestId).orElseThrow(() -> new ResourceNotFoundException("Request Not Found"));
+        LecturerRequestLog requestLog = request.getLecturerRequestLog();
         if (request.getLecturerRequestLog().getStatus() == RequestStatus.PENDING) {
-            lecturerRequestRepository.delete(request);
+            requestLog.setStatus(RequestStatus.CANCELED);
         } else {
             throw new BadRequestException("Cannot cancel a request that is already processed");
         }

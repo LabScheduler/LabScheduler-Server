@@ -15,11 +15,11 @@ public interface LecturerRequestRepository extends JpaRepository<LecturerRequest
     List<LecturerRequest> findByLecturerAccountId(@Param("lecturerId") Long lecturerId);
 
     @Query(value = """
-    SELECT * FROM LecturerRequest lr
-    JOIN LecturerRequestLog lrl ON lr.id = lrl.lecturer_request_id
-    WHERE lrl.status = 'PENDING'
-    AND lrl.updated_at = (SELECT MAX(updated_at) FROM LecturerRequestLog WHERE lecturer_request_id = lr.id)
-    """, nativeQuery = true)
+            SELECT lr.*, lrl.status\s
+            FROM lecturer_request lr
+            JOIN lecturer_request_log lrl ON lr.id = lrl.request_id
+            WHERE lrl.status = 'PENDING';
+            """, nativeQuery = true)
     List<LecturerRequest> getAllPendingRequests();
 
     List<LecturerRequest> findAllByLecturerAccount(LecturerAccount lecturerAccount);

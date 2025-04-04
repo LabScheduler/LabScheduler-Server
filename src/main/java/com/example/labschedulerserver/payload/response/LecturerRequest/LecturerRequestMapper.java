@@ -8,7 +8,6 @@ public class LecturerRequestMapper {
         return LecturerRequestResponse.builder()
                 .id(request.getId())
                 .lecturer(request.getLecturerAccount().getFullName())
-                .oldSchedule(request.getSchedule().getStudyDate())
                 .subject(request.getCourse().getSubject().getName())
                 .groupNumber(request.getCourse().getGroupNumber())
                 .sectionNumber(request.getCourseSection().getSectionNumber())
@@ -21,7 +20,6 @@ public class LecturerRequestMapper {
                 .type(request.getType().name())
                 .status(requestLog.getStatus().name())
                 .createdAt(request.getCreatedAt())
-                .repliedAt(requestLog.getRepliedAt())
                 .build();
 
     }

@@ -14,9 +14,6 @@ public class LecturerScheduleRequest {
     @JsonProperty("lecturer_id")
     private Long lecturerId;
 
-    @JsonProperty("schedule_id")
-    private Long scheduleId;
-
     @JsonProperty("course_id")
     private Long courseId;
 

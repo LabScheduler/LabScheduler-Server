@@ -58,7 +58,7 @@ public class LecturerRequestController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/lecturer/{lecturerId}")
+    @GetMapping("/get/lecturer/{lecturerId}")
     public ResponseEntity<?> getRequestsByLecturer(@PathVariable Long lecturerId) {
         DataResponse response = DataResponse.builder()
                 .data(lecturerRequestService.getRequestsByLecturerId(lecturerId))
@@ -89,7 +89,7 @@ public class LecturerRequestController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/cancel/{requestId}")
+    @PatchMapping("/cancel/{requestId}")
     public ResponseEntity<?> cancelRequest(@PathVariable Long requestId) {
         lecturerRequestService.cancelRequest(requestId);
         DataResponse dataResponse = DataResponse.builder()

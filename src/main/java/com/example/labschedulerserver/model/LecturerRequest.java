@@ -26,10 +26,6 @@ public class LecturerRequest {
     private LecturerAccount lecturerAccount;
 
     @ManyToOne
-    @JoinColumn(name = "schedule_id")
-    private Schedule schedule;
-
-    @ManyToOne
     @JoinColumn(name = "new_room_id")
     @JsonProperty("new_room")
     private Room newRoom;

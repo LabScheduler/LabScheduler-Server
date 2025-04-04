@@ -13,8 +13,6 @@ public class LecturerRequestResponse {
 
     private String lecturer;
 
-    private Timestamp oldSchedule;
-
     private String subject;
 
     @JsonProperty("group_number")
@@ -47,6 +45,4 @@ public class LecturerRequestResponse {
     @JsonProperty("created_at")
     private Timestamp createdAt;
 
-    @JsonProperty("replied_at")
-    private Timestamp repliedAt;
 }
