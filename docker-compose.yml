@@ -37,6 +37,7 @@ services:
       - DB_URL=jdbc:mysql://mysql:3306/labscheduler
       - DB_USERNAME=root
       - DB_PASSWORD=123
+      - MEMCACHED_HOST=memcached
     networks:
       - labscheduler-network
 
