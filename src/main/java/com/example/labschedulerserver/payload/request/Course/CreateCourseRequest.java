@@ -17,6 +17,8 @@ public class CreateCourseRequest {
     private Long classId;
     @JsonProperty("lecturer_id")
     private Long lecturerId;
+    @JsonProperty("semester_id")
+    private Long semesterId;
     @JsonProperty("total_students")
     private Integer totalStudents;
 }

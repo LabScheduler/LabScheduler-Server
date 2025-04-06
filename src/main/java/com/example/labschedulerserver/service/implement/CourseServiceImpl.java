@@ -75,8 +75,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public CourseResponse createCourse(CreateCourseRequest request, Integer totalSection) {
-        Semester currentSemester = semesterRepository.findCurrentSemester().orElseThrow(()->new ResourceNotFoundException("Semester not found"));
-        Course course = courseRepository.findCoursesBySubjectIdAndClazzIdAndSemesterId(request.getSubjectId(), request.getClassId(), currentSemester.getId());
+        Semester semester = semesterRepository.findById(request.getSemesterId()).orElseThrow(()->new ResourceNotFoundException("Semester not found"));
+        Course course = courseRepository.findCoursesBySubjectIdAndClazzIdAndSemesterId(request.getSubjectId(), request.getClassId(), semester.getId());
         if(course != null){
             throw new ResourceNotFoundException("Course already exist");
         }
@@ -88,14 +88,14 @@ public class CourseServiceImpl implements CourseService {
                 .clazz(classRepository.findById(request.getClassId()).orElseThrow(()->new ResourceNotFoundException("Class not found")))
                 .lecturerAccount(lecturerAccountRepository.findById(request.getLecturerId()).orElseThrow(()->new ResourceNotFoundException("Lecturer not found")))
                 .groupNumber(courseRepository
-                        .findAllBySubjectIdAndSemesterId(request.getSubjectId(), currentSemester.getId())
+                        .findAllBySubjectIdAndSemesterId(request.getSubjectId(), semester.getId())
                         .stream()
                         .mapToInt(Course::getGroupNumber)
                         .max()
                         .orElse(0)+1
                 )
                 .totalStudents(request.getTotalStudents())
-                .semester(currentSemester)
+                .semester(semester)
                 .build();
         if(newCourse.getSubject().getTotalPracticePeriods() ==0){
             return modelMapper.map(courseRepository.save(newCourse), CourseResponse.class);
