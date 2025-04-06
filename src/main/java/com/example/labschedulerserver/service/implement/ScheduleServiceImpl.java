@@ -293,17 +293,17 @@ public class ScheduleServiceImpl implements ScheduleService {
             Course course,
             int requiredSessions) {
 
-        // Group available slots by their consistency (same room, day, time)
+        //Group available slots by their consistency (same room, day, time)
         Map<String, List<ScheduleSlot>> slotGroups = new HashMap<>();
 
-        // For each possible combination of room, day, and time, find available weeks
+        //For each possible combination of room, day, and time, find available weeks
         for (Room room : availableRooms) {
             for (byte day = ScheduleUtils.MIN_DAY_OF_WEEK; day <= ScheduleUtils.MAX_DAY_OF_WEEK; day++) {
-                // Try morning session
+                //Try morning session
                 tryTimeBlock(slotGroups, room, day, ScheduleUtils.MORNING_START,
                         availableWeeks, existingSchedules, course);
 
-                // Try afternoon session
+                //Try afternoon session
                 tryTimeBlock(slotGroups, room, day, ScheduleUtils.AFTERNOON_START,
                         availableWeeks, existingSchedules, course);
             }
