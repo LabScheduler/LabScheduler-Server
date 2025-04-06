@@ -32,7 +32,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override //Get all courses in current semester
     public List<CourseResponse> getAllCourse(){
-        Semester semester = semesterRepository.findCurrentSemester(LocalDateTime.now()).orElseThrow(()->new ResourceNotFoundException("Semester not found"));
+        Semester semester = semesterRepository.findCurrentSemester().orElseThrow(()->new ResourceNotFoundException("Semester not found"));
         return courseRepository
                 .findAllBySemesterId(semester.getId())
                 .stream()
@@ -75,7 +75,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public CourseResponse createCourse(CreateCourseRequest request, Integer totalSection) {
-        Semester currentSemester = semesterRepository.findCurrentSemester(LocalDateTime.now()).orElseThrow(()->new ResourceNotFoundException("Semester not found"));
+        Semester currentSemester = semesterRepository.findCurrentSemester().orElseThrow(()->new ResourceNotFoundException("Semester not found"));
         Course course = courseRepository.findCoursesBySubjectIdAndClazzIdAndSemesterId(request.getSubjectId(), request.getClassId(), currentSemester.getId());
         if(course != null){
             throw new ResourceNotFoundException("Course already exist");

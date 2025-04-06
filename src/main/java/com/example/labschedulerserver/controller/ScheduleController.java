@@ -2,6 +2,7 @@ package com.example.labschedulerserver.controller;
 
 import com.example.labschedulerserver.model.Schedule;
 import com.example.labschedulerserver.payload.request.CreateScheduleRequest;
+import com.example.labschedulerserver.payload.request.UpdateScheduleRequest;
 import com.example.labschedulerserver.payload.response.DataResponse;
 import com.example.labschedulerserver.payload.response.Schedule.ScheduleResponse;
 import com.example.labschedulerserver.service.ScheduleService;
@@ -19,7 +20,6 @@ public class ScheduleController {
 
     @PostMapping("/allocate")
     public ResponseEntity<?> allocateSchedule(@RequestParam("course_id") Long courseId) {
-        try {
             List<ScheduleResponse> schedules = scheduleService.allocateSchedule(courseId);
             DataResponse response = DataResponse.builder()
                     .data(schedules)
@@ -27,13 +27,6 @@ public class ScheduleController {
                     .message("Successfully allocated schedules for course")
                     .build();
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            DataResponse response = DataResponse.builder()
-                    .success(false)
-                    .message("Failed to allocate schedules: " + e.getMessage())
-                    .build();
-            return ResponseEntity.badRequest().body(response);
-        }
     }
 
     @GetMapping
@@ -122,5 +115,15 @@ public class ScheduleController {
                     .message("Successfully cancelled schedule")
                     .build();
             return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/update")
+    public ResponseEntity<?> updateSchedule(@RequestBody UpdateScheduleRequest request) {
+        DataResponse response = DataResponse.builder()
+                .data(scheduleService.updateSchedule(request))
+                .success(true)
+                .message("Successfully updated schedule")
+                .build();
+        return ResponseEntity.ok(response);
     }
 }

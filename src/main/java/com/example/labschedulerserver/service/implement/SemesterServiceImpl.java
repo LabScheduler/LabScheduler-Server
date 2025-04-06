@@ -19,7 +19,7 @@ public class SemesterServiceImpl implements SemesterService {
     private final SemesterRepository semesterRepository;
     @Override
     public Semester getCurrentSemester() {
-        return semesterRepository.findCurrentSemester(LocalDateTime.now()).get();
+        return semesterRepository.findCurrentSemester().get();
     }
 
     @Override

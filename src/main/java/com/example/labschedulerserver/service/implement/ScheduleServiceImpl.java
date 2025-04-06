@@ -7,6 +7,7 @@ import com.example.labschedulerserver.exception.BadRequestException;
 import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.model.*;
 import com.example.labschedulerserver.payload.request.CreateScheduleRequest;
+import com.example.labschedulerserver.payload.request.UpdateScheduleRequest;
 import com.example.labschedulerserver.payload.response.Schedule.ScheduleMapper;
 import com.example.labschedulerserver.payload.response.Schedule.ScheduleResponse;
 import com.example.labschedulerserver.repository.*;
@@ -53,6 +54,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (sections.isEmpty()) {
             throw new BadRequestException("No sections found for this course");
         }
+
 
         //get all existing schedules
         List<Schedule> existingSchedules = scheduleRepository.findAllByCurrentSemester();
@@ -142,6 +144,16 @@ public class ScheduleServiceImpl implements ScheduleService {
         return schedules.stream()
                 .map(ScheduleMapper::mapScheduleToResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public ScheduleResponse updateSchedule(UpdateScheduleRequest request) {
+        Schedule schedule = scheduleRepository.findById(request.getScheduleId())
+                .orElseThrow(() -> new ResourceNotFoundException("Schedule not found with id: " + request.getScheduleId()));
+
+        schedule.setRoom(roomRepository.findById(request.getRoomId()).orElseThrow(() -> new ResourceNotFoundException("Room not found with id: " + request.getRoomId())));
+        schedule.setScheduleStatus(ScheduleStatus.valueOf(request.getStatus()));
+        return ScheduleMapper.mapScheduleToResponse(scheduleRepository.save(schedule));
     }
 
     @Override

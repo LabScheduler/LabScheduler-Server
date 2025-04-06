@@ -1,6 +1,7 @@
 package com.example.labschedulerserver.service;
 
 import com.example.labschedulerserver.payload.request.CreateScheduleRequest;
+import com.example.labschedulerserver.payload.request.UpdateScheduleRequest;
 import com.example.labschedulerserver.payload.response.Schedule.ScheduleResponse;
 
 import java.util.List;
@@ -24,4 +25,6 @@ public interface ScheduleService {
     ScheduleResponse cancelSchedule(Long scheduleId);
 
     List<ScheduleResponse> getAllSchedulesInSpecificWeek(Long weekId);
+
+    ScheduleResponse updateSchedule(UpdateScheduleRequest request);
 }
