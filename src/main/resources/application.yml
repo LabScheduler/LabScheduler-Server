@@ -20,7 +20,7 @@ spring:
     show-sql: true
 
   memcached:
-    host: ${MEMCACHED_HOST:memcached}
+    host: ${MEMCACHED_HOST:localhost}
 
   #   Mail server configuration
   mail:
