@@ -2,17 +2,6 @@ CREATE TABLE `role` (
                         `name` varchar(36) PRIMARY KEY
 );
 
-CREATE TABLE `permission`(
-                             `name` varchar(72) PRIMARY KEY
-);
-
-CREATE TABLE `role_permission` (
-                                   `role_name` VARCHAR(255),
-                                   `permission_name` VARCHAR(255),
-                                   PRIMARY KEY (`role_name`, `permission_name`),
-                                   FOREIGN KEY (`role_name`) REFERENCES `role`(`name`) ON DELETE CASCADE,
-                                   FOREIGN KEY (`permission_name`) REFERENCES `permission`(`name`) ON DELETE CASCADE
-);
 
 CREATE TABLE `account` (
                            `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
