@@ -15,6 +15,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     //Check if exist
     public Course findCoursesBySubjectIdAndClazzIdAndSemesterId(Long subjectId, Long classId, Long semesterId);
 
+
+
     public List<Course> findAllBySemesterId(Long semesterId);
 
     public List<Course> findAllByClazzId(Long classId);
