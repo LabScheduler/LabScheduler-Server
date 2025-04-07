@@ -4,6 +4,7 @@ import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.model.Course;
 import com.example.labschedulerserver.model.CourseSection;
 import com.example.labschedulerserver.model.Semester;
+import com.example.labschedulerserver.payload.request.Course.CourseMapper;
 import com.example.labschedulerserver.payload.request.Course.CreateCourseRequest;
 import com.example.labschedulerserver.payload.request.Course.UpdateCourseRequest;
 import com.example.labschedulerserver.payload.response.CourseResponse;
@@ -36,7 +37,7 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository
                 .findAllBySemesterId(semester.getId())
                 .stream()
-                .map(course -> modelMapper.map(course, CourseResponse.class))
+                .map(CourseMapper::toCourseResponse)
                 .toList();
     }
 
@@ -44,7 +45,7 @@ public class CourseServiceImpl implements CourseService {
     public List<CourseResponse> getAllCourseBySemester(Long semesterId) {
         return courseRepository.findAllBySemesterId(semesterId)
                 .stream()
-                .map(course -> modelMapper.map(course, CourseResponse.class))
+                .map(CourseMapper::toCourseResponse)
                 .toList();
     }
 
@@ -53,7 +54,7 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository
                 .findAllByClazzId(classId)
                 .stream()
-                .map(course -> modelMapper.map(course, CourseResponse.class))
+                .map(CourseMapper::toCourseResponse)
                 .toList();
     }
 
@@ -61,14 +62,14 @@ public class CourseServiceImpl implements CourseService {
     public List<CourseResponse> getAllCourse(Long subjectId, Long semesterId) {
         return courseRepository.findAllBySubjectIdAndSemesterId(subjectId,semesterId)
                 .stream()
-                .map(course -> modelMapper.map(course, CourseResponse.class))
+                .map(CourseMapper::toCourseResponse)
                 .toList();
     }
 
     @Override
     public CourseResponse getCourseById(Long id) {
         return courseRepository.findById(id)
-                .map(course -> modelMapper.map(course, CourseResponse.class))
+                .map(CourseMapper::toCourseResponse)
                 .orElseThrow(()->new ResourceNotFoundException("Course not found with id:" +id));
     }
 
@@ -98,7 +99,7 @@ public class CourseServiceImpl implements CourseService {
                 .semester(semester)
                 .build();
         if(newCourse.getSubject().getTotalPracticePeriods() ==0){
-            return modelMapper.map(courseRepository.save(newCourse), CourseResponse.class);
+            return CourseMapper.toCourseResponse(courseRepository.save(newCourse));
         }
         List<CourseSection> courseSections = new ArrayList<>();
         for(int i =1; i<= totalSection; i++){
@@ -117,7 +118,7 @@ public class CourseServiceImpl implements CourseService {
         }
         courseRepository.save(newCourse);
         courseSectionRepository.saveAll(courseSections);
-        return modelMapper.map(newCourse, CourseResponse.class);
+        return CourseMapper.toCourseResponse(courseRepository.save(newCourse));
     }
 
 
@@ -136,7 +137,7 @@ public class CourseServiceImpl implements CourseService {
         course.setTotalStudents(request.getTotalStudents());
 
         Course updatedCourse = courseRepository.save(course);
-        return modelMapper.map(updatedCourse, CourseResponse.class);
+        return CourseMapper.toCourseResponse(updatedCourse);
     }
 
     @Override

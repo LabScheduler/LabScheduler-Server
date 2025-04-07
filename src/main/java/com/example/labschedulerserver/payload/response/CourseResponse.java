@@ -25,4 +25,7 @@ public class CourseResponse {
     private Integer groupNumber;
     @JsonProperty("total_students")
     private Integer totalStudents;
+
+    @JsonProperty("total_section")
+    private Integer totalSection;
 }
