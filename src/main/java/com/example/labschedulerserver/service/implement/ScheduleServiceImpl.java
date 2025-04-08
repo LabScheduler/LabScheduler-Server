@@ -15,10 +15,8 @@ import com.example.labschedulerserver.service.ScheduleService;
 import com.example.labschedulerserver.utils.ScheduleSlot;
 import com.example.labschedulerserver.utils.ScheduleUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -363,7 +361,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
         if (bestGroup.isEmpty() || bestGroup.size() < requiredSessions) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+            throw new BadRequestException(
                     "Could not find " + requiredSessions + " consecutive weeks for scheduling");
         }
 
