@@ -27,4 +27,6 @@ public interface ScheduleService {
     List<ScheduleResponse> getAllSchedulesInSpecificWeek(Long weekId);
 
     ScheduleResponse updateSchedule(UpdateScheduleRequest request);
+
+    List<ScheduleResponse> filterSchedule(Long semesterId, Long classId, Long courseId, Long lecturerId);
 }

@@ -20,13 +20,13 @@ public class ScheduleController {
 
     @PostMapping("/allocate")
     public ResponseEntity<?> allocateSchedule(@RequestParam("course_id") Long courseId) {
-            List<ScheduleResponse> schedules = scheduleService.allocateSchedule(courseId);
-            DataResponse response = DataResponse.builder()
-                    .data(schedules)
-                    .success(true)
-                    .message("Successfully allocated schedules for course")
-                    .build();
-            return ResponseEntity.ok(response);
+        List<ScheduleResponse> schedules = scheduleService.allocateSchedule(courseId);
+        DataResponse response = DataResponse.builder()
+                .data(schedules)
+                .success(true)
+                .message("Successfully allocated schedules for course")
+                .build();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
@@ -97,24 +97,24 @@ public class ScheduleController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createSchedule(@RequestBody CreateScheduleRequest request) {
-            ScheduleResponse schedules = scheduleService.createSchedule(request);
-            DataResponse response = DataResponse.builder()
-                    .data(schedules)
-                    .success(true)
-                    .message("Successfully created schedule")
-                    .build();
-            return ResponseEntity.ok(response);
+        ScheduleResponse schedules = scheduleService.createSchedule(request);
+        DataResponse response = DataResponse.builder()
+                .data(schedules)
+                .success(true)
+                .message("Successfully created schedule")
+                .build();
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/cancel/{scheduleId}")
     public ResponseEntity<?> cancelSchedule(@PathVariable Long scheduleId) {
-            ScheduleResponse schedule = scheduleService.cancelSchedule(scheduleId);
-            DataResponse response = DataResponse.builder()
-                    .data(schedule)
-                    .success(true)
-                    .message("Successfully cancelled schedule")
-                    .build();
-            return ResponseEntity.ok(response);
+        ScheduleResponse schedule = scheduleService.cancelSchedule(scheduleId);
+        DataResponse response = DataResponse.builder()
+                .data(schedule)
+                .success(true)
+                .message("Successfully cancelled schedule")
+                .build();
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/update")
@@ -125,5 +125,18 @@ public class ScheduleController {
                 .message("Successfully updated schedule")
                 .build();
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<?> filterSchedule(@RequestParam(name = "semester_id") Long semesterId,
+                                            @RequestParam(name = "course_id", required = false) Long courseId,
+                                            @RequestParam(name = "class_id", required = false) Long classId,
+                                            @RequestParam(name = "lecturer_id", required = false) Long lecturerId) {
+            DataResponse response = DataResponse.builder()
+                    .data(scheduleService.filterSchedule(semesterId, classId, courseId, lecturerId))
+                    .success(true)
+                    .message("Successfully filtered schedules")
+                    .build();
+            return ResponseEntity.ok(response);
     }
 }

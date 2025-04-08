@@ -157,6 +157,28 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public List<ScheduleResponse> filterSchedule(Long semesterId, Long classId, Long courseId, Long lecturerId) {
+        List<Schedule> schedules = scheduleRepository.findAllBySemesterId(semesterId);
+        if (classId != null) {
+            schedules = schedules.stream()
+                    .filter(schedule -> schedule.getCourse().getClazz().getId().equals(classId))
+                    .toList();
+        }
+        if (courseId != null) {
+            schedules = schedules.stream()
+                    .filter(schedule -> schedule.getCourse().getId().equals(courseId))
+                    .toList();
+        }
+        if (lecturerId != null) {
+            schedules = schedules.stream()
+                    .filter(schedule -> schedule.getCourse().getLecturerAccount().getAccountId().equals(lecturerId))
+                    .toList();
+        }
+
+        return schedules.stream().map(ScheduleMapper::mapScheduleToResponse).collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public ScheduleResponse createSchedule(CreateScheduleRequest request) {
         //Get course
