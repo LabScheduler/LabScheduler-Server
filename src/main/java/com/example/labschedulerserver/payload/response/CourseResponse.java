@@ -26,6 +26,4 @@ public class CourseResponse {
     @JsonProperty("total_students")
     private Integer totalStudents;
 
-    @JsonProperty("total_section")
-    private Integer totalSection;
 }

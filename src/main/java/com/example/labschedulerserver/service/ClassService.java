@@ -14,4 +14,6 @@ public interface ClassService {
     public void deleteClass(Long id);
     public Clazz updateClass(Long id, UpdateClassRequest request);
     public Clazz getClassByName(String className);
+
+    public List<Clazz> getAllClassesByMajorId(Long majorId);
 }

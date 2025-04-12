@@ -66,5 +66,13 @@ public class ClassServiceImpl implements ClassService {
 
     public Clazz getClassByName(String className){
         return classRepository.findByName(className).orElseThrow(() -> new RuntimeException("Room not found with name: " + className));
-    };
+    }
+
+    @Override
+    public List<Clazz> getAllClassesByMajorId(Long majorId) {
+        Major major = majorRepository.findById(majorId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Major not found"));
+        return major.getClasses();
+    }
+
 }

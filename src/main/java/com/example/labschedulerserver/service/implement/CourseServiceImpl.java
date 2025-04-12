@@ -74,16 +74,23 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<CourseSection> getCourseSectionByCourseId(Long courseId) {
+        List<CourseSection> courseSections = courseSectionRepository.findAllByCourseId(courseId);
+        if(courseSections.isEmpty()){
+            throw new ResourceNotFoundException("CourseSection not found with courseId: " + courseId);
+        }
+        return courseSections;
+    }
+
+    @Override
     @Transactional
-    public CourseResponse createCourse(CreateCourseRequest request, Integer totalSection) {
+    public CourseResponse createCourse(CreateCourseRequest request) {
         Semester semester = semesterRepository.findById(request.getSemesterId()).orElseThrow(()->new ResourceNotFoundException("Semester not found"));
         Course course = courseRepository.findCoursesBySubjectIdAndClazzIdAndSemesterId(request.getSubjectId(), request.getClassId(), semester.getId());
         if(course != null){
             throw new ResourceNotFoundException("Course already exist");
         }
 
-        
-        
         Course newCourse = Course.builder()
                 .subject(subjectRepository.findById(request.getSubjectId()).orElseThrow(()->new ResourceNotFoundException("Subject not found")))
                 .clazz(classRepository.findById(request.getClassId()).orElseThrow(()->new ResourceNotFoundException("Class not found")))
@@ -98,14 +105,14 @@ public class CourseServiceImpl implements CourseService {
                 .totalStudents(request.getTotalStudents())
                 .semester(semester)
                 .build();
-        if(newCourse.getSubject().getTotalPracticePeriods() ==0){
+        if(newCourse.getSubject().getTotalPracticePeriods() == 0){
             return CourseMapper.toCourseResponse(courseRepository.save(newCourse));
         }
         List<CourseSection> courseSections = new ArrayList<>();
-        for(int i =1; i<= totalSection; i++){
+        for(int i =1; i<= request.getTotalSection(); i++){
             int totalStudent = newCourse.getTotalStudents();
-            int totalStudentInSection = totalStudent/totalSection;
-            int remainingStudents = totalStudent % totalSection;
+            int totalStudentInSection = totalStudent/ request.getTotalSection();
+            int remainingStudents = totalStudent % request.getTotalSection();
 
             int studentsInThisSection = totalStudentInSection + (i <= remainingStudents ? 1 : 0);
 
@@ -116,9 +123,11 @@ public class CourseServiceImpl implements CourseService {
                     .build();
             courseSections.add(newCourseSection);
         }
+        newCourse.setCourseSections(courseSections);
+        System.out.println(newCourse.getCourseSections().size());
         courseRepository.save(newCourse);
         courseSectionRepository.saveAll(courseSections);
-        return CourseMapper.toCourseResponse(courseRepository.save(newCourse));
+        return CourseMapper.toCourseResponse(newCourse);
     }
 
 

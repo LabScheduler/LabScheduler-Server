@@ -97,7 +97,7 @@ CREATE TABLE `room` (
                         `name` varchar(36) UNIQUE NOT NULL,
 --                         `location` varchar(36) NOT NULL,
                         `capacity` INT NOT NULL,
-                        `status` ENUM ('AVAILABLE', 'REPAIRING') NOT NULL DEFAULT 'AVAILABLE',
+                        `status` ENUM ('AVAILABLE','UNAVAILABLE', 'REPAIRING') NOT NULL DEFAULT 'AVAILABLE',
                         `description` varchar(255) NOT NULL,
                         `last_updated` datetime NOT NULL
 );

@@ -76,4 +76,14 @@ public class ClassController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/filter/{majorId}")
+    public ResponseEntity<?> filterClassByMajor(@PathVariable Long majorId) {
+        DataResponse response = DataResponse.<List<Clazz>>builder()
+                .data(classService.getAllClassesByMajorId(majorId))
+                .success(true)
+                .message("Get class by major successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
 }

@@ -66,10 +66,10 @@ public class CourseController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createCourse(@RequestBody CreateCourseRequest request, @RequestParam("total_group") Integer totalGroup) {
+    public ResponseEntity<?> createCourse(@RequestBody CreateCourseRequest request) {
         DataResponse response = DataResponse.builder()
                 .success(true)
-                .data(courseService.createCourse(request, totalGroup))
+                .data(courseService.createCourse(request))
                 .message("Create course successfully")
                 .build();
         return ResponseEntity.ok(response);
@@ -91,6 +91,16 @@ public class CourseController {
                 .success(true)
                 .data(courseService.updateCourse(id, request))
                 .message("Update course successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/section/{courseId}")
+    public ResponseEntity<?> getCourseSectionByCourseId(@PathVariable Long courseId) {
+        DataResponse response = DataResponse.builder()
+                .success(true)
+                .data(courseService.getCourseSectionByCourseId(courseId))
+                .message("Get course section by course id successfully")
                 .build();
         return ResponseEntity.ok(response);
     }

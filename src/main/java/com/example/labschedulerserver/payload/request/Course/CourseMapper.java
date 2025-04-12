@@ -13,7 +13,6 @@ public class CourseMapper {
                 .lecturer(course.getLecturerAccount().getFullName())
                 .groupNumber(course.getGroupNumber())
                 .totalStudents(course.getTotalStudents())
-                .totalSection(course.getCourseSections().size())
                 .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.labschedulerserver.service;
 
 import com.example.labschedulerserver.model.Course;
+import com.example.labschedulerserver.model.CourseSection;
 import com.example.labschedulerserver.payload.request.Course.CreateCourseRequest;
 import com.example.labschedulerserver.payload.request.Course.UpdateCourseRequest;
 import com.example.labschedulerserver.payload.response.CourseResponse;
@@ -15,7 +16,9 @@ public interface CourseService {
 
     public CourseResponse getCourseById(Long id);
 
-    public CourseResponse createCourse(CreateCourseRequest request, Integer totalGroup);
+    public List<CourseSection> getCourseSectionByCourseId(Long courseId);
+
+    public CourseResponse createCourse(CreateCourseRequest request);
     public void deleteCourse(Long id);
     public Course checkCourseExist(Long subjectId, Long classId, Long semesterId);
 
