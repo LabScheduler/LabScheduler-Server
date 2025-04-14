@@ -145,7 +145,7 @@ CREATE TABLE `lecturer_request_log` (
                                         `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
                                         `request_id` BIGINT NOT NULL,
                                         `manager_id` BIGINT,
-                                        `status` ENUM ('PENDING', 'APPROVED', 'REJECT','CANCELED') NOT NULL DEFAULT 'PENDING',
+                                        `status` ENUM ('PENDING', 'APPROVED', 'REJECTED','CANCELLED') NOT NULL DEFAULT 'PENDING',
                                         `replied_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

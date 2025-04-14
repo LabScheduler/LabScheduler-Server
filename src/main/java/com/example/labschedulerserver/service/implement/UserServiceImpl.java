@@ -297,13 +297,23 @@ public Object updateUserInfo(Long userId, Map<String, Object> payload) {
     }
 
     @Override
-    public Account lockAccount(Long userId) {
+    public Object lockAccount(Long userId) {
         Account account = accountRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         if (account.getStatus() == AccountStatus.LOCKED) {
             throw new BadRequestException("Account is already locked");
         }
         account.setStatus(AccountStatus.LOCKED);
-        return accountRepository.save(account);
+        return UserMapper.mapUserToResponse(accountRepository.save(account), getUserInfo(userId));
+    }
+
+    @Override
+    public Object unlockAccount(Long userId) {
+        Account account = accountRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+        if (account.getStatus() == AccountStatus.ACTIVE) {
+            throw new BadRequestException("Account is already unlocked");
+        }
+        account.setStatus(AccountStatus.ACTIVE);
+        return UserMapper.mapUserToResponse(accountRepository.save(account),getUserInfo(userId));
     }
 
     @Override
@@ -334,6 +344,21 @@ public Object updateUserInfo(Long userId, Map<String, Object> payload) {
         if (!otpService.validateOtp(email, otp)) {
             throw new BadRequestException("Invalid OTP");
         }
+        return true;
+    }
+
+    @Override
+    public boolean resetPassword(String email, String otp, String newPassword) {
+        if (!otpService.validateOtp(email, otp)) {
+            throw new BadRequestException("Invalid OTP");
+        }
+        otpService.removeOtpFromCache(email);
+        Account account = accountRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+        if (newPassword == null || newPassword.isEmpty()) {
+            throw new BadRequestException("New password is required");
+        }
+        account.setPassword(passwordEncoder.encode(newPassword));
+        accountRepository.save(account);
         return true;
     }
 

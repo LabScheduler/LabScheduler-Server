@@ -41,6 +41,9 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
 
     @Override
     public LecturerRequestResponse createScheduleRequest(LecturerScheduleRequest request) {
+        if (checkRequestConflict(request)) {
+            throw new BadRequestException("Request conflict with existing schedule");
+        }
         LecturerRequest lecturerRequest = LecturerRequest.builder()
                 .lecturerAccount(lecturerAccountRepository.findById(request.getLecturerId()).orElseThrow(()-> new ResourceNotFoundException("Lecturer Not Found")))
                 .course(courseRepository.findById(request.getCourseId()).orElseThrow(() -> new ResourceNotFoundException("Course Not Found")))
@@ -149,9 +152,32 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
         LecturerRequest request = lecturerRequestRepository.findById(requestId).orElseThrow(() -> new ResourceNotFoundException("Request Not Found"));
         LecturerRequestLog requestLog = request.getLecturerRequestLog();
         if (request.getLecturerRequestLog().getStatus() == RequestStatus.PENDING) {
-            requestLog.setStatus(RequestStatus.CANCELED);
+            requestLog.setStatus(RequestStatus.CANCELLED);
+            requestLog.setRepliedAt(new Timestamp(System.currentTimeMillis()));
+            lecturerRequestLogRepository.save(requestLog);
         } else {
             throw new BadRequestException("Cannot cancel a request that is already processed");
         }
+    }
+
+    @Override
+    public boolean checkRequestConflict(LecturerScheduleRequest request) {
+        List<Schedule> existingSchedules = scheduleRepository.findAllByCurrentSemester();
+        SemesterWeek week = semesterWeekRepository.findById(request.getNewSemesterWeekId()).orElseThrow(() -> new ResourceNotFoundException("Semester Week Not Found"));
+        byte dayOfWeek = request.getNewDayOfWeek();
+        byte startPeriod = request.getNewStartPeriod();
+        byte totalPeriod = request.getNewTotalPeriod();
+        Room room = roomRepository.findById(request.getNewRoomId()).orElseThrow(() -> new ResourceNotFoundException("Room Not Found"));
+        List<Schedule> conflictingSchedules = existingSchedules.stream()
+                .filter(schedule -> schedule.getSemesterWeek().getId().equals(week.getId()) &&
+                        schedule.getDayOfWeek() == dayOfWeek &&
+                        schedule.getRoom().getId().equals(room.getId()) &&
+                        ((schedule.getStartPeriod() >= startPeriod && schedule.getStartPeriod() < startPeriod + totalPeriod) ||
+                                (schedule.getStartPeriod() + schedule.getTotalPeriod() > startPeriod && schedule.getStartPeriod() + schedule.getTotalPeriod() <= startPeriod + totalPeriod)))
+                .collect(Collectors.toList());
+        if (!conflictingSchedules.isEmpty()) {
+            return true;
+        }
+        return false;
     }
 }

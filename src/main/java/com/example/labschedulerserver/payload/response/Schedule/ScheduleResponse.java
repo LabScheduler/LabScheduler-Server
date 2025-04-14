@@ -1,10 +1,12 @@
 package com.example.labschedulerserver.payload.response.Schedule;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -42,6 +44,7 @@ public class ScheduleResponse {
     private String semesterWeek;
 
     @JsonProperty("study_date")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "Asia/Ho_Chi_Minh")
     private Timestamp studyDate;
 
     private String status;

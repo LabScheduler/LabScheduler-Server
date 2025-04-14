@@ -38,6 +38,8 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=123
       - MEMCACHED_HOST=memcached
+      - MAIL_USERNAME=hocongtoan987@gmail.com
+      - MAIL_PASSWORD=cxcotpxeberubyjb
     networks:
       - labscheduler-network
 

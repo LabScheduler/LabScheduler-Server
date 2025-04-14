@@ -28,4 +28,6 @@ public interface LecturerRequestService {
     
     //lecturer can cancel their request
     void cancelRequest(Long requestId);
+
+    boolean checkRequestConflict(LecturerScheduleRequest request);
 }

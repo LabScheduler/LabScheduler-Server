@@ -200,7 +200,7 @@ public class ScheduleUtils {
         
         //Adjust to the correct day of week (assuming week starts on Monday)
         int currentDay = cal.get(Calendar.DAY_OF_WEEK);
-        int targetDay = dayOfWeek == 7 ? Calendar.SUNDAY : Calendar.MONDAY + dayOfWeek - 1;
+        int targetDay = dayOfWeek;
         
         int daysToAdd = (targetDay - currentDay + 7) % 7;
         cal.add(Calendar.DAY_OF_WEEK, daysToAdd);

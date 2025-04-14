@@ -2,6 +2,8 @@ package com.example.labschedulerserver.payload.response.Schedule;
 
 import com.example.labschedulerserver.model.Schedule;
 
+import java.time.LocalDateTime;
+
 public class ScheduleMapper {
     public static ScheduleResponse mapScheduleToResponse(Schedule schedule) {
         return ScheduleResponse.builder()
@@ -17,7 +19,7 @@ public class ScheduleMapper {
                 .lecturer(schedule.getCourse().getLecturerAccount().getFullName())
                 .type(schedule.getScheduleType().name())
                 .semesterWeek(schedule.getSemesterWeek().getName())
-                .studyDate(schedule.getStudyDate())
+                .studyDate( schedule.getStudyDate())
                 .status(schedule.getScheduleStatus().name())
                 .build();
     }

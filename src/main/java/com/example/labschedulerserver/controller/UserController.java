@@ -98,25 +98,7 @@ public class UserController {
         return ResponseEntity.ok(dataResponse);
     }
 
-    @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestParam String email) {
-        DataResponse dataResponse = DataResponse.builder()
-                .data(userService.forgotPassword(email))
-                .message("Send email successfully")
-                .success(true)
-                .build();
-        return ResponseEntity.ok(dataResponse);
-    }
 
-    @PostMapping("/verify-otp")
-    public ResponseEntity<?> verifyOtp(@RequestParam String email, @RequestParam String otp) {
-        DataResponse dataResponse = DataResponse.builder()
-                .data(userService.verifyOtp(email, otp))
-                .message("Verify OTP successfully")
-                .success(true)
-                .build();
-        return ResponseEntity.ok(dataResponse);
-    }
 
     @PatchMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestParam String email, @RequestParam(value = "old_password") String oldPassword, @RequestParam(value = "new_password") String newPassword) {
@@ -137,6 +119,16 @@ public class UserController {
         DataResponse dataResponse = DataResponse.builder()
                 .data(userService.filterStudent(classId, majorId, code))
                 .message("Filter student successfully")
+                .success(true)
+                .build();
+        return ResponseEntity.ok(dataResponse);
+    }
+
+    @PatchMapping("/unlock/{id}")
+    public ResponseEntity<?> unlockAccount(@PathVariable Long id) {
+        DataResponse dataResponse = DataResponse.builder()
+                .data(userService.unlockAccount(id))
+                .message("Unlock account successfully")
                 .success(true)
                 .build();
         return ResponseEntity.ok(dataResponse);

@@ -89,8 +89,8 @@ public class LecturerRequestController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/cancel/{requestId}")
-    public ResponseEntity<?> cancelRequest(@PathVariable Long requestId) {
+    @PatchMapping("/cancel")
+    public ResponseEntity<?> cancelRequest(@RequestParam(name = "request_id") Long requestId) {
         lecturerRequestService.cancelRequest(requestId);
         DataResponse dataResponse = DataResponse.builder()
                 .success(true)
@@ -98,4 +98,5 @@ public class LecturerRequestController {
                 .build();
         return ResponseEntity.ok(dataResponse);
     }
+
 } 

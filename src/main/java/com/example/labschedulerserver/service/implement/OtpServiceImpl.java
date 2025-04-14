@@ -23,10 +23,13 @@ public class OtpServiceImpl implements OtpService {
     @Override
     public boolean validateOtp(String email, String otp) {
         Object cachedOtp = memcachedClient.get(email);
-        if (cachedOtp != null && cachedOtp.equals(otp)) {
-            memcachedClient.delete(email);
-            return true;
-        }
-        return false;
+        //            memcachedClient.delete(email);
+        return cachedOtp != null && cachedOtp.equals(otp);
+    }
+
+    @Override
+    public boolean removeOtpFromCache(String email) {
+        memcachedClient.delete(email);
+        return true;
     }
 }

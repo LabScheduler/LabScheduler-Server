@@ -38,4 +38,5 @@ public class AuthService {
                 .userInfo(UserMapper.mapUserToResponse(user,userService.getUserInfo(user.getId())))
                 .build();
     }
+
 }

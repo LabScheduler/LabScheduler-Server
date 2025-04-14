@@ -28,13 +28,17 @@ public interface UserService {
 
     public void deleteUser(Long userId);
 
-    public Account lockAccount(Long userId);
+    public Object lockAccount(Long userId);
+
+    public Object unlockAccount(Long userId);
 
     public boolean changePassword(Long userId, String oldPassword, String newPassword);
 
     public boolean forgotPassword(String email);
 
     public boolean verifyOtp(String email, String otp);
+
+    public boolean resetPassword(String email,String otp, String newPassword);
 
     public boolean changePassword(String email, String oldPassword, String newPassword);
 
