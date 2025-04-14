@@ -28,6 +28,16 @@ public class UserController {
         return ResponseEntity.ok(dataResponse);
     }
 
+    @GetMapping("/lecturer")
+    public ResponseEntity<?> getAllLecturer() {
+        DataResponse dataResponse = DataResponse.builder()
+                .data(userService.getAllLecturer())
+                .message("Get all lecturer successfully")
+                .success(true)
+                .build();
+        return ResponseEntity.ok(dataResponse);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         DataResponse dataResponse = DataResponse.builder()

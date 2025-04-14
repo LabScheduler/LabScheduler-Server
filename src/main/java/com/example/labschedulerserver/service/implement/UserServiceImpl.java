@@ -9,6 +9,7 @@ import com.example.labschedulerserver.model.*;
 import com.example.labschedulerserver.payload.request.User.AddLecturerRequest;
 import com.example.labschedulerserver.payload.request.User.AddManagerRequest;
 import com.example.labschedulerserver.payload.request.User.AddStudentRequest;
+import com.example.labschedulerserver.payload.response.User.LecturerResponse;
 import com.example.labschedulerserver.payload.response.User.ManagerResponse;
 import com.example.labschedulerserver.payload.response.User.StudentResponse;
 import com.example.labschedulerserver.payload.response.User.UserMapper;
@@ -387,6 +388,17 @@ public Object updateUserInfo(Long userId, Map<String, Object> payload) {
         return students.stream().map(student -> {
             Account account = accounts.get(students.indexOf(student));
             return UserMapper.mapUserToResponse(account, student);
+        }).toList();
+    }
+
+    @Override
+    public List<Object> getAllLecturer() {
+        List<LecturerAccount> lecturers = lecturerAccountRepository.findAll();
+        List<Account> accounts = lecturers.stream().map(LecturerAccount::getAccount).toList();
+
+        return lecturers.stream().map(lecturer -> {
+            Account account = accounts.get(lecturers.indexOf(lecturer));
+            return UserMapper.mapUserToResponse(account, lecturer);
         }).toList();
     }
 }

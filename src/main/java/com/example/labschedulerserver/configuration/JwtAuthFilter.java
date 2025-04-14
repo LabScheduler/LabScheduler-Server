@@ -2,6 +2,7 @@ package com.example.labschedulerserver.configuration;
 
 import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.model.Account;
+import com.example.labschedulerserver.repository.AccountRepository;
 import com.example.labschedulerserver.service.JwtService;
 import com.example.labschedulerserver.service.RoleService;
 import com.example.labschedulerserver.service.UserService;
@@ -10,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +28,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserService userService;
     private final UserDetailsService userDetailsService;
     private final RoleService roleService;
+    private final AccountRepository accountRepository;
 
     @Override
     protected void doFilterInternal(
@@ -60,11 +63,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     throw new ResourceNotFoundException("User not found");
                 }
 
-                UserDetails userDetails = Account.builder()
-                        .id(Long.valueOf(jwtService.extractId(token)))
-                        .email(jwtService.extractUserName(token))
-                        .role(roleService.findRoleByName(jwtService.getAuthorities(token).get(0)))
-                        .build();
+
+                UserDetails userDetails = accountRepository.findByEmail(jwtService.extractUserName(token)).orElseThrow(()->new ResourceNotFoundException("User not found"));
+
+                if(!userDetails.isAccountNonLocked()){
+                    return;
+                }
 
                 if(jwtService.validateToken(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

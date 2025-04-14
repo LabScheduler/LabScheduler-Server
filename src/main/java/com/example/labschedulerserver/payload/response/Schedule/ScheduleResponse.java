@@ -36,6 +36,9 @@ public class ScheduleResponse {
     @JsonProperty("total_period")
     private Byte totalPeriod;
 
+    @JsonProperty("class")
+    private String clazz;
+
     private String lecturer;
 
     private String type;

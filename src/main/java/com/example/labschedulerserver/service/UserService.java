@@ -44,4 +44,5 @@ public interface UserService {
 
     public List<Object> filterStudent(Long classId, Long majorId, String code);
 
+    public List<Object> getAllLecturer();
 }

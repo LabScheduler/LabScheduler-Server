@@ -21,6 +21,7 @@ public class ScheduleMapper {
                 .semesterWeek(schedule.getSemesterWeek().getName())
                 .studyDate( schedule.getStudyDate())
                 .status(schedule.getScheduleStatus().name())
+                .clazz(schedule.getCourse().getClazz().getName())
                 .build();
     }
 }

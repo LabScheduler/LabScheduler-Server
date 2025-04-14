@@ -136,12 +136,15 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
                 throw new BadRequestException("Failed to create schedule: " + e.getMessage());
             }
             emailSenderService.sendEmail(lecturerRequest.getLecturerAccount().getAccount().getEmail(),"Notice of your request",
-                    "Your request has been approved. The new schedule has been created.");
+                    "Your request has been approved. The new schedule has been created at "+
+                            lecturerRequest.getNewSemesterWeek().getName() + " " + lecturerRequest.getNewDayOfWeek() + " " +
+                            lecturerRequest.getNewStartPeriod() + " " + lecturerRequest.getNewTotalPeriod() + " in room " +
+                            lecturerRequest.getNewRoom().getName());
 
         }
         else if(request.getStatus().equals("REJECTED")) {
             emailSenderService.sendEmail(lecturerRequest.getLecturerAccount().getAccount().getEmail(),"Notice of your request",
-                    "Your request has been rejected.");
+                    "Your request has been rejected by " + lecturerRequest.getLecturerRequestLog().getManagerAccount().getFullName());
         }
         lecturerRequestLogRepository.save(existingLog);
         return LecturerRequestMapper.toResponse(lecturerRequest, existingLog);
