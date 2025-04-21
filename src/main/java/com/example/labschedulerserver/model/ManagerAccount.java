@@ -27,6 +27,9 @@ public class ManagerAccount {
     private String code;
 
     @Column(unique = true)
+    private String email;
+
+    @Column(unique = true)
     private String phone;
 
     private boolean gender;

@@ -4,20 +4,20 @@ INSERT INTO role (name)
     ('LECTURER'),
     ('STUDENT');
 
-INSERT INTO account (id, email, password, role, status) #pass =123
-VALUES (1, 'gv1@lecturer.ptithcm.edu.vn', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER',
+INSERT INTO account (id, username, password, role, status) #pass =123
+VALUES (1, 'giangvien1', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER',
         'ACTIVE'),
-       (2, 'gv2@lecturer.ptithcm.edu.vn', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER',
+       (2, 'giangvien2', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER',
         'ACTIVE'),
-       (3, 'gv3@lecturer.ptithcm.edu.vn', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER',
+       (3, 'giangvien3', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER',
         'ACTIVE'),
-       (4, 'gv4@lecturer.ptithcm.edu.vn', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER',
+       (4, 'giangvien4', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER',
         'ACTIVE'),
-       (5, 'gv5@lecturer.ptithcm.edu.vn', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER',
+       (5, 'giangvien5', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER',
         'ACTIVE'),
-       (6, 'manager1@manager.ptithcm.edu.vn', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'MANAGER',
+       (6, 'manager1', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'MANAGER',
         'ACTIVE'),
-       (7, 'n22dccn001@student.ptithcm.edu.vn', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO',
+       (7, 'n22dccn001', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO',
         'STUDENT', 'ACTIVE');
 
 
@@ -63,18 +63,18 @@ VALUES ('D22CQPT01-N', 8);
 INSERT INTO class (name, major_id)
 VALUES ('D22CQDT01-N', 5);
 
-INSERT INTO student_account (account_id, full_name, code, phone, gender, major_id, class_id)
-VALUES (7, 'Nguyen Van A', 'n22dccn001', '0123456789', 1, 1, 1);
+INSERT INTO student_account (account_id, full_name, code,email, phone, gender, major_id, class_id)
+VALUES (7, 'Nguyen Van A', 'n22dccn001','toanehihi.dev@gmail.com', '0123456789', 1, 1, 1);
 
-INSERT INTO manager_account (account_id, full_name, code, phone, gender)
-VALUES (6, 'Son Dinh', 'manager001', '0123123123', 1);
+INSERT INTO manager_account (account_id, full_name, code,email, phone, gender)
+VALUES (6, 'Son Dinh', 'manager001','manager001@manager.ptithcm.edu.vn', '0123123123', 1);
 
-INSERT INTO lecturer_account (account_id, code, full_name, department_id, phone, gender)
-VALUES (1, 'lecturer001', 'Huynh Trong Thua', 1, '011111111', 1),
-       (2, 'lecturer002', 'Luu Nguyen Ky Thu', 1, '022222222', 1),
-       (3, 'lecturer003', 'Ha Thanh', 1, '0333333333', 1),
-       (4, 'lecturer004', 'Nguyen Hai', 1, '0444444444', 1),
-       (5, 'lecturer005', 'Nguyen Van Nhat', 1, '0555555555', 1);
+INSERT INTO lecturer_account (account_id, code,email, full_name, department_id, phone, gender)
+VALUES (1, 'lecturer001','giangvien1@lecturer.ptithcm.edu.vn', 'Huynh Trong Thua', 1, '011111111', 1),
+       (2, 'lecturer002','giangvien2@lecturer.ptithcm.edu.vn', 'Luu Nguyen Ky Thu', 1, '022222222', 1),
+       (3, 'lecturer003','giangvien3@lecturer.ptithcm.edu.vn', 'Ha Thanh', 1, '0333333333', 1),
+       (4, 'lecturer004','giangvien4@lecturer.ptithcm.edu.vn', 'Nguyen Hai', 1, '0444444444', 1),
+       (5, 'lecturer005','giangvien5@lecturer.ptithcm.edu.vn', 'Nguyen Van Nhat', 1, '0555555555', 1);
 
 
 

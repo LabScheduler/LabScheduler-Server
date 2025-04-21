@@ -14,15 +14,15 @@ public class OtpServiceImpl implements OtpService {
     private final MemcachedClient memcachedClient;
 
     @Override
-    public String generateOtp(String email) {
+    public String generateOtp(String username) {
         String otp = String.format("%06d", new Random().nextInt(999999));
-        memcachedClient.set(email,(int) TimeUnit.MINUTES.toSeconds(5), otp);
+        memcachedClient.set(username,(int) TimeUnit.MINUTES.toSeconds(5), otp);
         return otp;
     }
 
     @Override
-    public boolean validateOtp(String email, String otp) {
-        Object cachedOtp = memcachedClient.get(email);
+    public boolean validateOtp(String username, String otp) {
+        Object cachedOtp = memcachedClient.get(username);
         //            memcachedClient.delete(email);
         return cachedOtp != null && cachedOtp.equals(otp);
     }

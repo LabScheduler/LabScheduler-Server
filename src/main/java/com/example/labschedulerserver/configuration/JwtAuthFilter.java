@@ -64,7 +64,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
 
 
-                UserDetails userDetails = accountRepository.findByEmail(jwtService.extractUserName(token)).orElseThrow(()->new ResourceNotFoundException("User not found"));
+                UserDetails userDetails = accountRepository.findByUsername(jwtService.extractUserName(token)).orElseThrow(()->new ResourceNotFoundException("User not found"));
 
                 if(!userDetails.isAccountNonLocked()){
                     return;

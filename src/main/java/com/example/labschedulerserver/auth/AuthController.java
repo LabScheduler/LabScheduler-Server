@@ -25,9 +25,9 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestParam String email) {
+    public ResponseEntity<?> forgotPassword(@RequestParam String username) {
         DataResponse dataResponse = DataResponse.builder()
-                .data(userService.forgotPassword(email))
+                .data(userService.forgotPassword(username))
                 .message("Send email successfully")
                 .success(true)
                 .build();
@@ -35,9 +35,9 @@ public class AuthController {
     }
 
     @PostMapping("/verify-otp")
-    public ResponseEntity<?> verifyOtp(@RequestParam String email, @RequestParam String otp) {
+    public ResponseEntity<?> verifyOtp(@RequestParam String username, @RequestParam String otp) {
         DataResponse dataResponse = DataResponse.builder()
-                .data(userService.verifyOtp(email, otp))
+                .data(userService.verifyOtp(username, otp))
                 .message("Verify OTP successfully")
                 .success(true)
                 .build();
@@ -45,9 +45,9 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestParam String email, @RequestParam String otp, @RequestParam(name = "new_password") String newPassword) {
+    public ResponseEntity<?> resetPassword(@RequestParam String username, @RequestParam String otp, @RequestParam(name = "new_password") String newPassword) {
         DataResponse dataResponse = DataResponse.builder()
-                .data(userService.resetPassword(email, otp, newPassword))
+                .data(userService.resetPassword(username, otp, newPassword))
                 .message("Reset password successfully")
                 .success(true)
                 .build();

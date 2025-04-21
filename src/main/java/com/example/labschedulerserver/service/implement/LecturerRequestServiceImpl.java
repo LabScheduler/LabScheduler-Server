@@ -135,7 +135,7 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
             } catch (Exception e) {
                 throw new BadRequestException("Failed to create schedule: " + e.getMessage());
             }
-            emailSenderService.sendEmail(lecturerRequest.getLecturerAccount().getAccount().getEmail(),"Notice of your request",
+            emailSenderService.sendEmail(lecturerRequest.getLecturerAccount().getEmail(),"Notice of your request",
                     "Your request has been approved. The new schedule has been created at "+
                             lecturerRequest.getNewSemesterWeek().getName() + " " + lecturerRequest.getNewDayOfWeek() + " " +
                             lecturerRequest.getNewStartPeriod() + " " + lecturerRequest.getNewTotalPeriod() + " in room " +
@@ -143,7 +143,7 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
 
         }
         else if(request.getStatus().equals("REJECTED")) {
-            emailSenderService.sendEmail(lecturerRequest.getLecturerAccount().getAccount().getEmail(),"Notice of your request",
+            emailSenderService.sendEmail(lecturerRequest.getLecturerAccount().getEmail(),"Notice of your request",
                     "Your request has been rejected by " + lecturerRequest.getLecturerRequestLog().getManagerAccount().getFullName());
         }
         lecturerRequestLogRepository.save(existingLog);
@@ -175,9 +175,9 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
                 .filter(schedule -> schedule.getSemesterWeek().getId().equals(week.getId()) &&
                         schedule.getDayOfWeek() == dayOfWeek &&
                         schedule.getRoom().getId().equals(room.getId()) &&
-                        ((schedule.getStartPeriod() >= startPeriod && schedule.getStartPeriod() < startPeriod + totalPeriod) ||
+                        ((schedule.getStartPeriod() >= startPeriod && schedule.getStartPeriod() < startPeriod + totalPeriod ) ||
                                 (schedule.getStartPeriod() + schedule.getTotalPeriod() > startPeriod && schedule.getStartPeriod() + schedule.getTotalPeriod() <= startPeriod + totalPeriod)))
-                .collect(Collectors.toList());
+                .toList();
         if (!conflictingSchedules.isEmpty()) {
             return true;
         }

@@ -191,7 +191,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         SemesterWeek semesterWeek = semesterWeekRepository.findById(request.getSemesterWeekId())
                 .orElseThrow(() -> new ResourceNotFoundException("Semester week not found"));
 
-        //Get course section
+        //Get a course section
         CourseSection courseSection = null;
         if (request.getCourseSectionId() != null) {
             courseSection = courseSectionRepository.findById(request.getCourseSectionId())

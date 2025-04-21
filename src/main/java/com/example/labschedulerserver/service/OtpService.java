@@ -1,9 +1,9 @@
 package com.example.labschedulerserver.service;
 
 public interface OtpService {
-    String generateOtp(String email);
+    String generateOtp(String us);
 
-    boolean validateOtp(String email, String otp);
+    boolean validateOtp(String username, String otp);
 
-    boolean removeOtpFromCache(String email);
+    boolean removeOtpFromCache(String username);
 }

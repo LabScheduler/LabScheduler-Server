@@ -16,7 +16,7 @@ public interface UserService {
     public Object getUserInfo(Long userId);
 
     public Object findById(Long userId);
-    public Account findByEmail(String email);
+    public Account findByUsername(String username);
 
     public ManagerResponse createManager(AddManagerRequest request);
     public Object createLecturer(AddLecturerRequest request);
@@ -34,13 +34,11 @@ public interface UserService {
 
     public boolean changePassword(Long userId, String oldPassword, String newPassword);
 
-    public boolean forgotPassword(String email);
+    public String forgotPassword(String username);
 
-    public boolean verifyOtp(String email, String otp);
+    public boolean verifyOtp(String username, String otp);
 
-    public boolean resetPassword(String email,String otp, String newPassword);
-
-    public boolean changePassword(String email, String oldPassword, String newPassword);
+    public boolean resetPassword(String username,String otp, String newPassword);
 
     public List<Object> filterStudent(Long classId, Long majorId, String code);
 

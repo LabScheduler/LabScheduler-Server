@@ -9,9 +9,7 @@ import com.example.labschedulerserver.model.*;
 import com.example.labschedulerserver.payload.request.User.AddLecturerRequest;
 import com.example.labschedulerserver.payload.request.User.AddManagerRequest;
 import com.example.labschedulerserver.payload.request.User.AddStudentRequest;
-import com.example.labschedulerserver.payload.response.User.LecturerResponse;
 import com.example.labschedulerserver.payload.response.User.ManagerResponse;
-import com.example.labschedulerserver.payload.response.User.StudentResponse;
 import com.example.labschedulerserver.payload.response.User.UserMapper;
 import com.example.labschedulerserver.repository.*;
 import com.example.labschedulerserver.service.EmailSenderService;
@@ -47,15 +45,15 @@ public class UserServiceImpl implements UserService {
     private final EmailSenderService emailSenderService;
 
     @Override
-    public boolean checkUserIfExist(String email) {
-        return accountRepository.existsByEmail(email);
+    public boolean checkUserIfExist(String username) {
+        return accountRepository.existsByUsername(username);
     }
 
     @Override
     public Object findById(Long userId) {
         Account account = accountRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         Object accountInfo = null;
-        switch (account.getRole().getName()){
+        switch (account.getRole().getName()) {
             case "MANAGER" -> {
                 accountInfo = managerAccountRepository.findById(userId).get();
             }
@@ -70,14 +68,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Account findByEmail(String email) {
-        return accountRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("User not found with email: " + email));
+    public Account findByUsername(String username) {
+        return accountRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
     }
 
     @Override
     @Transactional
     public ManagerResponse createManager(AddManagerRequest request) {
-        if (accountRepository.existsByEmail(request.getCode() + "@manager.ptithcm.edu.vn")) {
+        if (accountRepository.existsByUsername(request.getCode())) {
             throw new RuntimeException("User already exists");
         }
         if (request.getCode() == null || request.getCode().isEmpty()) {
@@ -91,7 +89,7 @@ public class UserServiceImpl implements UserService {
         }
 
         Account account = Account.builder()
-                .email(request.getCode() + "@manager.ptithcm.edu.vn")
+                .username(request.getCode())
                 .password(passwordEncoder.encode(request.getCode()))
                 .role(roleRepository.findRoleByName("MANAGER"))
                 .status(AccountStatus.ACTIVE)
@@ -100,6 +98,7 @@ public class UserServiceImpl implements UserService {
         ManagerAccount managerAccount = ManagerAccount.builder()
                 .fullName(request.getFullName())
                 .code(request.getCode())
+                .email(request.getCode() + "@manager.ptithcm.edu.vn")
                 .phone(request.getPhone())
                 .gender(request.getGender())
                 .account(account)
@@ -112,7 +111,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public Object createLecturer(AddLecturerRequest request) {
-        if (accountRepository.existsByEmail(request.getCode() + "@lecturer.ptithcm.edu.vn")) {
+        if (accountRepository.existsByUsername(request.getCode())) {
             throw new BadRequestException("User already exists");
         }
         if (request.getCode() == null || request.getCode().isEmpty()) {
@@ -128,7 +127,7 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Department is required");
         }
         Account account = Account.builder()
-                .email(request.getCode() + "@lecturer.ptithcm.edu.vn")
+                .username(request.getCode())
                 .password(passwordEncoder.encode(request.getCode()))
                 .role(roleRepository.findRoleByName("LECTURER"))
                 .status(AccountStatus.ACTIVE)
@@ -138,6 +137,7 @@ public class UserServiceImpl implements UserService {
                 .account(account)
                 .fullName(request.getFullName())
                 .code(request.getCode())
+                .email(request.getCode() + "@lecturer.ptithcm.edu.vn")
                 .phone(request.getPhone())
                 .gender(request.getGender())
                 .department(departmentRepository.findById(request.getDepartmentId()).orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId())))
@@ -150,7 +150,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public Object createStudent(AddStudentRequest request) {
-        if (accountRepository.existsByEmail(request.getCode() + "@student.ptithcm.edu.vn")) {
+        if (accountRepository.existsByUsername(request.getCode())) {
             throw new BadRequestException("User already exists");
         }
         if (request.getCode() == null || request.getCode().isEmpty()) {
@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Class is required");
         }
         Account account = Account.builder()
-                .email(request.getCode() + "@student.ptithcm.edu.vn")
+                .username(request.getCode())
                 .password(passwordEncoder.encode(request.getCode()))
                 .role(roleRepository.findRoleByName("STUDENT"))
                 .status(AccountStatus.ACTIVE)
@@ -178,10 +178,11 @@ public class UserServiceImpl implements UserService {
                 .account(account)
                 .fullName(request.getFullName())
                 .code(request.getCode())
+                .email(request.getCode() + "@student.ptithcm.edu.vn")
                 .phone(request.getPhone())
                 .gender(request.getGender())
                 .clazz(classRepository.findById(request.getClassId()).orElseThrow(() -> new ResourceNotFoundException("Class not found with id: " + request.getClassId())))
-                .major(majorRepository.findById(request.getMajorId()).orElseThrow(()-> new ResourceNotFoundException("Major not found with id: " + request.getMajorId())))
+                .major(majorRepository.findById(request.getMajorId()).orElseThrow(() -> new ResourceNotFoundException("Major not found with id: " + request.getMajorId())))
                 .build();
         accountRepository.save(account);
         studentAccountRepository.save(studentAccount);
@@ -191,7 +192,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Object getUserInfo(Long userId) {
         Account user = accountRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
-        switch (user.getRole().getName()){
+        switch (user.getRole().getName()) {
             case "MANAGER" -> {
                 return managerAccountRepository.findById(userId).orElseThrow(RuntimeException::new);
             }
@@ -205,74 +206,74 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-@Override
-@Transactional
-public Object updateUserInfo(Long userId, Map<String, Object> payload) {
-    Account user = accountRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
-    Object userInfo = getUserInfo(userId);
+    @Override
+    @Transactional
+    public Object updateUserInfo(Long userId, Map<String, Object> payload) {
+        Account user = accountRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+        Object userInfo = getUserInfo(userId);
 
-    Map<String, Object> idMap = new HashMap<>();
-    for (Map.Entry<String, Object> entry : payload.entrySet()) {
-        String key = entry.getKey();
-        if (key.contains("id")) {
-            String mappedKey = key.equals("class_id") ? "clazz" : key.replace("_id", "");
-            idMap.put(mappedKey, Long.valueOf(entry.getValue().toString()));
-            continue;
-        }
-        Object value = entry.getValue();
-        try {
-            Field field = userInfo.getClass().getDeclaredField(ConvertFromJsonToTypeVariable.convert(key));
-            field.setAccessible(true);
-            field.set(userInfo, value);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new FieldNotFoundException(key + " " + value);
-        }
-    }
-
-    for (Map.Entry<String, Object> entry : idMap.entrySet()) {
-        String key = entry.getKey();
-        Object value = entry.getValue();
-        try {
-            Field field = userInfo.getClass().getDeclaredField(ConvertFromJsonToTypeVariable.convert(key));
-            field.setAccessible(true);
-            if (key.contains("department")) {
-                Department department = departmentRepository.findById((Long) value).orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + value));
-                field.set(userInfo, department);
-            } else if (key.contains("major")) {
-                Major major = majorRepository.findById((Long) value).orElseThrow(() -> new ResourceNotFoundException("Major not found with id: " + value));
-                field.set(userInfo, major);
-            } else if (key.contains("clazz")) {
-                Clazz clazz = classRepository.findById((Long) value).orElseThrow(() -> new ResourceNotFoundException("Class not found with id: " + value));
-                field.set(userInfo, clazz);
+        Map<String, Object> idMap = new HashMap<>();
+        for (Map.Entry<String, Object> entry : payload.entrySet()) {
+            String key = entry.getKey();
+            if (key.contains("id")) {
+                String mappedKey = key.equals("class_id") ? "clazz" : key.replace("_id", "");
+                idMap.put(mappedKey, Long.valueOf(entry.getValue().toString()));
+                continue;
             }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new FieldNotFoundException(key + " " + value);
+            Object value = entry.getValue();
+            try {
+                Field field = userInfo.getClass().getDeclaredField(ConvertFromJsonToTypeVariable.convert(key));
+                field.setAccessible(true);
+                field.set(userInfo, value);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new FieldNotFoundException(key + " " + value);
+            }
         }
-    }
 
-    switch (user.getRole().getName()) {
-        case "MANAGER" -> {
-            managerAccountRepository.save((ManagerAccount) userInfo);
-            return UserMapper.mapUserToResponse(user, userInfo);
+        for (Map.Entry<String, Object> entry : idMap.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            try {
+                Field field = userInfo.getClass().getDeclaredField(ConvertFromJsonToTypeVariable.convert(key));
+                field.setAccessible(true);
+                if (key.contains("department")) {
+                    Department department = departmentRepository.findById((Long) value).orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + value));
+                    field.set(userInfo, department);
+                } else if (key.contains("major")) {
+                    Major major = majorRepository.findById((Long) value).orElseThrow(() -> new ResourceNotFoundException("Major not found with id: " + value));
+                    field.set(userInfo, major);
+                } else if (key.contains("clazz")) {
+                    Clazz clazz = classRepository.findById((Long) value).orElseThrow(() -> new ResourceNotFoundException("Class not found with id: " + value));
+                    field.set(userInfo, clazz);
+                }
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new FieldNotFoundException(key + " " + value);
+            }
         }
-        case "LECTURER" -> {
-            lecturerAccountRepository.save((LecturerAccount) userInfo);
-            return UserMapper.mapUserToResponse(user, userInfo);
+
+        switch (user.getRole().getName()) {
+            case "MANAGER" -> {
+                managerAccountRepository.save((ManagerAccount) userInfo);
+                return UserMapper.mapUserToResponse(user, userInfo);
+            }
+            case "LECTURER" -> {
+                lecturerAccountRepository.save((LecturerAccount) userInfo);
+                return UserMapper.mapUserToResponse(user, userInfo);
+            }
+            case "STUDENT" -> {
+                studentAccountRepository.save((StudentAccount) userInfo);
+                return UserMapper.mapUserToResponse(user, userInfo);
+            }
+            default -> throw new ForbiddenException("idk wtf is this hehe");
         }
-        case "STUDENT" -> {
-            studentAccountRepository.save((StudentAccount) userInfo);
-            return UserMapper.mapUserToResponse(user, userInfo);
-        }
-        default -> throw new ForbiddenException("idk wtf is this hehe");
     }
-}
 
     @Override
     public List<Object> getAllUser() {
         List<Account> accounts = accountRepository.findAll();
         return accounts.stream().map(account -> {
             Object accountInfo = null;
-            switch (account.getRole().getName()){
+            switch (account.getRole().getName()) {
                 case "MANAGER" -> {
                     accountInfo = managerAccountRepository.findById(account.getId()).get();
                 }
@@ -290,9 +291,9 @@ public Object updateUserInfo(Long userId, Map<String, Object> payload) {
     @Override
     public void deleteUser(Long userId) {
         Account account = accountRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
-        try{
+        try {
             accountRepository.delete(account);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new ForbiddenException("Cannot delete user with id: " + userId);
         }
     }
@@ -314,7 +315,7 @@ public Object updateUserInfo(Long userId, Map<String, Object> payload) {
             throw new BadRequestException("Account is already unlocked");
         }
         account.setStatus(AccountStatus.ACTIVE);
-        return UserMapper.mapUserToResponse(accountRepository.save(account),getUserInfo(userId));
+        return UserMapper.mapUserToResponse(accountRepository.save(account), getUserInfo(userId));
     }
 
     @Override
@@ -327,48 +328,42 @@ public Object updateUserInfo(Long userId, Map<String, Object> payload) {
             throw new BadRequestException("New password is required");
         }
         account.setPassword(passwordEncoder.encode(newPassword));
-        return true;
-    }
-
-    @Override
-    public boolean forgotPassword(String email) {
-        if (!accountRepository.existsByEmail(email)) {
-            throw new ResourceNotFoundException("User not found with email: " + email);
-        }
-        String otp = otpService.generateOtp(email);
-        emailSenderService.sendOtp(email, otp);
-        return true;
-    }
-
-    @Override
-    public boolean verifyOtp(String email, String otp) {
-        if (!otpService.validateOtp(email, otp)) {
-            throw new BadRequestException("Invalid OTP");
-        }
-        return true;
-    }
-
-    @Override
-    public boolean resetPassword(String email, String otp, String newPassword) {
-        if (!otpService.validateOtp(email, otp)) {
-            throw new BadRequestException("Invalid OTP");
-        }
-        otpService.removeOtpFromCache(email);
-        Account account = accountRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
-        if (newPassword == null || newPassword.isEmpty()) {
-            throw new BadRequestException("New password is required");
-        }
-        account.setPassword(passwordEncoder.encode(newPassword));
         accountRepository.save(account);
         return true;
     }
 
     @Override
-    public boolean changePassword(String email, String oldPassword, String newPassword) {
-        Account account = accountRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
-        if (!passwordEncoder.matches(oldPassword, account.getPassword())) {
-            throw new BadRequestException("Old password is incorrect");
+    public String forgotPassword(String username) {
+        Account account = accountRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+
+        String email = accountRepository.findEmailByAccountId(account.getId()).get();
+        String otp = otpService.generateOtp(username);
+        emailSenderService.sendOtp(email, otp);
+
+        String[] parts = email.split("@");
+        String local = parts[0];
+        String domain = parts[1];
+
+        String masked = local.charAt(0) + "****" + local.charAt(local.length() - 1);
+
+        return masked + "@" + domain;
+    }
+
+    @Override
+    public boolean verifyOtp(String username, String otp) {
+        if (!otpService.validateOtp(username, otp)) {
+            throw new BadRequestException("Invalid OTP");
         }
+        return true;
+    }
+
+    @Override
+    public boolean resetPassword(String username, String otp, String newPassword) {
+        if (!otpService.validateOtp(username, otp)) {
+            throw new BadRequestException("Invalid OTP");
+        }
+        otpService.removeOtpFromCache(username);
+        Account account = accountRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
         if (newPassword == null || newPassword.isEmpty()) {
             throw new BadRequestException("New password is required");
         }

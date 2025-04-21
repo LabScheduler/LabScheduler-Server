@@ -23,6 +23,9 @@ public class StudentAccount {
     private String code;
 
     @Column(unique = true)
+    private String email;
+
+    @Column(unique = true)
     private String phone;
 
     private boolean gender;

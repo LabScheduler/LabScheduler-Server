@@ -27,6 +27,9 @@ public class LecturerAccount {
 
     private String phone;
 
+    @Column(unique = true)
+    private String email;
+
     private boolean gender;
 
     @OneToOne(fetch = FetchType.LAZY)

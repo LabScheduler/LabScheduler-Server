@@ -26,12 +26,11 @@ public class AuthService {
 
     public AuthResponse authenticate(AuthRequest authRequest) {
         try{
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         }catch (Exception e){
-            throw new UnauthorizedException("Invalid email or password");
+            throw new UnauthorizedException("Invalid username or password");
         }
-        Account user = userService.findByEmail(authRequest.getEmail());
-
+        Account user = userService.findByUsername(authRequest.getUsername());
 
         return AuthResponse.builder()
                 .token(jwtService.generateToken(user))
