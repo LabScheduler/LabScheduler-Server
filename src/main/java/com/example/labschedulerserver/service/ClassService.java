@@ -6,7 +6,7 @@ import com.example.labschedulerserver.payload.request.Class.UpdateClassRequest;
 
 import java.util.List;
 
-public interface StudentClassService {
+public interface ClassService {
     public List<Clazz> getAllClasses();
     public Clazz getClassById(Long id);
     public Clazz addNewClass(AddClassRequest addClassRequest);

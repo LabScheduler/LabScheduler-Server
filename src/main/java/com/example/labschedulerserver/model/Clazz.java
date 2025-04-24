@@ -32,9 +32,6 @@ public class Clazz {
     @Enumerated(EnumType.STRING)
     private ClassType classType;
 
-    @ManyToMany(mappedBy = "classes")
-    private List<StudentAccount> students;
-
     @OneToMany(mappedBy = "clazz")
     @JsonIgnore
     private List<Course> courses;

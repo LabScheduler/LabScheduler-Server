@@ -76,6 +76,9 @@ VALUES (1, 'LECTURER001', 'toanehihi.dev@gmail.com', 'Huynh Trong Thua', 1, '011
        (5, 'LECTURER005', 'toanehihi4.dev@gmail.com', 'Nguyen Van Nhat', 1, '0555555555', 1);
 
 
+INSERT INTO student_on_class (student_id, class_id, status)
+VALUES (7, 1, 'ENROLLED');
+
 
 INSERT INTO semester (id, code, name, start_date, end_date)
 VALUES (1, '2024-1', 'Học kỳ 1 - Năm học 2024 - 2025', '2024-8-12', '2024-12-29'),

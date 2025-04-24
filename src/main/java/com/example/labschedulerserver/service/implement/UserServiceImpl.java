@@ -16,7 +16,7 @@ import com.example.labschedulerserver.payload.response.User.UserMapper;
 import com.example.labschedulerserver.repository.*;
 import com.example.labschedulerserver.service.EmailSenderService;
 import com.example.labschedulerserver.service.OtpService;
-import com.example.labschedulerserver.service.StudentClassService;
+import com.example.labschedulerserver.service.ClassService;
 import com.example.labschedulerserver.service.UserService;
 import com.example.labschedulerserver.utils.ConvertFromJsonToTypeVariable;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
 
     private final OtpService otpService;
     private final EmailSenderService emailSenderService;
-    private final StudentClassService studentClassService;
+    private final ClassService classService;
 
     @Override
     public boolean checkUserIfExist(String username) {

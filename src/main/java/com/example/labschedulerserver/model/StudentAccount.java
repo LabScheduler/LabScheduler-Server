@@ -37,11 +37,5 @@ public class StudentAccount {
     @JsonIgnore
     private Account account;
 
-    @ManyToMany
-    @JoinTable(
-            name = "student_on_class",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "class_id")
-    )
-    private List<Clazz> classes;
+
 }

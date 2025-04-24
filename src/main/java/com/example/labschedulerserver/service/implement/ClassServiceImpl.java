@@ -10,7 +10,7 @@ import com.example.labschedulerserver.payload.request.Class.UpdateClassRequest;
 import com.example.labschedulerserver.repository.ClassRepository;
 import com.example.labschedulerserver.repository.MajorRepository;
 import com.example.labschedulerserver.repository.StudentAccountRepository;
-import com.example.labschedulerserver.service.StudentClassService;
+import com.example.labschedulerserver.service.ClassService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class StudentClassServiceImpl implements StudentClassService {
+public class ClassServiceImpl implements ClassService {
     private final ClassRepository classRepository;
     private final MajorRepository majorRepository;
     private final StudentAccountRepository studentAccountRepository;

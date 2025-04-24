@@ -72,6 +72,7 @@ CREATE TABLE student_on_class
 (
     student_id BIGINT,
     class_id   BIGINT,
+    status    ENUM ('ENROLLED', 'COMPLETED', 'DROPPED') NOT NULL DEFAULT 'ENROLLED',
     PRIMARY KEY (student_id, class_id),
     FOREIGN KEY (student_id) REFERENCES student_account (account_id),
     FOREIGN KEY (class_id) REFERENCES class (id)
