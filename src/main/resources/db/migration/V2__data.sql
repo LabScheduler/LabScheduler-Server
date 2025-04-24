@@ -1,24 +1,23 @@
-INSERT INTO role (name)
+INSERT INTO role (id, name)
     VALUE
-    ('MANAGER'),
-    ('LECTURER'),
-    ('STUDENT');
+    (1, 'MANAGER'),
+    (2, 'LECTURER'),
+    (3, 'STUDENT');
 
-INSERT INTO account (id, username, password, role, status) #pass =123
-VALUES (1, 'giangvien1', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER',
+INSERT INTO account (id, username, password, role_id, status) #pass =123
+VALUES (1, 'LECTURER001', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 2,
         'ACTIVE'),
-       (2, 'giangvien2', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER',
+       (2, 'LECTURER002', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 2,
         'ACTIVE'),
-       (3, 'giangvien3', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER',
+       (3, 'LECTURER003', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 2,
         'ACTIVE'),
-       (4, 'giangvien4', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER',
+       (4, 'LECTURER004', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 2,
         'ACTIVE'),
-       (5, 'giangvien5', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'LECTURER',
+       (5, 'LECTURER005', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 2,
         'ACTIVE'),
-       (6, 'manager1', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 'MANAGER',
+       (6, 'MANAGER001', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 1,
         'ACTIVE'),
-       (7, 'n22dccn001', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO',
-        'STUDENT', 'ACTIVE');
+       (7, 'STUDENT001', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 3, 'ACTIVE');
 
 
 
@@ -54,27 +53,27 @@ VALUES (9, 'TTDPT', 'Truyền thông Đa phương tiện', 5);
 INSERT INTO major (id, code, name, department_id)
 VALUES (10, 'CNDPT', 'Công nghệ Đa phương tiện', 5);
 
-INSERT INTO class (name, major_id)
-VALUES ('D22CQCN01-N', 1);
-INSERT INTO class (name, major_id)
-VALUES ('D22CQCN02-N', 1);
-INSERT INTO class (name, major_id)
-VALUES ('D22CQPT01-N', 8);
-INSERT INTO class (name, major_id)
-VALUES ('D22CQDT01-N', 5);
+INSERT INTO class (name, major_id, class_type)
+VALUES ('D22CQCN01-N', 1, 'MAJOR');
+INSERT INTO class (name, major_id, class_type)
+VALUES ('D22CQCN02-N', 1, 'MAJOR');
+INSERT INTO class (name, major_id, class_type)
+VALUES ('D22CQPT01-N', 8, 'MAJOR');
+INSERT INTO class (name, major_id, class_type)
+VALUES ('D22CQDT01-N', 5, 'MAJOR');
 
-INSERT INTO student_account (account_id, full_name, code,email, phone, gender, major_id, class_id)
-VALUES (7, 'Nguyen Van A', 'n22dccn001','toanehihi.dev@gmail.com', '0123456789', 1, 1, 1);
+INSERT INTO student_account (account_id, full_name, code, email, phone, gender)
+VALUES (7, 'Nguyen Van A', 'STUDENT001', 'toanehihi.dev@gmail.com', '0123456789', 1);
 
-INSERT INTO manager_account (account_id, full_name, code,email, phone, gender)
-VALUES (6, 'Son Dinh', 'manager001','manager001@manager.ptithcm.edu.vn', '0123123123', 1);
+INSERT INTO manager_account (account_id, full_name, code, email, phone, gender)
+VALUES (6, 'Son Dinh', 'MANAGER001', 'toanehihi.dev@gmail.com', '0123123123', 1);
 
-INSERT INTO lecturer_account (account_id, code,email, full_name, department_id, phone, gender)
-VALUES (1, 'lecturer001','giangvien1@lecturer.ptithcm.edu.vn', 'Huynh Trong Thua', 1, '011111111', 1),
-       (2, 'lecturer002','giangvien2@lecturer.ptithcm.edu.vn', 'Luu Nguyen Ky Thu', 1, '022222222', 1),
-       (3, 'lecturer003','giangvien3@lecturer.ptithcm.edu.vn', 'Ha Thanh', 1, '0333333333', 1),
-       (4, 'lecturer004','giangvien4@lecturer.ptithcm.edu.vn', 'Nguyen Hai', 1, '0444444444', 1),
-       (5, 'lecturer005','giangvien5@lecturer.ptithcm.edu.vn', 'Nguyen Van Nhat', 1, '0555555555', 1);
+INSERT INTO lecturer_account (account_id, code, email, full_name, department_id, phone, gender)
+VALUES (1, 'LECTURER001', 'toanehihi.dev@gmail.com', 'Huynh Trong Thua', 1, '011111111', 1),
+       (2, 'LECTURER002', 'toanehihi.dev@gmail.com', 'Luu Nguyen Ky Thu', 1, '022222222', 1),
+       (3, 'LECTURER003', 'toanehihi.dev@gmail.com', 'Ha Thanh', 1, '0333333333', 1),
+       (4, 'LECTURER004', 'toanehihi.dev@gmail.com', 'Nguyen Hai', 1, '0444444444', 1),
+       (5, 'LECTURER005', 'toanehihi.dev@gmail.com', 'Nguyen Van Nhat', 1, '0555555555', 1);
 
 
 
@@ -149,60 +148,69 @@ VALUES (42, 'Tuần 46', '2025-06-23 00:00:00', '2025-06-29 23:59:59', 3),
        (56, 'Tuần 60', '2025-09-29 00:00:00', '2025-10-05 23:59:59', 3),
        (57, 'Tuần 61', '2025-10-06 00:00:00', '2025-10-12 23:59:59', 3);
 
-INSERT INTO subject (id, code, name, total_credits, total_theory_periods, total_practice_periods)
-VALUES (1, 'BAS1150', 'Triết học Mác - Lênin', 3, 45, 0),
-       (2, 'BAS1203', 'Giải tích 1', 3, 36, 0),
-       (3, 'INT1154', 'Tin học cơ sở 1', 2, 20, 4),
-       (4, 'BAS1201', 'Đại số', 3, 36, 0),
-       (5, 'BAS1106', 'Giáo dục thể chất 1', 2, 2, 0),
-       (6, 'BAS1105-7', 'Giáo dục quốc phòng và an ninh', 7, 0, 165),
-       (7, 'BAS1151', 'Kinh tế chính trị Mác - Lênin', 2, 30, 0),
-       (8, 'BAS1157', 'Tiếng Anh (Course 1)', 4, 60, 0),
-       (9, 'BAS1156', 'Tiếng Anh bổ trợ', 4, 60, 0),
-       (10, 'BAS1204', 'Giải tích 2', 3, 36, 0),
-       (11, 'BAS1224', 'Vật lý 1 và thí nghiệm', 4, 42, 8),
-       (12, 'INT1155', 'Tin học cơ sở 2', 2, 20, 4),
-       (13, 'ELE1433', 'Kỹ thuật số', 2, 24, 2),
-       (14, 'BAS1226', 'Xác suất thống kê', 2, 24, 0),
-       (15, 'BAS1107', 'Giáo dục thể chất 2', 2, 2, 26),
-       (16, 'BAS1152', 'Chủ nghĩa xã hội khoa học', 2, 30, 0),
-       (17, 'BAS1158', 'Tiếng Anh (Course 2)', 4, 60, 0),
-       (18, 'INT1358', 'Toán rời rạc 1', 3, 36, 0),
-       (19, 'BAS1227', 'Vật lý 3 và thí nghiệm', 4, 36, 4),
-       (20, 'ELE1330', 'Xử lý tín hiệu số', 2, 24, 0),
-       (21, 'INT1339', 'Ngôn ngữ lập trình C++', 3, 30, 8),
-       (22, 'SKD1101', 'Kỹ năng thuyết trình', 1, 6, 0),
-       (23, 'BAS1122', 'Tư tưởng Hồ Chí Minh', 2, 24, 0),
-       (24, 'BAS1159', 'Tiếng Anh (Course 3)', 4, 60, 0),
-       (25, 'INT13145', 'Kiến trúc máy tính', 3, 36, 0),
-       (26, 'INT1359-3', 'Toán rời rạc 2', 3, 36, 0),
-       (27, 'INT1306', 'Cấu trúc dữ liệu và giải thuật', 3, 32, 4),
-       (28, 'ELE1319', 'Lý thuyết thông tin', 3, 36, 0),
-       (29, 'SKD1102', 'Kỹ năng làm việc nhóm', 1, 6, 0),
-       (30, 'BSA1221', 'Pháp luật đại cương', 2, 24, 0),
-       (31, 'BAS1153', 'Lịch sử Đảng Cộng sản Việt Nam', 2, 30, 0),
-       (32, 'INT13162', 'Lập trình với Python', 3, 30, 6),
-       (33, 'INT1319', 'Hệ điều hành', 3, 34, 3),
-       (34, 'INT1336', 'Mạng máy tính', 3, 34, 3),
-       (35, 'INT1332', 'Lập trình hướng đối tượng', 3, 30, 6),
-       (36, 'INT1313', 'Cơ sở dữ liệu', 3, 32, 4),
-       (37, 'BAS1160', 'Tiếng Anh (Course 3 Plus)', 2, 30, 0),
-       (38, 'INT1434-3', 'Lập trình Web', 3, 30, 6),
-       (39, 'INT1303', 'An toàn và bảo mật hệ thống thông tin', 3, 32, 2),
-       (40, 'INT1340', 'Nhập môn công nghệ phần mềm', 3, 36, 0),
-       (41, 'INT1341', 'Nhập môn trí tuệ nhân tạo', 3, 36, 0),
-       (42, 'INT14148', 'Cơ sở dữ liệu phân tán', 3, 36, 0),
-       (43, 'INT13147', 'Thực tập cơ sở', 3, 4, 0),
-       (44, 'SKD1103', 'Kỹ năng tạo lập Văn bản', 1, 6, 0);
+INSERT INTO subject (id, code, name, total_credits, total_theory_periods, total_practice_periods, total_exercise_periods, total_self_study_periods)
+VALUES (1, 'BAS1150', 'Triết học Mác - Lênin', 3, 45, 0, 0, 0),
+       (2, 'BAS1203', 'Giải tích 1', 3, 36, 0, 0, 0),
+       (3, 'INT1154', 'Tin học cơ sở 1', 2, 20, 4, 0, 0),
+       (4, 'BAS1201', 'Đại số', 3, 36, 0, 0, 0),
+       (5, 'BAS1106', 'Giáo dục thể chất 1', 2, 2, 0, 0, 0),
+       (6, 'BAS1105-7', 'Giáo dục quốc phòng và an ninh', 7, 0, 165, 0, 0),
+       (7, 'BAS1151', 'Kinh tế chính trị Mác - Lênin', 2, 30, 0, 0, 0),
+       (8, 'BAS1157', 'Tiếng Anh (Course 1)', 4, 60, 0, 0, 0),
+       (9, 'BAS1156', 'Tiếng Anh bổ trợ', 4, 60, 0, 0, 0),
+       (10, 'BAS1204', 'Giải tích 2', 3, 36, 0, 0, 0),
+       (11, 'BAS1224', 'Vật lý 1 và thí nghiệm', 4, 42, 8, 0, 0),
+       (12, 'INT1155', 'Tin học cơ sở 2', 2, 20, 4, 0, 0),
+       (13, 'ELE1433', 'Kỹ thuật số', 2, 24, 2, 0, 0),
+       (14, 'BAS1226', 'Xác suất thống kê', 2, 24, 0, 0, 0),
+       (15, 'BAS1107', 'Giáo dục thể chất 2', 2, 2, 26, 0, 0),
+       (16, 'BAS1152', 'Chủ nghĩa xã hội khoa học', 2, 30, 0, 0, 0),
+       (17, 'BAS1158', 'Tiếng Anh (Course 2)', 4, 60, 0, 0, 0),
+       (18, 'INT1358', 'Toán rời rạc 1', 3, 36, 0, 0, 0),
+       (19, 'BAS1227', 'Vật lý 3 và thí nghiệm', 4, 36, 4, 0, 0),
+       (20, 'ELE1330', 'Xử lý tín hiệu số', 2, 24, 0, 0, 0),
+       (21, 'INT1339', 'Ngôn ngữ lập trình C++', 3, 30, 8, 0, 0),
+       (22, 'SKD1101', 'Kỹ năng thuyết trình', 1, 6, 0, 0, 0),
+       (23, 'BAS1122', 'Tư tưởng Hồ Chí Minh', 2, 24, 0, 0, 0),
+       (24, 'BAS1159', 'Tiếng Anh (Course 3)', 4, 60, 0, 0, 0),
+       (25, 'INT13145', 'Kiến trúc máy tính', 3, 36, 0, 0, 0),
+       (26, 'INT1359-3', 'Toán rời rạc 2', 3, 36, 0, 0, 0),
+       (27, 'INT1306', 'Cấu trúc dữ liệu và giải thuật', 3, 32, 4, 0, 0),
+       (28, 'ELE1319', 'Lý thuyết thông tin', 3, 36, 0, 0, 0),
+       (29, 'SKD1102', 'Kỹ năng làm việc nhóm', 1, 6, 0, 0, 0),
+       (30, 'BSA1221', 'Pháp luật đại cương', 2, 24, 0, 0, 0),
+       (31, 'BAS1153', 'Lịch sử Đảng Cộng sản Việt Nam', 2, 30, 0, 0, 0),
+       (32, 'INT13162', 'Lập trình với Python', 3, 30, 6, 0, 0),
+       (33, 'INT1319', 'Hệ điều hành', 3, 34, 3, 0, 0),
+       (34, 'INT1336', 'Mạng máy tính', 3, 34, 3, 0, 0),
+       (35, 'INT1332', 'Lập trình hướng đối tượng', 3, 30, 6, 0, 0),
+       (36, 'INT1313', 'Cơ sở dữ liệu', 3, 32, 4, 0, 0),
+       (37, 'BAS1160', 'Tiếng Anh (Course 3 Plus)', 2, 30, 0, 0, 0),
+       (38, 'INT1434-3', 'Lập trình Web', 3, 30, 6, 0, 0),
+       (39, 'INT1303', 'An toàn và bảo mật hệ thống thông tin', 3, 32, 2, 0, 0),
+       (40, 'INT1340', 'Nhập môn công nghệ phần mềm', 3, 36, 0, 0, 0),
+       (41, 'INT1341', 'Nhập môn trí tuệ nhân tạo', 3, 36, 0, 0, 0),
+       (42, 'INT14148', 'Cơ sở dữ liệu phân tán', 3, 36, 0, 0, 0),
+       (43, 'INT13147', 'Thực tập cơ sở', 3, 4, 0, 0, 0),
+       (44, 'SKD1103', 'Kỹ năng tạo lập Văn bản', 1, 6, 0, 0, 0);
 
-INSERT INTO course (subject_id, class_id, semester_id, lecturer_id, group_number, total_students)
-VALUES (38, 1, 2, 1, 1, 80),
-       (39, 1, 2, 2, 1, 86),
-       (40, 1, 2, 3, 1, 80),
-       (41, 1, 2, 4, 1, 80),
-       (42, 1, 2, 5, 1, 80),
-       (43, 1, 2, 1, 1, 80),
-       (44, 1, 2, 2, 1, 80);
+INSERT INTO course (id, subject_id, class_id, semester_id, group_number)
+VALUES (1, 38, 1, 2, 1),
+       (2, 39, 1, 2, 1),
+       (3, 40, 1, 2, 1),
+       (4, 41, 1, 2, 1),
+       (5, 42, 1, 2, 1),
+       (6, 43, 1, 2, 1),
+       (7, 44, 1, 2, 1);
+
+INSERT INTO lecturer_on_course (course_id, lecturer_id)
+VALUES (1, 1),
+       (2, 2),
+       (3, 3),
+       (4, 4),
+       (5, 5),
+       (6, 1),
+       (7, 2);
 
 INSERT INTO course_section(course_id, section_number, total_students_in_section)
 VALUES (1, 1, 40),
@@ -218,3 +226,17 @@ VALUES (1, '2B11', 50, 'AVAILABLE', '', '2025-03-01 10:00:00'),
        (4, '2B22', 30, 'AVAILABLE', '', '2025-03-02 08:00:00'),
        (5, '2B31', 50, 'REPAIRING', '', '2025-03-01 12:00:00'),
        (6, '2B32', 50, 'AVAILABLE', '', '2025-03-02 09:00:00');
+
+-- Add sample schedule data
+INSERT INTO schedule (course_id, course_section_id, room_id, day_of_week, lecturer_id, start_period, total_period, semester_week_id, status, study_date)
+VALUES (1, 1, 1, 2, 1, 1, 3, 21, 'IN_PROGRESS', '2025-01-06 07:00:00'),
+       (1, 2, 2, 3, 1, 4, 3, 21, 'IN_PROGRESS', '2025-01-07 13:00:00'),
+       (2, 1, 3, 4, 2, 7, 3, 21, 'IN_PROGRESS', '2025-01-08 15:30:00');
+
+-- Add sample lecturer request
+INSERT INTO lecturer_request (lecturer_id, course_id, room_id, day_of_week, start_period, total_period, reason)
+VALUES (1, 1, 2, 5, 1, 3, 'Học bù');
+
+-- Add sample lecturer request log
+INSERT INTO lecturer_request_log (request_id, manager_id, status, body)
+VALUES (1, 6, 'REJECTED', 'Bị trùng lịch');
