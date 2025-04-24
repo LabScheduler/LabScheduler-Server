@@ -63,17 +63,17 @@ INSERT INTO class (name, major_id, class_type)
 VALUES ('D22CQDT01-N', 5, 'MAJOR');
 
 INSERT INTO student_account (account_id, full_name, code, email, phone, gender)
-VALUES (7, 'Nguyen Van A', 'STUDENT001', 'toanehihi.dev@gmail.com', '0123456789', 1);
+VALUES (7, 'Nguyen Van A', 'STUDENT001', 'n22dccn086@student.ptithcm.edu.vn', '0123456789', 1);
 
 INSERT INTO manager_account (account_id, full_name, code, email, phone, gender)
-VALUES (6, 'Son Dinh', 'MANAGER001', 'toanehihi.dev@gmail.com', '0123123123', 1);
+VALUES (6, 'Son Dinh', 'MANAGER001', 'sample1@gmail.com', '0123123123', 1);
 
 INSERT INTO lecturer_account (account_id, code, email, full_name, department_id, phone, gender)
 VALUES (1, 'LECTURER001', 'toanehihi.dev@gmail.com', 'Huynh Trong Thua', 1, '011111111', 1),
-       (2, 'LECTURER002', 'toanehihi.dev@gmail.com', 'Luu Nguyen Ky Thu', 1, '022222222', 1),
-       (3, 'LECTURER003', 'toanehihi.dev@gmail.com', 'Ha Thanh', 1, '0333333333', 1),
-       (4, 'LECTURER004', 'toanehihi.dev@gmail.com', 'Nguyen Hai', 1, '0444444444', 1),
-       (5, 'LECTURER005', 'toanehihi.dev@gmail.com', 'Nguyen Van Nhat', 1, '0555555555', 1);
+       (2, 'LECTURER002', 'toanehihi1.dev@gmail.com', 'Luu Nguyen Ky Thu', 1, '022222222', 1),
+       (3, 'LECTURER003', 'toanehihi2.dev@gmail.com', 'Ha Thanh', 1, '0333333333', 1),
+       (4, 'LECTURER004', 'toanehihi3.dev@gmail.com', 'Nguyen Hai', 1, '0444444444', 1),
+       (5, 'LECTURER005', 'toanehihi4.dev@gmail.com', 'Nguyen Van Nhat', 1, '0555555555', 1);
 
 
 
