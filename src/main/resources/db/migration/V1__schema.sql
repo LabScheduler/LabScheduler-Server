@@ -134,6 +134,7 @@ CREATE TABLE course
     class_id     BIGINT NOT NULL,
     semester_id  BIGINT NOT NULL,
     group_number INT    NOT NULL,
+    total_students INT    NOT NULL,
     FOREIGN KEY (subject_id) REFERENCES subject (id),
     FOREIGN KEY (class_id) REFERENCES class (id),
     FOREIGN KEY (semester_id) REFERENCES semester (id)
