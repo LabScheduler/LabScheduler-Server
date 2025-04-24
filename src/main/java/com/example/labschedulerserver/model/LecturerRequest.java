@@ -1,10 +1,11 @@
 package com.example.labschedulerserver.model;
 
-import com.example.labschedulerserver.common.RequestStatus;
-import com.example.labschedulerserver.common.RequestType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
@@ -22,44 +23,35 @@ public class LecturerRequest {
 
     @ManyToOne
     @JoinColumn(name = "lecturer_id")
-    @JsonProperty("lecturer_account")
     private LecturerAccount lecturerAccount;
 
     @ManyToOne
-    @JoinColumn(name = "new_room_id")
-    @JsonProperty("new_room")
-    private Room newRoom;
+    @JoinColumn(name = "room_id")
+    private Room room;
 
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
 
     @ManyToOne
+    @JoinColumn(name = "course_section_id")
     private CourseSection courseSection;
 
     @ManyToOne
-    @JoinColumn(name = "new_semester_week_id")
-    @JsonProperty("new_semester_week")
-    private SemesterWeek newSemesterWeek;
+    @JoinColumn(name = "semester_week_id")
+    private SemesterWeek semesterWeek;
 
-    @Column(name = "new_day_of_week")
-    @JsonProperty("new_day_of_week")
-    private Byte newDayOfWeek;
+    @Column(name = "day_of_week")
+    private Byte dayOfWeek;
 
-    @Column(name = "new_start_period")
-    @JsonProperty("new_start_period")
-    private Byte newStartPeriod;
+    @Column(name = "start_period")
+    @JsonProperty("start_period")
+    private Byte startPeriod;
 
-    @Column(name = "new_total_period")
-    @JsonProperty("new_total_period")
-    private Byte newTotalPeriod;
+    @Column(name = "total_period")
+    private Byte totalPeriod;
 
     private String reason;
-
-    @Column(name = "type")
-    @Enumerated(EnumType.STRING)
-    @JsonProperty("type")
-    private RequestType type;
 
     @Column(name = "created_at")
     @JsonProperty("created_at")

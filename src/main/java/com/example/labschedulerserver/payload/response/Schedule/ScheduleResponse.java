@@ -41,8 +41,6 @@ public class ScheduleResponse {
 
     private String lecturer;
 
-    private String type;
-
     @JsonProperty("semester_week")
     private String semesterWeek;
 

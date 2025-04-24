@@ -25,10 +25,6 @@ public class Major {
     @JsonIgnore
     private List<Clazz> classes;
 
-    @OneToMany(mappedBy = "major", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<StudentAccount> studentAccounts;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     @JsonIgnore

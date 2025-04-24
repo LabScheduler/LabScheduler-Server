@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -35,12 +37,11 @@ public class StudentAccount {
     @JsonIgnore
     private Account account;
 
-    @ManyToOne
-    @JoinColumn(name = "major_id")
-    private Major major;
-
-    @ManyToOne
-    @JoinColumn(name = "class_id")
-    @JsonProperty("class")
-    private Clazz clazz;
+    @ManyToMany
+    @JoinTable(
+            name = "student_on_class",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "class_id")
+    )
+    private List<Clazz> classes;
 }

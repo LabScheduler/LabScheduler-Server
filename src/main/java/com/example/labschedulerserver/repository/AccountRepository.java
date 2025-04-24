@@ -15,6 +15,24 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     boolean existsByUsername(String username);
 
     @Query(value = """
+            SELECT CASE 
+                WHEN EXISTS (
+                    SELECT 1 FROM (
+                        SELECT email FROM student_account
+                        UNION ALL
+                        SELECT email FROM lecturer_account
+                        UNION ALL
+                        SELECT email FROM manager_account
+                    ) AS emails 
+                    WHERE email = :email
+                ) 
+                THEN TRUE 
+                ELSE FALSE 
+            END
+            """, nativeQuery = true)
+    boolean existsByEmail(@Param("email") String email);
+
+    @Query(value = """
     SELECT email
     FROM (
              SELECT email, account_id FROM student_account
@@ -26,4 +44,5 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     WHERE account_id = :accountId
 """, nativeQuery = true)
     Optional<String> findEmailByAccountId(@Param("accountId") Long accountId);
+
 }

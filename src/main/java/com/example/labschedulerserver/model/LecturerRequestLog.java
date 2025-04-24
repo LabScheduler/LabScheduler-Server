@@ -34,6 +34,8 @@ public class    LecturerRequestLog {
     @JsonProperty("manager_account")
     private ManagerAccount managerAccount;
 
+    private String body;
+
     @Column(name = "replied_at")
     @JsonProperty("replied_at")
     private Timestamp repliedAt;

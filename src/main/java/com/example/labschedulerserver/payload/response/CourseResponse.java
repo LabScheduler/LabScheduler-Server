@@ -20,7 +20,7 @@ public class CourseResponse {
     @JsonProperty("class")
     private String clazz;
     private String semester;
-    private String lecturer;
+    private List<String> lecturers;
     @JsonProperty("group_number")
     private Integer groupNumber;
     @JsonProperty("total_students")

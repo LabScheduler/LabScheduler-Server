@@ -31,7 +31,7 @@ public class Account implements UserDetails {
     private String password;
 
     @ManyToOne
-    @JoinColumn(name = "role")
+    @JoinColumn(name = "role_id")
     private Role role;
 
     @Enumerated(EnumType.STRING)
@@ -39,7 +39,6 @@ public class Account implements UserDetails {
 
     @Column(name = "created_at")
     @CurrentTimestamp
-    @JsonProperty("created_at")
     private Timestamp createdAt;
 
     @Override

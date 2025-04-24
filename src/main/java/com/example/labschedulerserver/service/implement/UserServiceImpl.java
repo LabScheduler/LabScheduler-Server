@@ -9,14 +9,19 @@ import com.example.labschedulerserver.model.*;
 import com.example.labschedulerserver.payload.request.User.AddLecturerRequest;
 import com.example.labschedulerserver.payload.request.User.AddManagerRequest;
 import com.example.labschedulerserver.payload.request.User.AddStudentRequest;
+import com.example.labschedulerserver.payload.response.User.LecturerResponse;
 import com.example.labschedulerserver.payload.response.User.ManagerResponse;
+import com.example.labschedulerserver.payload.response.User.StudentResponse;
 import com.example.labschedulerserver.payload.response.User.UserMapper;
 import com.example.labschedulerserver.repository.*;
 import com.example.labschedulerserver.service.EmailSenderService;
 import com.example.labschedulerserver.service.OtpService;
+import com.example.labschedulerserver.service.StudentClassService;
 import com.example.labschedulerserver.service.UserService;
 import com.example.labschedulerserver.utils.ConvertFromJsonToTypeVariable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,10 +48,58 @@ public class UserServiceImpl implements UserService {
 
     private final OtpService otpService;
     private final EmailSenderService emailSenderService;
+    private final StudentClassService studentClassService;
 
     @Override
     public boolean checkUserIfExist(String username) {
         return accountRepository.existsByUsername(username);
+    }
+
+    @Override
+    public ManagerResponse getCurrentManager() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("User is not authenticated");
+        }
+
+        String username = authentication.getName();
+        Account account = accountRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+        if (account.getRole().getName().equals("MANAGER")) {
+            ManagerAccount managerAccount = managerAccountRepository.findById(account.getId()).orElseThrow(() -> new ResourceNotFoundException("Manager not found with id: " + account.getId()));
+            return (ManagerResponse) UserMapper.mapUserToResponse(account, managerAccount);
+        }
+        return null;
+    }
+
+    @Override
+    public StudentResponse getCurrentStudent() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("User is not authenticated");
+        }
+        String username = authentication.getName();
+        Account account = accountRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+        StudentAccount studentAccount = studentAccountRepository.findById(account.getId()).orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + account.getId()));
+        if (account.getRole().getName().equals("STUDENT")) {
+            return (StudentResponse) UserMapper.mapUserToResponse(account, studentAccount);
+        }
+        return null;
+    }
+
+    @Override
+    public LecturerResponse getCurrentLecturer() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("User is not authenticated");
+        }
+        String username = authentication.getName();
+        Account account = accountRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+        if (account.getRole().getName().equals("LECTURER")) {
+            LecturerAccount lecturerAccount = lecturerAccountRepository.findById(account.getId()).orElseThrow(() -> new ResourceNotFoundException("Lecturer not found with id: " + account.getId()));
+            return (LecturerResponse) UserMapper.mapUserToResponse(account, lecturerAccount);
+        }
+        return null;
     }
 
     @Override
@@ -67,6 +120,7 @@ public class UserServiceImpl implements UserService {
         return UserMapper.mapUserToResponse(account, accountInfo);
     }
 
+
     @Override
     public Account findByUsername(String username) {
         return accountRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
@@ -77,15 +131,6 @@ public class UserServiceImpl implements UserService {
     public ManagerResponse createManager(AddManagerRequest request) {
         if (accountRepository.existsByUsername(request.getCode())) {
             throw new RuntimeException("User already exists");
-        }
-        if (request.getCode() == null || request.getCode().isEmpty()) {
-            throw new BadRequestException("Code is required");
-        }
-        if (request.getFullName() == null || request.getFullName().isEmpty()) {
-            throw new BadRequestException("Full name is required");
-        }
-        if (request.getPhone() == null || request.getPhone().isEmpty()) {
-            throw new BadRequestException("Phone is required");
         }
 
         Account account = Account.builder()
@@ -98,7 +143,7 @@ public class UserServiceImpl implements UserService {
         ManagerAccount managerAccount = ManagerAccount.builder()
                 .fullName(request.getFullName())
                 .code(request.getCode())
-                .email(request.getCode() + "@manager.ptithcm.edu.vn")
+                .email(request.getEmail())
                 .phone(request.getPhone())
                 .gender(request.getGender())
                 .account(account)
@@ -110,22 +155,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Object createLecturer(AddLecturerRequest request) {
-        if (accountRepository.existsByUsername(request.getCode())) {
-            throw new BadRequestException("User already exists");
-        }
-        if (request.getCode() == null || request.getCode().isEmpty()) {
-            throw new BadRequestException("Code is required");
-        }
-        if (request.getFullName() == null || request.getFullName().isEmpty()) {
-            throw new BadRequestException("Full name is required");
-        }
-        if (request.getPhone() == null || request.getPhone().isEmpty()) {
-            throw new BadRequestException("Phone is required");
-        }
-        if (request.getDepartmentId() == null) {
-            throw new BadRequestException("Department is required");
-        }
+    public LecturerResponse createLecturer(AddLecturerRequest request) {
         Account account = Account.builder()
                 .username(request.getCode())
                 .password(passwordEncoder.encode(request.getCode()))
@@ -137,56 +167,42 @@ public class UserServiceImpl implements UserService {
                 .account(account)
                 .fullName(request.getFullName())
                 .code(request.getCode())
-                .email(request.getCode() + "@lecturer.ptithcm.edu.vn")
+                .email(request.getEmail())
                 .phone(request.getPhone())
                 .gender(request.getGender())
                 .department(departmentRepository.findById(request.getDepartmentId()).orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId())))
                 .build();
         accountRepository.save(account);
         lecturerAccountRepository.save(lecturerAccount);
-        return UserMapper.mapUserToResponse(account, lecturerAccount);
+        return (LecturerResponse) UserMapper.mapUserToResponse(account, lecturerAccount);
     }
 
     @Override
     @Transactional
-    public Object createStudent(AddStudentRequest request) {
+    public StudentResponse createStudent(AddStudentRequest request) {
         if (accountRepository.existsByUsername(request.getCode())) {
             throw new BadRequestException("User already exists");
         }
-        if (request.getCode() == null || request.getCode().isEmpty()) {
-            throw new BadRequestException("Code is required");
-        }
-        if (request.getFullName() == null || request.getFullName().isEmpty()) {
-            throw new BadRequestException("Full name is required");
-        }
-        if (request.getPhone() == null || request.getPhone().isEmpty()) {
-            throw new BadRequestException("Phone is required");
-        }
-        if (request.getMajorId() == null) {
-            throw new BadRequestException("Major is required");
-        }
-        if (request.getClassId() == null) {
-            throw new BadRequestException("Class is required");
-        }
+
         Account account = Account.builder()
                 .username(request.getCode())
                 .password(passwordEncoder.encode(request.getCode()))
                 .role(roleRepository.findRoleByName("STUDENT"))
                 .status(AccountStatus.ACTIVE)
                 .build();
+
         StudentAccount studentAccount = StudentAccount.builder()
                 .account(account)
                 .fullName(request.getFullName())
                 .code(request.getCode())
-                .email(request.getCode() + "@student.ptithcm.edu.vn")
+                .email(request.getEmail())
                 .phone(request.getPhone())
                 .gender(request.getGender())
-                .clazz(classRepository.findById(request.getClassId()).orElseThrow(() -> new ResourceNotFoundException("Class not found with id: " + request.getClassId())))
-                .major(majorRepository.findById(request.getMajorId()).orElseThrow(() -> new ResourceNotFoundException("Major not found with id: " + request.getMajorId())))
+                .classes(classRepository.findById(request.getClassId()).stream().toList())
                 .build();
         accountRepository.save(account);
         studentAccountRepository.save(studentAccount);
-        return UserMapper.mapUserToResponse(account, studentAccount);
+        return (StudentResponse) UserMapper.mapUserToResponse(account, studentAccount);
     }
 
     @Override

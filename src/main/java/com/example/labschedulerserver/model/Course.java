@@ -31,14 +31,17 @@ public class Course {
     @JoinColumn(name = "semester_id")
     private Semester semester;
 
-    @ManyToOne
-    @JoinColumn(name = "lecturer_id")
-    @JsonProperty("lecturer_account")
-    private LecturerAccount lecturerAccount;
-
     @Column(name = "group_number")
     @JsonProperty("group_number")
     private Integer groupNumber;
+
+    @ManyToMany
+    @JoinTable(
+            name = "lecturer_on_course",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "lecturer_id")
+    )
+    private List<LecturerAccount> lecturers;
 
     @Column(name = "total_students")
     @JsonProperty("total_students")

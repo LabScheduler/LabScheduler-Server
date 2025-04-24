@@ -47,11 +47,11 @@ public class UserMapper {
                         .gender(studentAccount.isGender())
                         .role(account.getRole().getName())
                         .status(account.getStatus().name())
-                        .clazz(studentAccount.getClazz().getName())
-                        .major(studentAccount.getMajor().getName())
+                        .clazz(studentAccount.getClasses().getLast().getName())
+                        .major(studentAccount.getClasses().getFirst().getMajor().getName())
                         .build();
             }
-            default -> throw new ForbiddenException("Tralalelo Tralala");
+            default -> throw new ForbiddenException("Invalid role");
         };
     }
 }

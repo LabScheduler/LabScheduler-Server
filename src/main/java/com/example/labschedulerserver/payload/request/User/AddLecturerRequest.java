@@ -8,6 +8,7 @@ public class AddLecturerRequest {
     @JsonProperty("full_name")
     private String fullName;
     private String code;
+    private String email;
     private String phone;
     private Boolean gender;
     @JsonProperty("department_id")

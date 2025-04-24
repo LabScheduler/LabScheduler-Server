@@ -94,7 +94,7 @@ public class CourseServiceImpl implements CourseService {
         Course newCourse = Course.builder()
                 .subject(subjectRepository.findById(request.getSubjectId()).orElseThrow(()->new ResourceNotFoundException("Subject not found")))
                 .clazz(classRepository.findById(request.getClassId()).orElseThrow(()->new ResourceNotFoundException("Class not found")))
-                .lecturerAccount(lecturerAccountRepository.findById(request.getLecturerId()).orElseThrow(()->new ResourceNotFoundException("Lecturer not found")))
+                .lecturers(lecturerAccountRepository.findAllById(request.getLecturersId()))
                 .groupNumber(courseRepository
                         .findAllBySubjectIdAndSemesterId(request.getSubjectId(), semester.getId())
                         .stream()
@@ -142,7 +142,6 @@ public class CourseServiceImpl implements CourseService {
 
         course.setSubject(subjectRepository.findById(request.getSubjectId()).orElseThrow(() -> new ResourceNotFoundException("Subject not found")));
         course.setClazz(classRepository.findById(request.getClassId()).orElseThrow(() -> new ResourceNotFoundException("Class not found")));
-        course.setLecturerAccount(lecturerAccountRepository.findById(request.getLecturerId()).orElseThrow(() -> new ResourceNotFoundException("Lecturer not found")));
         course.setTotalStudents(request.getTotalStudents());
 
         Course updatedCourse = courseRepository.save(course);

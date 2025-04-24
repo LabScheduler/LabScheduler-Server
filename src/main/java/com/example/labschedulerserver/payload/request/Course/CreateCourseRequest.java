@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,7 +18,7 @@ public class CreateCourseRequest {
     @JsonProperty("class_id")
     private Long classId;
     @JsonProperty("lecturer_id")
-    private Long lecturerId;
+    private List<Long> lecturersId;
     @JsonProperty("semester_id")
     private Long semesterId;
     @JsonProperty("total_students")

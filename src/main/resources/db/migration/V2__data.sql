@@ -6,18 +6,18 @@ INSERT INTO role (id, name)
 
 INSERT INTO account (id, username, password, role_id, status) #pass =123
 VALUES (1, 'LECTURER001', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 2,
-        'ACTIVE'),
-       (2, 'LECTURER002', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 2,
-        'ACTIVE'),
-       (3, 'LECTURER003', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 2,
-        'ACTIVE'),
-       (4, 'LECTURER004', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 2,
-        'ACTIVE'),
-       (5, 'LECTURER005', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 2,
-        'ACTIVE'),
-       (6, 'MANAGER001', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 1,
-        'ACTIVE'),
-       (7, 'STUDENT001', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 3, 'ACTIVE');
+    'ACTIVE'),
+    (2, 'LECTURER002', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 2,
+    'ACTIVE'),
+    (3, 'LECTURER003', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 2,
+    'ACTIVE'),
+    (4, 'LECTURER004', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 2,
+    'ACTIVE'),
+    (5, 'LECTURER005', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 2,
+    'ACTIVE'),
+    (6, 'MANAGER001', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 1,
+    'ACTIVE'),
+    (7, 'STUDENT001', '$2a$12$VR1KnMqjnuEkyUtl5se/oOTqGu.BoCPO3weJA7OLmg4JtkNzLNtPO', 3, 'ACTIVE');
 
 
 
@@ -194,14 +194,14 @@ VALUES (1, 'BAS1150', 'Triết học Mác - Lênin', 3, 45, 0, 0, 0),
        (43, 'INT13147', 'Thực tập cơ sở', 3, 4, 0, 0, 0),
        (44, 'SKD1103', 'Kỹ năng tạo lập Văn bản', 1, 6, 0, 0, 0);
 
-INSERT INTO course (id, subject_id, class_id, semester_id, group_number)
-VALUES (1, 38, 1, 2, 1),
-       (2, 39, 1, 2, 1),
-       (3, 40, 1, 2, 1),
-       (4, 41, 1, 2, 1),
-       (5, 42, 1, 2, 1),
-       (6, 43, 1, 2, 1),
-       (7, 44, 1, 2, 1);
+INSERT INTO course (id, subject_id, class_id, semester_id, group_number, total_students)
+VALUES (1, 38, 1, 2, 1, 80),
+       (2, 39, 1, 2, 1, 80),
+       (3, 40, 1, 2, 1, 80),
+       (4, 41, 1, 2, 1, 80),
+       (5, 42, 1, 2, 1, 80),
+       (6, 43, 1, 2, 1, 80),
+       (7, 44, 1, 2, 1, 80);
 
 INSERT INTO lecturer_on_course (course_id, lecturer_id)
 VALUES (1, 1),

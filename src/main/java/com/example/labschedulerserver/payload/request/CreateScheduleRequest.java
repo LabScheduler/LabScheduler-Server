@@ -1,7 +1,5 @@
 package com.example.labschedulerserver.payload.request;
 
-import com.example.labschedulerserver.common.ScheduleStatus;
-import com.example.labschedulerserver.common.ScheduleType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,5 +25,4 @@ public class CreateScheduleRequest {
     private Byte startPeriod;
     @JsonProperty("total_period")
     private Byte totalPeriod;
-    private ScheduleType type;
 }

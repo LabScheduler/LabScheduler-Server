@@ -28,4 +28,5 @@ public interface StudentAccountRepository extends JpaRepository<StudentAccount, 
             @Param("majorId") Long majorId,
             @Param("code") String code
     );
+
 }

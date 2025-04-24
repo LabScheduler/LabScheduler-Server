@@ -41,12 +41,14 @@ public class LecturerAccount {
     @JoinColumn(name = "department_id")
     private Department department;
 
-    @OneToMany(mappedBy = "lecturerAccount",fetch = FetchType.LAZY)
-    @JsonIgnore
+    @ManyToMany(mappedBy = "lecturers")
     private List<Course> courses;
 
     @OneToMany(mappedBy = "lecturerAccount",fetch = FetchType.LAZY)
     @JsonIgnore
     private List<LecturerRequest> lecturerRequests;
+
+    @OneToMany(mappedBy = "lecturer", fetch = FetchType.LAZY)
+    private List<Schedule> schedules;
 
 }

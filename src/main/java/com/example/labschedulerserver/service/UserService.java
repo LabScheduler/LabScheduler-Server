@@ -4,6 +4,7 @@ import com.example.labschedulerserver.model.Account;
 import com.example.labschedulerserver.payload.request.User.AddLecturerRequest;
 import com.example.labschedulerserver.payload.request.User.AddManagerRequest;
 import com.example.labschedulerserver.payload.request.User.AddStudentRequest;
+import com.example.labschedulerserver.payload.response.User.LecturerResponse;
 import com.example.labschedulerserver.payload.response.User.ManagerResponse;
 import com.example.labschedulerserver.payload.response.User.StudentResponse;
 
@@ -13,14 +14,21 @@ import java.util.Map;
 public interface UserService {
     public boolean checkUserIfExist(String email);
 
+    public ManagerResponse getCurrentManager();
+
+    public StudentResponse getCurrentStudent();
+
+    public LecturerResponse getCurrentLecturer();
+
+
     public Object getUserInfo(Long userId);
 
     public Object findById(Long userId);
     public Account findByUsername(String username);
 
     public ManagerResponse createManager(AddManagerRequest request);
-    public Object createLecturer(AddLecturerRequest request);
-    public Object createStudent(AddStudentRequest request);
+    public LecturerResponse createLecturer(AddLecturerRequest request);
+    public StudentResponse createStudent(AddStudentRequest request);
 
     public Object updateUserInfo(Long userId, Map<String, Object> payload);
 

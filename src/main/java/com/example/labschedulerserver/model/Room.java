@@ -39,7 +39,7 @@ public class Room {
     @JsonIgnore
     private List<Schedule> schedules;
 
-    @OneToMany(mappedBy = "newRoom", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     @JsonIgnore
     @JsonProperty("lecturer_requests")
     private List<LecturerRequest> lecturerRequests;

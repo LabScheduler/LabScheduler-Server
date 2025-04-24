@@ -1,8 +1,6 @@
 package com.example.labschedulerserver.model;
 
 import com.example.labschedulerserver.common.ScheduleStatus;
-import com.example.labschedulerserver.common.ScheduleType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
 @Data
@@ -34,6 +31,10 @@ public class Schedule {
     private CourseSection courseSection;
 
     @ManyToOne
+    @JoinColumn(name = "lecturer_id")
+    private LecturerAccount lecturer;
+
+    @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;
 
@@ -51,13 +52,7 @@ public class Schedule {
 
     @ManyToOne
     @JoinColumn(name = "semester_week_id")
-    @JsonProperty("semester_week")
     private SemesterWeek semesterWeek;
-
-    @Column(name = "type")
-    @Enumerated(EnumType.STRING)
-    @JsonProperty("schedule_type")
-    private ScheduleType scheduleType;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)

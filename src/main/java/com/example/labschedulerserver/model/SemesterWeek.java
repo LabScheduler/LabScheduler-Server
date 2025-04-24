@@ -38,7 +38,7 @@ public class SemesterWeek {
     @JsonIgnore
     private List<Schedule> schedules;
 
-    @OneToMany(mappedBy = "newSemesterWeek", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "semesterWeek", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<LecturerRequest> lecturerRequests;
 }

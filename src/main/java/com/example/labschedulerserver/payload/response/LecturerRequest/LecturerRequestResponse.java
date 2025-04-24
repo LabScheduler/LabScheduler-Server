@@ -38,8 +38,6 @@ public class LecturerRequestResponse {
 
     private String reason;
 
-    private String type;
-
     private String status;
 
     @JsonProperty("created_at")
