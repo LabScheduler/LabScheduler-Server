@@ -2,7 +2,7 @@
 CREATE TABLE role
 (
     id   BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(36) PRIMARY KEY
+    name VARCHAR(36) UNIQUE
 );
 
 -- Account Table
@@ -235,3 +235,60 @@ CREATE TABLE lecturer_request_log
     FOREIGN KEY (request_id) REFERENCES lecturer_request (id),
     FOREIGN KEY (manager_id) REFERENCES manager_account (account_id)
 );
+
+-- INDEX
+#
+# -- account
+# CREATE INDEX idx_account_role ON account(role);
+#
+# -- major
+# CREATE INDEX idx_major_department_id ON major(department_id);
+#
+# -- specialization
+# CREATE INDEX idx_specialization_major_id ON specialization(major_id);
+#
+# -- class
+# CREATE INDEX idx_class_major_id ON class(major_id);
+# CREATE INDEX idx_class_specialization_id ON class(specialization_id);
+#
+# -- student_on_class
+# CREATE INDEX idx_student_on_class_student_id ON student_on_class(student_id);
+# CREATE INDEX idx_student_on_class_class_id ON student_on_class(class_id);
+#
+# -- lecturer_account
+# CREATE INDEX idx_lecturer_department_id ON lecturer_account(department_id);
+#
+# -- course
+# CREATE INDEX idx_course_subject_id ON course(subject_id);
+# CREATE INDEX idx_course_class_id ON course(class_id);
+# CREATE INDEX idx_course_semester_id ON course(semester_id);
+#
+# -- lecturer_on_course
+# CREATE INDEX idx_lecturer_on_course_lecturer_id ON lecturer_on_course(lecturer_id);
+#
+# -- course_section
+# CREATE INDEX idx_course_section_course_id ON course_section(course_id);
+#
+# -- semester_week
+# CREATE INDEX idx_semester_week_semester_id ON semester_week(semester_id);
+#
+# -- schedule
+# CREATE INDEX idx_schedule_course_id ON schedule(course_id);
+# CREATE INDEX idx_schedule_course_section_id ON schedule(course_section_id);
+# CREATE INDEX idx_schedule_room_id ON schedule(room_id);
+# CREATE INDEX idx_schedule_lecturer_id ON schedule(lecturer_id);
+# CREATE INDEX idx_schedule_semester_week_id ON schedule(semester_week_id);
+# CREATE INDEX idx_schedule_day_of_week ON schedule(day_of_week);
+# CREATE INDEX idx_schedule_study_date ON schedule(study_date);
+#
+# -- lecturer_request
+# CREATE INDEX idx_lecturer_request_lecturer_id ON lecturer_request(lecturer_id);
+# CREATE INDEX idx_lecturer_request_course_id ON lecturer_request(course_id);
+# CREATE INDEX idx_lecturer_request_course_section_id ON lecturer_request(course_section_id);
+# CREATE INDEX idx_lecturer_request_room_id ON lecturer_request(room_id);
+# CREATE INDEX idx_lecturer_request_semester_week_id ON lecturer_request(semester_week_id);
+# CREATE INDEX idx_lecturer_request_day_of_week ON lecturer_request(day_of_week);
+#
+# -- lecturer_request_log
+# CREATE INDEX idx_request_log_request_id ON lecturer_request_log(request_id);
+# CREATE INDEX idx_request_log_manager_id ON lecturer_request_log(manager_id);
