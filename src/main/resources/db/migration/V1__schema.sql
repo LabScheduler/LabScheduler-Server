@@ -11,10 +11,10 @@ CREATE TABLE account
     id         BIGINT PRIMARY KEY AUTO_INCREMENT,
     username   VARCHAR(50) UNIQUE        NOT NULL,
     password   VARCHAR(255)              NOT NULL,
-    role       VARCHAR(36)               NOT NULL,
+    role_id    BIGINT                    NOT NULL,
     status     ENUM ('ACTIVE', 'LOCKED') NOT NULL DEFAULT 'ACTIVE',
     created_at TIMESTAMP                          DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (role) REFERENCES role (id)
+    FOREIGN KEY (role_id) REFERENCES role (id)
 );
 
 -- Department Table
