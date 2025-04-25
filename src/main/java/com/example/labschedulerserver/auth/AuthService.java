@@ -42,7 +42,6 @@ public class AuthService {
 
         return AuthResponse.builder()
                 .token(jwtService.generateToken(user))
-                .userInfo(UserMapper.mapUserToResponse(user,userService.getAccountInfo(user)))
                 .build();
     }
 
@@ -72,12 +71,12 @@ public class AuthService {
         }
     }
     public boolean resetPassword(String username, String newPassword) {
-        Account user = userService.findByUsername(username);
-        if (user == null) {
+        Account account = userService.findByUsername(username);
+        if (account == null) {
             throw new ResourceNotFoundException("User not found");
         }
-        user.setPassword(passwordEncoder.encode(user.getUsername()));
-        accountRepository.save(user);
+        account.setPassword(passwordEncoder.encode(newPassword));
+        accountRepository.save(account);
         return true;
     }
 

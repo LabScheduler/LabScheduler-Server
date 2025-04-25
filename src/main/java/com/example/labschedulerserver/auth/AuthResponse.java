@@ -16,7 +16,4 @@ import java.util.List;
 @Builder
 public class AuthResponse {
     private String token;
-    @JsonProperty("user_info")
-    private Object userInfo;
-
 }

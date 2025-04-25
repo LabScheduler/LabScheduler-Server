@@ -69,7 +69,7 @@ public class SubjectController {
     }
     @GetMapping("/find/{name}")
     public ResponseEntity<?> findSubjectByName(@PathVariable String name) {
-        DataResponse response = DataResponse.<Subject>builder()
+        DataResponse response = DataResponse.builder()
                 .data(subjectService.getSubjectByName(name))
                 .success(true)
                 .message("Get subject by name successfully")
