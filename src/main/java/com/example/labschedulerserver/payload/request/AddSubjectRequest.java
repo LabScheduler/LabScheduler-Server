@@ -13,4 +13,8 @@ public class AddSubjectRequest {
     private int totalTheoryPeriods;
     @JsonProperty("total_practice_periods")
     private Integer totalPracticePeriods;
+    @JsonProperty("total_exercise_periods")
+    private Integer totalExercisePeriods;
+    @JsonProperty("total_self_study_periods")
+    private Integer totalSelfStudyPeriods;
 }

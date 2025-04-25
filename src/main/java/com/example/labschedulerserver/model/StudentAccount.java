@@ -37,5 +37,6 @@ public class StudentAccount {
     @JsonIgnore
     private Account account;
 
-
+    @OneToMany(mappedBy = "students")
+    private List<StudentOnClass> studentOnClasses;
 }

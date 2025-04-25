@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserService {
-    public boolean checkUserIfExist(String email);
+    public Object getAccountInfo(Account account);
+
+    public boolean checkUserIfExist(String username);
 
     public ManagerResponse getCurrentManager();
 
@@ -21,16 +23,15 @@ public interface UserService {
     public LecturerResponse getCurrentLecturer();
 
 
-    public Object getUserInfo(Long userId);
-
     public Object findById(Long userId);
+
     public Account findByUsername(String username);
 
     public ManagerResponse createManager(AddManagerRequest request);
     public LecturerResponse createLecturer(AddLecturerRequest request);
     public StudentResponse createStudent(AddStudentRequest request);
 
-    public Object updateUserInfo(Long userId, Map<String, Object> payload);
+    public Object updateUser(Long userId, Map<String, Object> payload);
 
     public List<Object> getAllUser();
 
@@ -40,13 +41,9 @@ public interface UserService {
 
     public Object unlockAccount(Long userId);
 
-    public boolean changePassword(Long userId, String oldPassword, String newPassword);
+    public Object resetPassword(Long accountId);
 
-    public String forgotPassword(String username);
-
-    public boolean verifyOtp(String username, String otp);
-
-    public boolean resetPassword(String username,String otp, String newPassword);
+    public boolean changePassword(String oldPassword, String newPassword);
 
     public List<Object> filterStudent(Long classId, Long majorId, String code);
 

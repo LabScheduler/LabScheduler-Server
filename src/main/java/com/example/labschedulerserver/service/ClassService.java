@@ -1,19 +1,27 @@
 package com.example.labschedulerserver.service;
 
-import com.example.labschedulerserver.model.Clazz;
-import com.example.labschedulerserver.payload.request.Class.AddClassRequest;
+import com.example.labschedulerserver.payload.request.Class.CreateClassRequest;
+import com.example.labschedulerserver.payload.request.Class.CreateSpecializationClass;
 import com.example.labschedulerserver.payload.request.Class.UpdateClassRequest;
+import com.example.labschedulerserver.payload.response.Class.ClassResponse;
+import com.example.labschedulerserver.payload.response.User.StudentResponse;
 
 import java.util.List;
 
 public interface ClassService {
-    public List<Clazz> getAllClasses();
-    public Clazz getClassById(Long id);
-    public Clazz addNewClass(AddClassRequest addClassRequest);
-    public void deleteClass(Long id);
-    public Clazz updateClass(Long id, UpdateClassRequest request);
-    public Clazz getClassByName(String className);
-    public List<Clazz> getAllClassesByMajorId(Long majorId);
+    ClassResponse createClass(CreateClassRequest request);
+    ClassResponse createSpecializationClass(CreateSpecializationClass request);
 
-    public void addClassToStudent(Long studentId, Long classId);
+    List<ClassResponse> getAllClasses(String classType);
+
+
+    ClassResponse getClassById(Long id);
+
+    List<StudentResponse> getStudentsInClass(Long classId);
+
+    ClassResponse updateClass(Long id, UpdateClassRequest request);
+
+    void deleteClass(Long id);
+
+    void addStudentsToSpecializationClass(Long classId, List<Long> studentIds);
 }

@@ -79,6 +79,49 @@ VALUES (1, 'LECTURER001', 'toanehihi.dev@gmail.com', 'Huynh Trong Thua', 1, '011
 INSERT INTO student_on_class (student_id, class_id, status)
 VALUES (7, 1, 'ENROLLED');
 
+INSERT INTO specialization (id, name, major_id) VALUES
+-- Specializations for Công nghệ thông tin (Major ID: 1)
+(1, 'An toàn thông tin', 1),
+(2, 'Công nghệ phần mềm', 1),
+(3, 'Hệ thống thông tin', 1),
+(4, 'Khoa học máy tính', 1),
+
+-- Specializations for Kỹ thuật máy tính (Major ID: 2)
+(5, 'Nhúng và IoT', 2),
+(6, 'Kiến trúc máy tính', 2),
+
+-- Specializations for Kỹ thuật Viễn thông (Major ID: 3)
+(7, 'Thông tin vô tuyến', 3),
+(8, 'Thông tin quang', 3),
+
+-- Specializations for Truyền thông và Mạng máy tính (Major ID: 4)
+(9, 'Quản trị mạng', 4),
+(10, 'An ninh mạng', 4),
+
+-- Specializations for Kỹ thuật Điện tử (Major ID: 5)
+(11, 'Vi mạch số', 5),
+(12, 'Điện tử y sinh', 5),
+
+-- Specializations for Kỹ thuật Điện tử - Viễn thông (Major ID: 6)
+(13, 'Hệ thống nhúng', 6),
+(14, 'Điện tử viễn thông', 6),
+
+-- Specializations for Quản trị Kinh doanh (Major ID: 7)
+(15, 'Marketing số', 7),
+(16, 'Quản trị dự án', 7),
+
+-- Specializations for Kế toán (Major ID: 8)
+(17, 'Kế toán doanh nghiệp', 8),
+(18, 'Kiểm toán', 8),
+
+-- Specializations for Truyền thông Đa phương tiện (Major ID: 9)
+(19, 'Thiết kế đồ họa', 9),
+(20, 'Sản xuất nội dung số', 9),
+
+-- Specializations for Công nghệ Đa phương tiện (Major ID: 10)
+(21, 'Phát triển game', 10),
+(22, 'Hoạt hình số', 10);
+
 
 INSERT INTO semester (id, code, name, start_date, end_date)
 VALUES (1, '2024-1', 'Học kỳ 1 - Năm học 2024 - 2025', '2024-8-12', '2024-12-29'),

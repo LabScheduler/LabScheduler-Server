@@ -23,9 +23,8 @@ public class SubjectController {
     private final SubjectService subjectService;
     @GetMapping
     public ResponseEntity<DataResponse> GetAllSubjects() {
-        List<Subject> classes = subjectService.getAllSubjects();
         DataResponse response = DataResponse.builder()
-                .data(classes)
+                .data(subjectService.getAllSubjects())
                 .success(true)
                 .message("Get all subjects successfully")
                 .build();
@@ -45,7 +44,7 @@ public class SubjectController {
         DataResponse response = DataResponse.<Subject>builder()
                 .data(subjectService.createSubject(request))
                 .success(true)
-                .message("Add new class successfully")
+                .message("Add new subject successfully")
                 .build();
         return ResponseEntity.ok(response);
     }
@@ -55,7 +54,7 @@ public class SubjectController {
             subjectService.deleteSubject(id);
             DataResponse response = DataResponse.builder()
                     .success(true)
-                    .message("Delete class successfully")
+                    .message("Delete subject successfully")
                     .build();
             return ResponseEntity.ok(response);
     }

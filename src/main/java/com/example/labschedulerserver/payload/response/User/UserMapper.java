@@ -1,5 +1,6 @@
 package com.example.labschedulerserver.payload.response.User;
 
+import com.example.labschedulerserver.common.StudentOnClassStatus;
 import com.example.labschedulerserver.exception.ForbiddenException;
 import com.example.labschedulerserver.model.Account;
 import com.example.labschedulerserver.model.LecturerAccount;
@@ -47,8 +48,16 @@ public class UserMapper {
                         .gender(studentAccount.isGender())
                         .role(account.getRole().getName())
                         .status(account.getStatus().name())
-                        .clazz(studentAccount.getClasses().getLast().getName())
-                        .major(studentAccount.getClasses().getFirst().getMajor().getName())
+                        .clazz(studentAccount.getStudentOnClasses().stream()
+                                .filter(studentOnClass -> studentOnClass.getStatus() == StudentOnClassStatus.ENROLLED)
+                                .map(studentOnClass -> studentOnClass.getClazz().getName())
+                                .toString())
+                        .major(studentAccount.getStudentOnClasses().getFirst().getClazz().getMajor().getName())
+                        .specialization(studentAccount.getStudentOnClasses().stream()
+                                .filter(studentOnClass -> studentOnClass.getStatus() == StudentOnClassStatus.ENROLLED)
+                                .map(studentOnClass -> studentOnClass.getClazz().getSpecialization() !=null ? studentOnClass.getClazz().getSpecialization().getName() : "")
+                                .findFirst()
+                                .orElse(""))
                         .build();
             }
             default -> throw new ForbiddenException("Invalid role");

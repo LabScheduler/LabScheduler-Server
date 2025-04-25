@@ -30,5 +30,7 @@ public class Major {
     @JsonIgnore
     private Department department;
 
+    @OneToMany(mappedBy = "major")
+    private List<Specialization> specializations;
 
 }

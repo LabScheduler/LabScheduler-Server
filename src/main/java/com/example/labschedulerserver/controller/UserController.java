@@ -81,7 +81,7 @@ public class UserController {
     @PatchMapping("/update/{id}")
     public ResponseEntity<?> updateUserInfo(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
         DataResponse dataResponse = DataResponse.builder()
-                .data(userService.updateUserInfo(id, payload))
+                .data(userService.updateUser(id, payload))
                 .message("Update user information successfully")
                 .success(true)
                 .build();
@@ -111,9 +111,9 @@ public class UserController {
 
 
     @PatchMapping("/change-password")
-    public ResponseEntity<?> changePassword(@RequestParam(name = "user_id") Long userId, @RequestParam(value = "old_password") String oldPassword, @RequestParam(value = "new_password") String newPassword) {
+    public ResponseEntity<?> changePassword(@RequestParam(value = "old_password") String oldPassword, @RequestParam(value = "new_password") String newPassword) {
         DataResponse dataResponse = DataResponse.builder()
-                .data(userService.changePassword(userId, oldPassword, newPassword))
+                .data(userService.changePassword(oldPassword, newPassword))
                 .message("Change password successfully")
                 .success(true)
                 .build();
@@ -139,6 +139,35 @@ public class UserController {
         DataResponse dataResponse = DataResponse.builder()
                 .data(userService.unlockAccount(id))
                 .message("Unlock account successfully")
+                .success(true)
+                .build();
+        return ResponseEntity.ok(dataResponse);
+    }
+
+    @GetMapping("/get-current-manager")
+    public ResponseEntity<?> getCurrentManager() {
+        DataResponse dataResponse = DataResponse.builder()
+                .data(userService.getCurrentManager())
+                .message("Get current manager successfully")
+                .success(true)
+                .build();
+        return ResponseEntity.ok(dataResponse);
+    }
+
+    @GetMapping("/get-current-lecturer")
+    public ResponseEntity<?> getCurrentLecturer() {
+        DataResponse dataResponse = DataResponse.builder()
+                .data(userService.getCurrentLecturer())
+                .message("Get current lecturer successfully")
+                .success(true)
+                .build();
+        return ResponseEntity.ok(dataResponse);
+    }
+    @GetMapping("/get-current-student")
+    public ResponseEntity<?> getCurrentStudent() {
+        DataResponse dataResponse = DataResponse.builder()
+                .data(userService.getCurrentStudent())
+                .message("Get current student successfully")
                 .success(true)
                 .build();
         return ResponseEntity.ok(dataResponse);

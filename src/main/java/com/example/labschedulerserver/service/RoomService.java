@@ -8,8 +8,12 @@ import java.util.Map;
 
 public interface RoomService {
     public List<Room> getAllRoom();
+
     public Room getRoomById(Long id);
-    public Room addNewRoom(AddRoomRequest addRoomRequest);
+
+    public Room createRoom(AddRoomRequest addRoomRequest);
+
     public void deleteRoomById(Long id);
+
     public Room updateRoomById(Long id, Map<String,Object> payload);
 }

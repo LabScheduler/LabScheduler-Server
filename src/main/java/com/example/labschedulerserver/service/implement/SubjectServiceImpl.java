@@ -41,6 +41,8 @@ public class SubjectServiceImpl implements SubjectService {
                 .totalCredits(request.getTotalCredits())
                 .totalTheoryPeriods(request.getTotalTheoryPeriods())
                 .totalPracticePeriods(request.getTotalPracticePeriods())
+                .totalExercisePeriods(request.getTotalExercisePeriods())
+                .totalSelfStudyPeriods(request.getTotalSelfStudyPeriods())
                 .build();
         return subjectRepository.save(subject);
     }

@@ -57,10 +57,10 @@ public class RoomController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createNewRoom(@RequestBody AddRoomRequest addRoomRequest) {
+    public ResponseEntity<?> createRoom(@RequestBody AddRoomRequest addRoomRequest) {
         try{
             DataResponse response = DataResponse.<Room>builder()
-                    .data(roomService.addNewRoom(addRoomRequest))
+                    .data(roomService.createRoom(addRoomRequest))
                     .success(true)
                     .message("Add new room successfully")
                     .build();

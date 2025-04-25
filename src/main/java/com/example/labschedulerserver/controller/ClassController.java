@@ -1,7 +1,8 @@
 package com.example.labschedulerserver.controller;
 
 import com.example.labschedulerserver.model.Clazz;
-import com.example.labschedulerserver.payload.request.Class.AddClassRequest;
+import com.example.labschedulerserver.payload.request.Class.CreateClassRequest;
+import com.example.labschedulerserver.payload.request.Class.CreateSpecializationClass;
 import com.example.labschedulerserver.payload.request.Class.UpdateClassRequest;
 import com.example.labschedulerserver.payload.response.DataResponse;
 import com.example.labschedulerserver.service.ClassService;
@@ -17,71 +18,83 @@ import java.util.List;
 
 public class ClassController {
     private final ClassService classService;
+
     @GetMapping
-    public ResponseEntity<DataResponse> getClasses() {
-        List<Clazz> classes = classService.getAllClasses();
+    public ResponseEntity<?> getAllClasses(@RequestParam(value = "class_type", required = false) String classType) {
         DataResponse response = DataResponse.builder()
-                .data(classes)
-                .success(true)
+                .data(classService.getAllClasses(classType))
                 .message("Get all classes successfully")
-                .build();
-        return ResponseEntity.ok(response);
-    }
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id) {
-        DataResponse response = DataResponse.<Clazz>builder()
-                .data(classService.getClassById(id))
                 .success(true)
-                .message("Get class by id successfully")
-                .build();
-        return ResponseEntity.ok(response);
-    }
-    @PostMapping("/create")
-    public ResponseEntity<?> createNewClass(@RequestBody AddClassRequest addClassRequest) {
-        DataResponse response = DataResponse.<Clazz>builder()
-                .data(classService.addNewClass(addClassRequest))
-                .success(true)
-                .message("Add new class successfully")
                 .build();
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @GetMapping("/{id}/students")
+    public ResponseEntity<?> getStudentsInClass(@PathVariable Long id) {
+        DataResponse response = DataResponse.builder()
+                .data(classService.getStudentsInClass(id))
+                .message("Get students in class successfully")
+                .success(true)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{classId}/students")
+    public ResponseEntity<?> addStudentsToSpecializationClass(@PathVariable Long classId, @RequestBody List<Long> studentIds) {
+        classService.addStudentsToSpecializationClass(classId, studentIds);
+        DataResponse response = DataResponse.builder()
+                .message("Add students to specialization class successfully")
+                .success(true)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/create-class")
+    public ResponseEntity<?> createMajorClass(@RequestBody CreateClassRequest request){
+        DataResponse response = DataResponse.builder()
+                .success(true)
+                .message("Create major class successfully")
+                .data(classService.createClass(request))
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/create-specialization-class")
+    public ResponseEntity<?> createSpecializationClass(@RequestBody CreateSpecializationClass request){
+        DataResponse response = DataResponse.builder()
+                .success(true)
+                .message("Create specialization class successfully")
+                .data(classService.createSpecializationClass(request))
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getClassById(@PathVariable Long id) {
+        DataResponse response = DataResponse.builder()
+                .data(classService.getClassById(id))
+                .message("Get class successfully")
+                .success(true)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update-class/{id}")
+    public ResponseEntity<?> updateClass(@PathVariable Long id, @RequestBody UpdateClassRequest request) {
+        DataResponse response = DataResponse.builder()
+                .data(classService.updateClass(id, request))
+                .message("Update class successfully")
+                .success(true)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/delete-class/{id}")
     public ResponseEntity<?> deleteClass(@PathVariable Long id) {
         classService.deleteClass(id);
         DataResponse response = DataResponse.builder()
-                .success(true)
                 .message("Delete class successfully")
-                .build();
-        return ResponseEntity.ok(response);
-    }
-
-    @PatchMapping("/update/{id}")
-    public ResponseEntity<?> updateRoomById(@PathVariable Long id,@RequestBody UpdateClassRequest updateClassRequest) {
-        DataResponse response = DataResponse.builder()
                 .success(true)
-                .data(classService.updateClass(id,updateClassRequest))
-                .message("Update class successfully")
-                .build();
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/find/{name}")
-    public ResponseEntity<?> findClassByName(@PathVariable String name) {
-        DataResponse response = DataResponse.<Clazz>builder()
-                .data(classService.getClassByName(name))
-                .success(true)
-                .message("Get class by name successfully")
-                .build();
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/filter/{majorId}")
-    public ResponseEntity<?> filterClassByMajor(@PathVariable Long majorId) {
-        DataResponse response = DataResponse.<List<Clazz>>builder()
-                .data(classService.getAllClassesByMajorId(majorId))
-                .success(true)
-                .message("Get class by major successfully")
                 .build();
         return ResponseEntity.ok(response);
     }

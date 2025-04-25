@@ -5,9 +5,8 @@ import lombok.Data;
 
 @Data
 
-public class AddClassRequest {
+public class CreateClassRequest {
     private String name;
     @JsonProperty("major_id")
     private Long majorId;
-
 }

@@ -35,4 +35,7 @@ public class Clazz {
     @OneToMany(mappedBy = "clazz")
     @JsonIgnore
     private List<Course> courses;
+
+    @OneToMany(mappedBy = "clazz")
+    private List<StudentOnClass> studentOnClasses;
 }

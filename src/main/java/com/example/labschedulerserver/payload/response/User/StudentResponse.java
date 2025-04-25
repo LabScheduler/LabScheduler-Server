@@ -19,4 +19,5 @@ public class StudentResponse {
     @JsonProperty("class")
     private String clazz;
     private String major;
+    private String specialization;
 }

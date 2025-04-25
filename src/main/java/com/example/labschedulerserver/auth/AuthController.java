@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class AuthController {
     private final AuthService authService;
-    private final UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
@@ -27,7 +26,7 @@ public class AuthController {
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestParam String username) {
         DataResponse dataResponse = DataResponse.builder()
-                .data(userService.forgotPassword(username))
+                .data(authService.forgotPassword(username))
                 .message("Send email successfully")
                 .success(true)
                 .build();
@@ -37,7 +36,7 @@ public class AuthController {
     @PostMapping("/verify-otp")
     public ResponseEntity<?> verifyOtp(@RequestParam String username, @RequestParam String otp) {
         DataResponse dataResponse = DataResponse.builder()
-                .data(userService.verifyOtp(username, otp))
+                .data(authService.verifyOtp(username, otp))
                 .message("Verify OTP successfully")
                 .success(true)
                 .build();
@@ -45,9 +44,9 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestParam String username, @RequestParam String otp, @RequestParam(name = "new_password") String newPassword) {
+    public ResponseEntity<?> resetPassword(@RequestParam String username, @RequestParam(name = "new_password") String newPassword) {
         DataResponse dataResponse = DataResponse.builder()
-                .data(userService.resetPassword(username, otp, newPassword))
+                .data(authService.resetPassword(username, newPassword))
                 .message("Reset password successfully")
                 .success(true)
                 .build();

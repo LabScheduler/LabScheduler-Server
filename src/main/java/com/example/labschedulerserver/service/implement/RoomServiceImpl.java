@@ -31,7 +31,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room addNewRoom(AddRoomRequest addRoomRequest) {
+    public Room createRoom(AddRoomRequest addRoomRequest) {
         Room room = Room.builder()
                 .name(addRoomRequest.getName())
                 .capacity(addRoomRequest.getCapacity())

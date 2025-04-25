@@ -1,105 +1,126 @@
 package com.example.labschedulerserver.service.implement;
 
-import com.example.labschedulerserver.exception.BadRequestException;
+import com.example.labschedulerserver.common.ClassType;
+import com.example.labschedulerserver.common.StudentOnClassStatus;
 import com.example.labschedulerserver.exception.ResourceNotFoundException;
-import com.example.labschedulerserver.model.Clazz;
-import com.example.labschedulerserver.model.Major;
-import com.example.labschedulerserver.model.StudentAccount;
-import com.example.labschedulerserver.payload.request.Class.AddClassRequest;
+import com.example.labschedulerserver.model.*;
+import com.example.labschedulerserver.payload.request.Class.CreateClassRequest;
+import com.example.labschedulerserver.payload.request.Class.CreateSpecializationClass;
 import com.example.labschedulerserver.payload.request.Class.UpdateClassRequest;
-import com.example.labschedulerserver.repository.ClassRepository;
-import com.example.labschedulerserver.repository.MajorRepository;
-import com.example.labschedulerserver.repository.StudentAccountRepository;
+import com.example.labschedulerserver.payload.response.Class.ClassMapper;
+import com.example.labschedulerserver.payload.response.Class.ClassResponse;
+import com.example.labschedulerserver.payload.response.User.StudentResponse;
+import com.example.labschedulerserver.payload.response.User.UserMapper;
+import com.example.labschedulerserver.repository.*;
 import com.example.labschedulerserver.service.ClassService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class ClassServiceImpl implements ClassService {
-    private final ClassRepository classRepository;
     private final MajorRepository majorRepository;
+    private final ClassRepository classRepository;
+    private final SpecializationRepository specializationRepository;
+    private final StudentOnClassRepository studentOnClassRepository;
     private final StudentAccountRepository studentAccountRepository;
 
-
     @Override
-    public List<Clazz> getAllClasses() {
-        return classRepository.findAll();
-    }
-
-    @Override
-    public Clazz getClassById(Long id) {
-        return classRepository.findById(id).orElseThrow(() -> new RuntimeException("Class not found"));
-    }
-
-    @Override
-    public Clazz addNewClass(AddClassRequest addClassRequest) {
-        // Tìm Major theo ID
-        Major major = majorRepository.findById(addClassRequest.getMajorId())
-                .orElseThrow(() -> new RuntimeException("Major not found"));
-
+    public ClassResponse createClass(CreateClassRequest request) {
         Clazz clazz = Clazz.builder()
-                .name(addClassRequest.getName())
-                .major(major)
+                .name(request.getName())
+                .major(majorRepository.findById(request.getMajorId()).orElseThrow(()-> new ResourceNotFoundException("Major not found")))
+                .classType(ClassType.MAJOR)
                 .build();
+        return ClassMapper.toClassResponse(classRepository.save(clazz));
+    }
 
-        return classRepository.save(clazz);
+    @Override
+    public ClassResponse createSpecializationClass(CreateSpecializationClass request) {
+        Clazz clazz = Clazz.builder()
+                .name(request.getName())
+                .major(majorRepository.findById(request.getMajorId()).orElseThrow(()-> new ResourceNotFoundException("Major not found")))
+                .specialization(specializationRepository.findById(request.getSpecializationId()).orElseThrow(()-> new ResourceNotFoundException("Specialization not found")))
+                .classType(ClassType.SPECIALIZATION)
+                .build();
+        return ClassMapper.toClassResponse(classRepository.save(clazz));
+    }
+
+    @Override
+    public List<ClassResponse> getAllClasses(String classType) {
+        return classRepository.findAll().stream().filter(clazz -> clazz.getClassType() == ClassType.valueOf(classType.toUpperCase())).map(ClassMapper::toClassResponse).toList();
+    }
+
+
+    @Override
+    public ClassResponse getClassById(Long id) {
+        return ClassMapper.toClassResponse(classRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Class not found")));
+    }
+
+    @Override
+    public List<StudentResponse> getStudentsInClass(Long classId) {
+        Clazz clazz = classRepository.findById(classId).orElseThrow(()-> new ResourceNotFoundException("Class not found"));
+        if (clazz.getStudentOnClasses() != null) {
+            return clazz.getStudentOnClasses().stream()
+                    .map(studentOnClass -> {
+                        StudentAccount student = studentOnClass.getStudents();
+                        return (StudentResponse) UserMapper.mapUserToResponse(student.getAccount(),student);
+                    })
+                    .toList();
+        }
+        throw new ResourceNotFoundException("Students not found in class with id: " + classId);
+    }
+
+    @Override
+    public ClassResponse updateClass(Long id, UpdateClassRequest request) {
+        Clazz clazz = classRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Class not found"));
+        clazz.setName(request.getName());
+
+        if (clazz.getClassType() == ClassType.MAJOR) {
+            clazz.setMajor(majorRepository.findById(request.getMajorId()).orElseThrow(()-> new ResourceNotFoundException("Major not found")));
+        }else if (clazz.getClassType() == ClassType.SPECIALIZATION) {
+            clazz.setMajor(majorRepository.findById(request.getMajorId()).orElseThrow(()-> new ResourceNotFoundException("Major not found")));
+
+            Specialization specialization = specializationRepository.findById(request.getSpecializationId()).orElseThrow(()-> new ResourceNotFoundException("Specialization not found"));
+            if(specialization.getMajor() == clazz.getMajor()){
+                clazz.setSpecialization(specialization);
+            }else {
+                throw new ResourceNotFoundException("Specialization not found in this major");
+            }
+        }
+
+        return ClassMapper.toClassResponse(classRepository.save(clazz));
     }
 
     @Override
     public void deleteClass(Long id) {
-        Clazz clazz = classRepository.findById(id).orElseThrow(() -> new RuntimeException("Class not found"));
+        Clazz clazz = classRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Class not found"));
         classRepository.delete(clazz);
     }
 
     @Override
-    public Clazz updateClass(Long id, UpdateClassRequest request) {
-        Clazz clazz = classRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Class not found"));
-
-        Major major = majorRepository.findById(request.getMajorId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Major not found"));
-
-        clazz.setMajor(major);
-        clazz.setName(request.getName());
-        return classRepository.save(clazz);
-    }
-
-    public Clazz getClassByName(String className) {
-        return classRepository.findByName(className).orElseThrow(() -> new RuntimeException("Room not found with name: " + className));
-    }
-
-    @Override
-    public List<Clazz> getAllClassesByMajorId(Long majorId) {
-        Major major = majorRepository.findById(majorId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Major not found"));
-        return major.getClasses();
-    }
-
-    @Override
-    @Transactional
-    public void addClassToStudent(Long studentId, Long classId) {
-        StudentAccount studentAccount = studentAccountRepository.findById(studentId).orElseThrow(()-> new ResourceNotFoundException("Student not found with id: " + studentId));
-
+    public void addStudentsToSpecializationClass(Long classId, List<Long> studentIds) {
         Clazz clazz = classRepository.findById(classId)
-                .orElseThrow(() -> new ResourceNotFoundException("Class not found with id: " + classId));
+                .orElseThrow(() -> new ResourceNotFoundException("Class not found"));
 
-        if (studentAccount.getClasses() == null) {
-            studentAccount.setClasses(new ArrayList<>());
-        }
+        List<StudentOnClass> studentOnClasses = studentIds.stream()
+                .map(studentId -> {
+                    StudentAccount student = studentAccountRepository.findById(studentId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
 
-        if(!studentAccount.getClasses().contains(clazz)){
-            studentAccount.getClasses().add(clazz);
-            studentAccountRepository.save(studentAccount);
-        } else {
-            throw new BadRequestException("Student already belongs to this class");
-        }
+                    return StudentOnClass.builder()
+                            .id(new StudentOnClassId(studentId, classId))
+                            .students(student)
+                            .clazz(clazz)
+                            .status(StudentOnClassStatus.ENROLLED)
+                            .build();
+                })
+                .toList();
+
+        studentOnClassRepository.saveAll(studentOnClasses);
     }
 
 }
