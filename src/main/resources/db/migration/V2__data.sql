@@ -62,18 +62,18 @@ VALUES ('D22CQPT01-N', 8, 'MAJOR');
 INSERT INTO class (name, major_id, class_type)
 VALUES ('D22CQDT01-N', 5, 'MAJOR');
 
-INSERT INTO student_account (account_id, full_name, code, email, phone, gender)
-VALUES (7, 'Nguyen Van A', 'STUDENT001', 'n22dccn086@student.ptithcm.edu.vn', '0123456789', 1);
+INSERT INTO student_account (account_id, full_name, code, email, phone, gender, birthday)
+VALUES (7, 'Nguyen Van A', 'STUDENT001', 'n22dccn086@student.ptithcm.edu.vn', '0123456789', 1, '2004-01-01');
 
-INSERT INTO manager_account (account_id, full_name, code, email, phone, gender)
-VALUES (6, 'Son Dinh', 'MANAGER001', 'sample1@gmail.com', '0123123123', 1);
+INSERT INTO manager_account (account_id, full_name, code, email, phone, gender, birthday)
+VALUES (6, 'Son Dinh', 'MANAGER001', 'sample1@gmail.com', '0123123123', 1, '2000-01-01');
 
-INSERT INTO lecturer_account (account_id, code, email, full_name, department_id, phone, gender)
-VALUES (1, 'LECTURER001', 'toanehihi.dev@gmail.com', 'Huynh Trong Thua', 1, '011111111', 1),
-       (2, 'LECTURER002', 'toanehihi1.dev@gmail.com', 'Luu Nguyen Ky Thu', 1, '022222222', 1),
-       (3, 'LECTURER003', 'toanehihi2.dev@gmail.com', 'Ha Thanh', 1, '0333333333', 1),
-       (4, 'LECTURER004', 'toanehihi3.dev@gmail.com', 'Nguyen Hai', 1, '0444444444', 1),
-       (5, 'LECTURER005', 'toanehihi4.dev@gmail.com', 'Nguyen Van Nhat', 1, '0555555555', 1);
+INSERT INTO lecturer_account (account_id, code, email, full_name, department_id, phone, gender, birthday)
+VALUES (1, 'LECTURER001', 'toanehihi.dev@gmail.com', 'Giang Vien 1', 1, '011111111', 1, '2000-01-01'),
+       (2, 'LECTURER002', 'toanehihi1.dev@gmail.com', 'Giang Vien 2', 1, '022222222', 1, '2000-01-01'),
+       (3, 'LECTURER003', 'toanehihi2.dev@gmail.com', 'Giang Vien 3', 1, '0333333333', 1, '2000-01-01'),
+       (4, 'LECTURER004', 'toanehihi3.dev@gmail.com', 'Giang Vien 4', 1, '0444444444', 1, '2000-01-01'),
+       (5, 'LECTURER005', 'toanehihi4.dev@gmail.com', 'Giang Vien 5', 1, '0555555555', 1, '2000-01-01');
 
 
 INSERT INTO student_on_class (student_id, class_id, status)
@@ -273,14 +273,14 @@ VALUES (1, '2B11', 50, 'AVAILABLE', '', '2025-03-01 10:00:00'),
        (5, '2B31', 50, 'REPAIRING', '', '2025-03-01 12:00:00'),
        (6, '2B32', 50, 'AVAILABLE', '', '2025-03-02 09:00:00');
 
--- Add sample schedule data
-INSERT INTO schedule (course_id, course_section_id, room_id, day_of_week, lecturer_id, start_period, total_period, semester_week_id, status, study_date)
-VALUES (1, 1, 1, 2, 1, 1, 3, 21, 'IN_PROGRESS', '2025-01-06 07:00:00'),
-       (1, 2, 2, 3, 1, 4, 3, 21, 'IN_PROGRESS', '2025-01-07 13:00:00'),
-       (2, 1, 3, 4, 2, 7, 3, 21, 'IN_PROGRESS', '2025-01-08 15:30:00');
+-- -- Add sample schedule data
+-- INSERT INTO schedule (course_id, course_section_id, room_id, day_of_week, lecturer_id, start_period, total_period, semester_week_id, status)
+-- VALUES (1, 1, 1, 2, 1, 1, 3, 21, 'IN_PROGRESS'),
+--        (1, 2, 2, 3, 1, 4, 3, 21, 'IN_PROGRESS'),
+--        (2, 1, 3, 4, 2, 7, 3, 21, 'IN_PROGRESS');
 
 -- Add sample lecturer request
-INSERT INTO lecturer_request (lecturer_id, course_id, room_id, day_of_week, start_period, total_period, reason)
+INSERT INTO lecturer_request (lecturer_id, course_id, room_id, day_of_week, start_period, total_period, body)
 VALUES (1, 1, 2, 5, 1, 3, 'Học bù');
 
 -- Add sample lecturer request log

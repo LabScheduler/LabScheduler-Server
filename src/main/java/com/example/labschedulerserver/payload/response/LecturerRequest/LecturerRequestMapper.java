@@ -16,7 +16,7 @@ public class LecturerRequestMapper {
                 .newDayOfWeek(request.getDayOfWeek())
                 .newStartPeriod(request.getStartPeriod())
                 .newTotalPeriod(request.getTotalPeriod())
-                .reason(request.getReason())
+                .body(request.getBody())
                 .status(requestLog.getStatus().name())
                 .createdAt(request.getCreatedAt())
                 .build();

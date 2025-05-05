@@ -33,7 +33,8 @@ public interface UserService {
 
     public Object updateUser(Long userId, Map<String, Object> payload);
 
-    public List<Object> getAllUser();
+    public List<StudentResponse> getAllStudent();
+    public List<LecturerResponse> getAllLecturer();
 
     public void deleteUser(Long userId);
 
@@ -46,6 +47,4 @@ public interface UserService {
     public boolean changePassword(String oldPassword, String newPassword);
 
     public List<Object> filterStudent(Long classId, Long majorId, String code);
-
-    public List<Object> getAllLecturer();
 }

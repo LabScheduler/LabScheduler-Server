@@ -1,8 +1,8 @@
 package com.example.labschedulerserver.service.implement;
 
 import com.example.labschedulerserver.common.AccountStatus;
+import com.example.labschedulerserver.common.StudentOnClassStatus;
 import com.example.labschedulerserver.exception.BadRequestException;
-import com.example.labschedulerserver.exception.FieldNotFoundException;
 import com.example.labschedulerserver.exception.ForbiddenException;
 import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.model.*;
@@ -14,11 +14,10 @@ import com.example.labschedulerserver.payload.response.User.ManagerResponse;
 import com.example.labschedulerserver.payload.response.User.StudentResponse;
 import com.example.labschedulerserver.payload.response.User.UserMapper;
 import com.example.labschedulerserver.repository.*;
+import com.example.labschedulerserver.service.ClassService;
 import com.example.labschedulerserver.service.EmailSenderService;
 import com.example.labschedulerserver.service.OtpService;
-import com.example.labschedulerserver.service.ClassService;
 import com.example.labschedulerserver.service.UserService;
-import com.example.labschedulerserver.utils.ConvertFromJsonToTypeVariable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,8 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -50,6 +48,7 @@ public class UserServiceImpl implements UserService {
     private final OtpService otpService;
     private final EmailSenderService emailSenderService;
     private final ClassService classService;
+    private final StudentOnClassRepository studentOnClassRepository;
 
     @Override
     public Object getAccountInfo(Account account) {
@@ -97,7 +96,7 @@ public class UserServiceImpl implements UserService {
         }
         String username = authentication.getName();
         Account account = accountRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
-        if(!Objects.equals(account.getRole().getName(), "STUDENT")) {
+        if (!Objects.equals(account.getRole().getName(), "STUDENT")) {
             throw new ForbiddenException("User is not a student");
         }
         StudentAccount studentAccount = studentAccountRepository.findById(account.getId()).orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + account.getId()));
@@ -115,7 +114,7 @@ public class UserServiceImpl implements UserService {
         }
         String username = authentication.getName();
         Account account = accountRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
-        if(!Objects.equals(account.getRole().getName(), "LECTURER")) {
+        if (!Objects.equals(account.getRole().getName(), "LECTURER")) {
             throw new ForbiddenException("User is not a lecturer");
         }
         if (account.getRole().getName().equals("LECTURER")) {
@@ -159,9 +158,8 @@ public class UserServiceImpl implements UserService {
                 .gender(request.getGender())
                 .account(account)
                 .build();
-        accountRepository.save(account);
-        managerAccountRepository.save(managerAccount);
-        return (ManagerResponse) UserMapper.mapUserToResponse(account, managerAccount);
+
+        return (ManagerResponse) UserMapper.mapUserToResponse(accountRepository.save(account), managerAccountRepository.save(managerAccount));
     }
 
     @Override
@@ -210,35 +208,34 @@ public class UserServiceImpl implements UserService {
                 .phone(request.getPhone())
                 .gender(request.getGender())
                 .build();
-        accountRepository.save(account);
-        studentAccountRepository.save(studentAccount);
-        return (StudentResponse) UserMapper.mapUserToResponse(account, studentAccount);
+        account = accountRepository.save(account);
+        studentAccount = studentAccountRepository.save(studentAccount);
+        studentAccount.setStudentOnClasses(List.of(StudentOnClass.builder()
+                .id(new StudentOnClassId(account.getId(), request.getClassId()))
+                .students(studentAccount)
+                .clazz(classRepository.findById(request.getClassId()).orElseThrow(() -> new ResourceNotFoundException("Class not found with id: " + request.getClassId())))
+                .status(StudentOnClassStatus.ENROLLED)
+                .build()));
+        studentOnClassRepository.save(studentAccount.getStudentOnClasses().getFirst());
+        return StudentResponse.builder()
+                .major(studentAccount.getStudentOnClasses().getFirst().getClazz().getMajor().getName())
+                .specialization("")
+                .gender(studentAccount.isGender())
+                .id(account.getId())
+                .clazz(studentAccount.getStudentOnClasses().getFirst().getClazz().getName())
+                .status(account.getStatus().toString())
+                .fullName(studentAccount.getFullName())
+                .code(studentAccount.getCode())
+                .email(studentAccount.getEmail())
+                .phone(studentAccount.getPhone())
+                .role(account.getRole().getName())
+                .build();
     }
 
     @Override
     @Transactional
     public Object updateUser(Long userId, Map<String, Object> payload) {
         return null;
-    }
-
-    @Override
-    public List<Object> getAllUser() {
-        List<Account> accounts = accountRepository.findAll();
-        return accounts.stream().map(account -> {
-            Object accountInfo = null;
-            switch (account.getRole().getName()) {
-                case "MANAGER" -> {
-                    accountInfo = managerAccountRepository.findById(account.getId()).get();
-                }
-                case "LECTURER" -> {
-                    accountInfo = lecturerAccountRepository.findById(account.getId()).get();
-                }
-                case "STUDENT" -> {
-                    accountInfo = studentAccountRepository.findById(account.getId()).get();
-                }
-            }
-            return UserMapper.mapUserToResponse(account, accountInfo);
-        }).toList();
     }
 
     @Override
@@ -272,7 +269,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Object resetPassword(Long accountId ) {
+    public Object resetPassword(Long accountId) {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + accountId));
         if (account.getStatus() == AccountStatus.LOCKED) {
             throw new BadRequestException("Account is locked");
@@ -317,13 +314,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Object> getAllLecturer() {
+    public List<LecturerResponse> getAllLecturer() {
         List<LecturerAccount> lecturers = lecturerAccountRepository.findAll();
         List<Account> accounts = lecturers.stream().map(LecturerAccount::getAccount).toList();
 
         return lecturers.stream().map(lecturer -> {
             Account account = accounts.get(lecturers.indexOf(lecturer));
-            return UserMapper.mapUserToResponse(account, lecturer);
+            return (LecturerResponse) UserMapper.mapUserToResponse(account, lecturer);
+        }).toList();
+    }
+
+    @Override
+    public List<StudentResponse> getAllStudent() {
+        List<StudentAccount> students = studentAccountRepository.findAll().stream().sorted(Comparator.comparing(StudentAccount::getFullName)).toList();
+        List<Account> accounts = students.stream().map(StudentAccount::getAccount).toList();
+        return students.stream().map(student -> {
+            Account account = accounts.get(students.indexOf(student));
+            return (StudentResponse) UserMapper.mapUserToResponse(account, student);
         }).toList();
     }
 }

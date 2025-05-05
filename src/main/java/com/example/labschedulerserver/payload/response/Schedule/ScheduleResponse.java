@@ -49,4 +49,6 @@ public class ScheduleResponse {
     private Timestamp studyDate;
 
     private String status;
+
+    private String type;
 }

@@ -18,9 +18,9 @@ public class ScheduleMapper {
                 .totalPeriod(schedule.getTotalPeriod())
                 .lecturer(schedule.getLecturer().getFullName())
                 .semesterWeek(schedule.getSemesterWeek().getName())
-                .studyDate( schedule.getStudyDate())
-                .status(schedule.getScheduleStatus().name())
+                .status(schedule.getStatus().name())
                 .clazz(schedule.getCourse().getClazz().getName())
+                .type(schedule.getType().name())
                 .build();
     }
 }

@@ -18,17 +18,17 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping
-    public ResponseEntity<?> getAllUser() {
+    @GetMapping("/students")
+    public ResponseEntity<?> getAllStudent() {
         DataResponse dataResponse = DataResponse.builder()
-                .data(userService.getAllUser())
-                .message("Get all user successfully")
+                .data(userService.getAllStudent())
+                .message("Get all student successfully")
                 .success(true)
                 .build();
         return ResponseEntity.ok(dataResponse);
     }
 
-    @GetMapping("/lecturer")
+    @GetMapping("/lecturers")
     public ResponseEntity<?> getAllLecturer() {
         DataResponse dataResponse = DataResponse.builder()
                 .data(userService.getAllLecturer())

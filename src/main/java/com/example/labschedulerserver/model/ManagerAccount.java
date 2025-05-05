@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -33,6 +34,8 @@ public class ManagerAccount {
     private String phone;
 
     private boolean gender;
+
+    private LocalDate birthday;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId

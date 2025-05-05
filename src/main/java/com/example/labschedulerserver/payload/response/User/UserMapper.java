@@ -21,6 +21,7 @@ public class UserMapper {
                         .role(account.getRole().getName())
                         .status(account.getStatus().name())
                         .gender(managerAccount.isGender())
+                        .birthday(managerAccount.getBirthday())
                         .build();
             }
             case "LECTURER" -> {
@@ -35,6 +36,7 @@ public class UserMapper {
                         .status(account.getStatus().name())
                         .gender(lecturerAccount.isGender())
                         .department(lecturerAccount.getDepartment().getName())
+                        .birthday(lecturerAccount.getBirthday())
                         .build();
             }
             case "STUDENT" -> {
@@ -58,6 +60,7 @@ public class UserMapper {
                                 .map(studentOnClass -> studentOnClass.getClazz().getSpecialization() !=null ? studentOnClass.getClazz().getSpecialization().getName() : "")
                                 .findFirst()
                                 .orElse(""))
+                        .birthday(studentAccount.getBirthday())
                         .build();
             }
             default -> throw new ForbiddenException("Invalid role");

@@ -1,6 +1,7 @@
 package com.example.labschedulerserver.model;
 
 import com.example.labschedulerserver.common.ScheduleStatus;
+import com.example.labschedulerserver.common.ScheduleType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -54,11 +55,9 @@ public class Schedule {
     @JoinColumn(name = "semester_week_id")
     private SemesterWeek semesterWeek;
 
-    @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    @JsonProperty("schedule_status")
-    private ScheduleStatus scheduleStatus;
+    private ScheduleStatus status;
 
-    @JsonProperty("study_date")
-    private Timestamp studyDate;
+    @Enumerated(EnumType.STRING)
+    private ScheduleType type;
 }

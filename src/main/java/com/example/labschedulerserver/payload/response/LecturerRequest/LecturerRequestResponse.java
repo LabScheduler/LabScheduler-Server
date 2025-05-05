@@ -36,7 +36,7 @@ public class LecturerRequestResponse {
     @JsonProperty("new_total_period")
     private Byte newTotalPeriod;
 
-    private String reason;
+    private String body;
 
     private String status;
 

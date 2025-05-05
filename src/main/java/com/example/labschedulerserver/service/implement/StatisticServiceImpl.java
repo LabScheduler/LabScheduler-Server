@@ -4,7 +4,7 @@ import com.example.labschedulerserver.model.Account;
 import com.example.labschedulerserver.model.Room;
 import com.example.labschedulerserver.payload.response.DashboardResponse;
 import com.example.labschedulerserver.repository.*;
-import com.example.labschedulerserver.service.SumaryService;
+import com.example.labschedulerserver.service.StatisticService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class SumaryServiceImpl implements SumaryService {
+public class StatisticServiceImpl implements StatisticService {
 
     private final RoomRepository roomRepository;
     private final CourseRepository courseRepository;

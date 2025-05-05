@@ -51,7 +51,7 @@ public class LecturerRequest {
     @Column(name = "total_period")
     private Byte totalPeriod;
 
-    private String reason;
+    private String body;
 
     @Column(name = "created_at")
     @JsonProperty("created_at")
