@@ -35,19 +35,20 @@ public class Course {
     @JsonProperty("group_number")
     private Integer groupNumber;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "lecturer_on_course",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "lecturer_id")
     )
+    @JsonIgnore
     private List<LecturerAccount> lecturers;
 
     @Column(name = "total_students")
     @JsonProperty("total_students")
     private Integer totalStudents;
 
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course" , fetch = FetchType.LAZY)
     @JsonIgnore
     private List<CourseSection> courseSections;
 
@@ -56,7 +57,7 @@ public class Course {
     @JsonIgnore
     private List<LecturerRequest> lecturerRequests;
 
-    @OneToMany(mappedBy = "course",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Schedule> schedules;
 

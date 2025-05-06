@@ -1,13 +1,11 @@
 package com.example.labschedulerserver.controller;
 
+import com.example.labschedulerserver.payload.request.CreateSemesterRequest;
 import com.example.labschedulerserver.payload.response.DataResponse;
 import com.example.labschedulerserver.service.SemesterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,6 +40,16 @@ public class SemesterController {
                 .success(true)
                 .message("Success")
                 .data(semesterService.getAllSemesterWeekInSemester(semesterId == null ? semesterService.getCurrentSemester().getId() : semesterId))
+                .build();
+        return ResponseEntity.ok(dataResponse);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createSemester(@RequestBody CreateSemesterRequest request) {
+        DataResponse dataResponse = DataResponse.builder()
+                .success(true)
+                .message("Success")
+                .data(semesterService.createSemester(request))
                 .build();
         return ResponseEntity.ok(dataResponse);
     }

@@ -17,6 +17,8 @@ public class CreateScheduleRequest {
     private Long courseSectionId;
     @JsonProperty("room_id")
     private Long roomId;
+    @JsonProperty("lecturer_id")
+    private Long lecturerId;
     @JsonProperty("semester_week_id")
     private Long semesterWeekId;
     @JsonProperty("day_of_week")

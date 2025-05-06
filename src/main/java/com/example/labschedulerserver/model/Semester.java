@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.cglib.core.Local;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -28,11 +30,11 @@ public class Semester {
 
     @Column(name = "start_date")
     @JsonProperty("start_date")
-    private Timestamp startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date")
     @JsonProperty("end_date")
-    private Timestamp endDate;
+    private LocalDate endDate;
 
     @OneToMany(mappedBy = "semester",fetch = FetchType.LAZY)
     @JsonIgnore

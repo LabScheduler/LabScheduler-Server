@@ -27,9 +27,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
                 "JOIN course_section cs ON s.course_section_id = cs.id " +
                 "JOIN course c ON cs.course_id = c.id " +
                 "WHERE c.class_id = :classId " +
-                "AND c.semester_id = (SELECT id FROM semester WHERE CURDATE() BETWEEN start_date AND end_date ORDER BY start_date DESC LIMIT 1)",
+                "AND c.semester_id = :semesterId",
                 nativeQuery = true)
-        List<Schedule> findAllByClassIdInCurrentSemester(@Param("classId") Long classId);
+        List<Schedule> findAllByClassIdAndSemesterId(@Param("classId") Long classId, @Param("semesterId") Long semesterId);
 
         @Query(value = "SELECT s.* FROM schedule s " +
                 "JOIN course_section cs ON s.course_section_id = cs.id " +
@@ -38,12 +38,12 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
         List<Schedule> findAllByCourseId(@Param("courseId") Long courseId);
 
         @Query(value = "SELECT s.* FROM schedule s " +
-                "JOIN course_section cs ON s.course_section_id = cs.id " +
-                "JOIN course c ON cs.course_id = c.id " +
-                "WHERE c.lecturer_id = :lecturerId " +
-                "AND c.semester_id = (SELECT id FROM semester WHERE CURDATE() BETWEEN start_date AND end_date LIMIT 1)",
+                "JOIN semester_week sw ON s.semester_week_id = sw.id " +
+                "JOIN course c ON s.course_id = c.id " +
+                "WHERE s.lecturer_id = :lecturerId " +
+                "AND c.semester_id = :semesterId",
                 nativeQuery = true)
-        List<Schedule> findAllByLecturerIdInCurrentSemester(@Param("lecturerId") Long lecturerId);
+        List<Schedule> findAllByLecturerIdAndSemesterId(@Param("semesterId") Long semesterId, @Param("lecturerId") Long lecturerId);
 
         @Query(value = "SELECT s.* FROM schedule s " +
                 "WHERE s.semester_week_id = :weekId",

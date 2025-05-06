@@ -15,12 +15,16 @@ import java.util.List;
 public class CreateCourseRequest {
     @JsonProperty("subject_id")
     private Long subjectId;
+
     @JsonProperty("class_id")
     private Long classId;
+
     @JsonProperty("lecturer_id")
     private List<Long> lecturersId;
+
     @JsonProperty("semester_id")
     private Long semesterId;
+
     @JsonProperty("total_students")
     private Integer totalStudents;
 

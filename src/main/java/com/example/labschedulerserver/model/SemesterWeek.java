@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -23,11 +24,11 @@ public class SemesterWeek {
 
     @Column(name = "start_date")
     @JsonProperty("start_date")
-    private Timestamp startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date")
     @JsonProperty("end_date")
-    private Timestamp endDate;
+    private LocalDate endDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "semester_id")

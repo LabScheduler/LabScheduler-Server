@@ -1,6 +1,7 @@
 package com.example.labschedulerserver.exception;
 
 import com.example.labschedulerserver.payload.response.ErrorResponse;
+import com.example.labschedulerserver.payload.response.Schedule.ScheduleResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -61,6 +62,10 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(HttpStatus.BAD_REQUEST, "Field not found: " + ex.getMessage()));
     }
 
-
+    @ExceptionHandler(ScheduleException.class)
+    public ResponseEntity<ScheduleResponse> handleScheduleException(ScheduleException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ex.getSchedule());
+    }
 
 }

@@ -15,7 +15,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +30,10 @@ public class CourseServiceImpl implements CourseService {
 
     private final ModelMapper modelMapper;
 
-    @Override //Get all courses in current semester
-    public List<CourseResponse> getAllCourse(){
-        Semester semester = semesterRepository.findCurrentSemester().orElseThrow(()->new ResourceNotFoundException("Semester not found"));
+    //Get all courses by the current semester
+    @Override
+    public List<CourseResponse> getAllCourse() {
+        Semester semester = semesterRepository.findCurrentSemester().orElseThrow(() -> new ResourceNotFoundException("Semester not found"));
         return courseRepository
                 .findAllBySemesterId(semester.getId())
                 .stream()
@@ -60,7 +60,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseResponse> getAllCourse(Long subjectId, Long semesterId) {
-        return courseRepository.findAllBySubjectIdAndSemesterId(subjectId,semesterId)
+        return courseRepository.findAllBySubjectIdAndSemesterId(subjectId, semesterId)
                 .stream()
                 .map(CourseMapper::toCourseResponse)
                 .toList();
@@ -70,13 +70,13 @@ public class CourseServiceImpl implements CourseService {
     public CourseResponse getCourseById(Long id) {
         return courseRepository.findById(id)
                 .map(CourseMapper::toCourseResponse)
-                .orElseThrow(()->new ResourceNotFoundException("Course not found with id:" +id));
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found with id:" + id));
     }
 
     @Override
     public List<CourseSection> getCourseSectionByCourseId(Long courseId) {
         List<CourseSection> courseSections = courseSectionRepository.findAllByCourseId(courseId);
-        if(courseSections.isEmpty()){
+        if (courseSections.isEmpty()) {
             throw new ResourceNotFoundException("CourseSection not found with courseId: " + courseId);
         }
         return courseSections;
@@ -85,33 +85,33 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public CourseResponse createCourse(CreateCourseRequest request) {
-        Semester semester = semesterRepository.findById(request.getSemesterId()).orElseThrow(()->new ResourceNotFoundException("Semester not found"));
+        Semester semester = semesterRepository.findById(request.getSemesterId()).orElseThrow(() -> new ResourceNotFoundException("Semester not found"));
         Course course = courseRepository.findCoursesBySubjectIdAndClazzIdAndSemesterId(request.getSubjectId(), request.getClassId(), semester.getId());
-        if(course != null){
+        if (course != null) {
             throw new ResourceNotFoundException("Course already exist");
         }
 
         Course newCourse = Course.builder()
-                .subject(subjectRepository.findById(request.getSubjectId()).orElseThrow(()->new ResourceNotFoundException("Subject not found")))
-                .clazz(classRepository.findById(request.getClassId()).orElseThrow(()->new ResourceNotFoundException("Class not found")))
+                .subject(subjectRepository.findById(request.getSubjectId()).orElseThrow(() -> new ResourceNotFoundException("Subject not found")))
+                .clazz(classRepository.findById(request.getClassId()).orElseThrow(() -> new ResourceNotFoundException("Class not found")))
                 .lecturers(lecturerAccountRepository.findAllById(request.getLecturersId()))
                 .groupNumber(courseRepository
                         .findAllBySubjectIdAndSemesterId(request.getSubjectId(), semester.getId())
                         .stream()
                         .mapToInt(Course::getGroupNumber)
                         .max()
-                        .orElse(0)+1
+                        .orElse(0) + 1
                 )
                 .totalStudents(request.getTotalStudents())
                 .semester(semester)
                 .build();
-        if(newCourse.getSubject().getTotalPracticePeriods() == 0){
+        if (newCourse.getSubject().getTotalPracticePeriods() == 0) {
             return CourseMapper.toCourseResponse(courseRepository.save(newCourse));
         }
         List<CourseSection> courseSections = new ArrayList<>();
-        for(int i =1; i<= request.getTotalSection(); i++){
+        for (int i = 1; i <= request.getTotalSection(); i++) {
             int totalStudent = newCourse.getTotalStudents();
-            int totalStudentInSection = totalStudent/ request.getTotalSection();
+            int totalStudentInSection = totalStudent / request.getTotalSection();
             int remainingStudents = totalStudent % request.getTotalSection();
 
             int studentsInThisSection = totalStudentInSection + (i <= remainingStudents ? 1 : 0);
@@ -138,7 +138,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseResponse updateCourse(Long id, UpdateCourseRequest request) {
-        Course course = courseRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Course not found with id: " + id));
+        Course course = courseRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
 
         course.setSubject(subjectRepository.findById(request.getSubjectId()).orElseThrow(() -> new ResourceNotFoundException("Subject not found")));
         course.setClazz(classRepository.findById(request.getClassId()).orElseThrow(() -> new ResourceNotFoundException("Class not found")));
@@ -150,7 +150,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteCourse(Long id) {
-        Course course = courseRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Course not found with id: " + id));
+        Course course = courseRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
         courseRepository.delete(course);
     }
 }

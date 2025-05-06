@@ -44,10 +44,6 @@ public class ScheduleResponse {
     @JsonProperty("semester_week")
     private String semesterWeek;
 
-    @JsonProperty("study_date")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "Asia/Ho_Chi_Minh")
-    private Timestamp studyDate;
-
     private String status;
 
     private String type;
