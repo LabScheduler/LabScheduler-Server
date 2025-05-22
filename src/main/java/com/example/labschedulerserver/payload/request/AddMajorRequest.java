@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 public class AddMajorRequest {
     private String name;
     private String code;
-    @JsonProperty("department_id")
+
     private Long departmentId;
 }

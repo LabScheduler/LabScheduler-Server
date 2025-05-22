@@ -24,8 +24,8 @@ public class CourseController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(params = "semester_id")
-    public ResponseEntity<?> getAllCourseBySemester(@RequestParam("semester_id") Long semesterId) {
+    @GetMapping(params = "semesterId")
+    public ResponseEntity<?> getAllCourseBySemester(@RequestParam Long semesterId) {
         DataResponse response = DataResponse.builder()
                 .success(true)
                 .data(courseService.getAllCourseBySemester(semesterId))
@@ -35,8 +35,8 @@ public class CourseController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(params = "class_id")
-    public ResponseEntity<?> getAllCourse(@RequestParam("class_id") Long classId) {
+    @GetMapping(params = "classId")
+    public ResponseEntity<?> getAllCourse(Long classId) {
         DataResponse response = DataResponse.builder()
                 .success(true)
                 .data(courseService.getAllCourse(classId))
@@ -45,8 +45,8 @@ public class CourseController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(params = {"subject_id", "semester_id"})
-    public ResponseEntity<?> getAllCourse(@RequestParam("subject_id") Long subjectId, @RequestParam("semester_id") Long semesterId) {
+    @GetMapping(params = {"subjectId", "semesterId"})
+    public ResponseEntity<?> getAllCourse(@RequestParam Long subjectId, @RequestParam Long semesterId) {
         DataResponse response = DataResponse.builder()
                 .success(true)
                 .data(courseService.getAllCourse(subjectId, semesterId))
@@ -65,7 +65,7 @@ public class CourseController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<?> createCourse(@RequestBody CreateCourseRequest request) {
         DataResponse response = DataResponse.builder()
                 .success(true)
@@ -75,9 +75,9 @@ public class CourseController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("delete/{id}")
-    public ResponseEntity<?> deleteCourse(@PathVariable Long id) {
-        courseService.deleteCourse(id);
+    @DeleteMapping("/{courseId}")
+    public ResponseEntity<?> deleteCourse(@PathVariable Long courseId) {
+        courseService.deleteCourse(courseId);
         DataResponse response = DataResponse.builder()
                 .success(true)
                 .message("Delete course successfully")
@@ -95,7 +95,7 @@ public class CourseController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/section/{courseId}")
+    @GetMapping("/{courseId}/sections")
     public ResponseEntity<?> getCourseSectionByCourseId(@PathVariable Long courseId) {
         DataResponse response = DataResponse.builder()
                 .success(true)

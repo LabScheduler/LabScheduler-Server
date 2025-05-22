@@ -2,8 +2,9 @@ package com.example.labschedulerserver.service.implement;
 
 import com.example.labschedulerserver.model.Account;
 import com.example.labschedulerserver.model.Room;
-import com.example.labschedulerserver.payload.response.DashboardResponse;
+import com.example.labschedulerserver.payload.response.StatisticsResponse;
 import com.example.labschedulerserver.repository.*;
+import com.example.labschedulerserver.service.LecturerRequestService;
 import com.example.labschedulerserver.service.StatisticService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,10 @@ public class StatisticServiceImpl implements StatisticService {
     private final SemesterRepository semesterRepository;
     private final ScheduleRepository scheduleRepository;
     private final AccountRepository accountRepository;
+    private final LecturerRequestService lecturerRequestService;
 
     @Override
-    public DashboardResponse getDashboard() {
+    public StatisticsResponse getStatistics() {
         List<Room> rooms = roomRepository.findAll();
 
         long availableRoom = rooms.stream()
@@ -42,14 +44,17 @@ public class StatisticServiceImpl implements StatisticService {
             return account.getRole().getName().equals("LECTURER");
         }).toList().size();
 
-        return DashboardResponse.builder()
+
+        return StatisticsResponse.builder()
                 .totalRooms(availableRoom + repairingRoom)
                 .totalAvailableRooms(availableRoom)
+                .totalUnavailableRooms(rooms.size() - availableRoom - repairingRoom)
                 .totalRepairingRooms(repairingRoom)
                 .totalCoursesInSemester(courseRepository.findAllBySemesterId(semesterRepository.findCurrentSemester().get().getId()).size())
                 .totalPracticeSchedulesInSemester(scheduleRepository.findAllByCurrentSemester().size())
                 .totalLecturers(totalLecturers)
                 .totalStudents(totalStudents)
+                .totalPendingRequests(lecturerRequestService.getAllPendingRequests().size())
                 .build();
     }
 }

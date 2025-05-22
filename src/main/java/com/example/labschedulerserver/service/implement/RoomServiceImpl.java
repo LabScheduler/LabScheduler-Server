@@ -7,7 +7,6 @@ import com.example.labschedulerserver.model.Room;
 import com.example.labschedulerserver.payload.request.AddRoomRequest;
 import com.example.labschedulerserver.repository.RoomRepository;
 import com.example.labschedulerserver.service.RoomService;
-import com.example.labschedulerserver.utils.ConvertFromJsonToTypeVariable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +56,7 @@ public class RoomServiceImpl implements RoomService {
             String key = entry.getKey();
             Object value = entry.getValue();
             try {
-                Field field = Room.class.getDeclaredField(ConvertFromJsonToTypeVariable.convert(key));
+                Field field = Room.class.getDeclaredField(key);
                 field.setAccessible(true);
 
                 if (field.getType().isEnum()) {

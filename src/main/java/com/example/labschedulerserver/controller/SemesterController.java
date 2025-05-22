@@ -35,7 +35,7 @@ public class SemesterController {
     }
 
     @GetMapping("/weeks")
-    public ResponseEntity<?> getSemesterWeeks(@RequestParam(value = "semester_id", required = false) Long semesterId) {
+    public ResponseEntity<?> getSemesterWeeks(@RequestParam(required = false) Long semesterId) {
         DataResponse dataResponse = DataResponse.builder()
                 .success(true)
                 .message("Success")

@@ -1,6 +1,5 @@
 package com.example.labschedulerserver.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,7 +44,6 @@ public class LecturerRequest {
     private Byte dayOfWeek;
 
     @Column(name = "start_period")
-    @JsonProperty("start_period")
     private Byte startPeriod;
 
     @Column(name = "total_period")
@@ -54,11 +52,9 @@ public class LecturerRequest {
     private String body;
 
     @Column(name = "created_at")
-    @JsonProperty("created_at")
     @UpdateTimestamp
     private Timestamp createdAt;
 
     @OneToOne(mappedBy = "request")
-    @JsonProperty("lecturer_request_log")
     private LecturerRequestLog lecturerRequestLog;
 }

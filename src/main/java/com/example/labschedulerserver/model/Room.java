@@ -2,9 +2,11 @@ package com.example.labschedulerserver.model;
 
 import com.example.labschedulerserver.common.RoomStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
@@ -32,7 +34,6 @@ public class Room {
 
     @Column(name = "last_updated")
     @UpdateTimestamp
-    @JsonProperty("last_updated")
     private Timestamp lastUpdated;
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
@@ -41,6 +42,5 @@ public class Room {
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     @JsonIgnore
-    @JsonProperty("lecturer_requests")
     private List<LecturerRequest> lecturerRequests;
 }

@@ -11,13 +11,10 @@ public class CreateSemesterRequest {
     private String code;
     private String name;
 
-    @JsonProperty("start_date")
     private LocalDate startDate;
 
-    @JsonProperty("end_date")
     private LocalDate endDate;
 
-    @JsonProperty("start_week")
     private int startWeek;
 
 

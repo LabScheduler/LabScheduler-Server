@@ -20,7 +20,6 @@ public class ScheduleMapper {
                 .semesterWeek(schedule.getSemesterWeek().getName())
                 .status(schedule.getStatus().name())
                 .clazz(schedule.getCourse().getClazz().getName())
-                .type(schedule.getType().name())
                 .build();
     }
 }

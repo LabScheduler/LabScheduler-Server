@@ -29,11 +29,9 @@ public class Semester {
     private String name;
 
     @Column(name = "start_date")
-    @JsonProperty("start_date")
     private LocalDate startDate;
 
     @Column(name = "end_date")
-    @JsonProperty("end_date")
     private LocalDate endDate;
 
     @OneToMany(mappedBy = "semester",fetch = FetchType.LAZY)

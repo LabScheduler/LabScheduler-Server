@@ -1,12 +1,13 @@
 package com.example.labschedulerserver.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -25,18 +26,16 @@ public class CourseSection {
     private Course course;
 
     @Column(name = "section_number")
-    @JsonProperty("section_number")
     private Integer sectionNumber;
 
     @Column(name = "total_students_in_section")
-    @JsonProperty("total_students_in_section")
     private Integer totalStudentsInSection;
 
-    @OneToMany(mappedBy = "courseSection",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "courseSection", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Schedule> schedules;
 
-    @OneToMany(mappedBy = "courseSection",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "courseSection", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<LecturerRequest> lecturerRequests;
 }

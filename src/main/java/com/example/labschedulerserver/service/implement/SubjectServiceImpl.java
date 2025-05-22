@@ -7,7 +7,6 @@ import com.example.labschedulerserver.model.Subject;
 import com.example.labschedulerserver.payload.request.AddSubjectRequest;
 import com.example.labschedulerserver.repository.SubjectRepository;
 import com.example.labschedulerserver.service.SubjectService;
-import com.example.labschedulerserver.utils.ConvertFromJsonToTypeVariable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -64,7 +63,7 @@ public class SubjectServiceImpl implements SubjectService {
             String key = entry.getKey();
             Object value = entry.getValue();
             try {
-                Field field = Subject.class.getDeclaredField(ConvertFromJsonToTypeVariable.convert(ConvertFromJsonToTypeVariable.convert(key)));
+                Field field = Subject.class.getDeclaredField(key);
                 field.setAccessible(true);
                 field.set(subject, value);
             } catch (NoSuchFieldException | IllegalAccessException e) {

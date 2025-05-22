@@ -9,6 +9,7 @@ import com.example.labschedulerserver.model.*;
 import com.example.labschedulerserver.payload.request.User.AddLecturerRequest;
 import com.example.labschedulerserver.payload.request.User.AddManagerRequest;
 import com.example.labschedulerserver.payload.request.User.AddStudentRequest;
+import com.example.labschedulerserver.payload.request.User.UpdateUserProfileRequest;
 import com.example.labschedulerserver.payload.response.User.LecturerResponse;
 import com.example.labschedulerserver.payload.response.User.ManagerResponse;
 import com.example.labschedulerserver.payload.response.User.StudentResponse;
@@ -25,6 +26,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -73,29 +76,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ManagerResponse getCurrentManager() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Account account = getCurrentAccount();
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new IllegalStateException("User is not authenticated");
-        }
-
-        String username = authentication.getName();
-        Account account = accountRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
         if (account.getRole().getName().equals("MANAGER")) {
             ManagerAccount managerAccount = managerAccountRepository.findById(account.getId()).orElseThrow(() -> new ResourceNotFoundException("Manager not found with id: " + account.getId()));
             return (ManagerResponse) UserMapper.mapUserToResponse(account, managerAccount);
         }
-        return null;
+        throw new ForbiddenException("User is not a manager");
     }
 
     @Override
     public StudentResponse getCurrentStudent() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new IllegalStateException("User is not authenticated");
-        }
-        String username = authentication.getName();
-        Account account = accountRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+        Account account = getCurrentAccount();
+
         if (!Objects.equals(account.getRole().getName(), "STUDENT")) {
             throw new ForbiddenException("User is not a student");
         }
@@ -108,12 +101,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LecturerResponse getCurrentLecturer() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new IllegalStateException("User is not authenticated");
-        }
-        String username = authentication.getName();
-        Account account = accountRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+        Account account = getCurrentAccount();
+
         if (!Objects.equals(account.getRole().getName(), "LECTURER")) {
             throw new ForbiddenException("User is not a lecturer");
         }
@@ -122,6 +111,22 @@ public class UserServiceImpl implements UserService {
             return (LecturerResponse) UserMapper.mapUserToResponse(account, lecturerAccount);
         }
         return null;
+    }
+
+    @Override
+    public Account getCurrentAccount() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("User is not authenticated");
+        }
+
+        String username = authentication.getName();
+        Account account = accountRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+        if (account.getStatus() == AccountStatus.LOCKED) {
+            throw new ForbiddenException("Account is locked");
+        }
+        return account;
     }
 
     @Override
@@ -178,6 +183,7 @@ public class UserServiceImpl implements UserService {
                 .code(request.getCode())
                 .email(request.getEmail())
                 .phone(request.getPhone())
+                .birthday(request.getBirthday())
                 .gender(request.getGender())
                 .department(departmentRepository.findById(request.getDepartmentId()).orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId())))
                 .build();
@@ -207,6 +213,7 @@ public class UserServiceImpl implements UserService {
                 .email(request.getEmail())
                 .phone(request.getPhone())
                 .gender(request.getGender())
+                .birthday(request.getBirthday())
                 .build();
         account = accountRepository.save(account);
         studentAccount = studentAccountRepository.save(studentAccount);
@@ -217,26 +224,73 @@ public class UserServiceImpl implements UserService {
                 .status(StudentOnClassStatus.ENROLLED)
                 .build()));
         studentOnClassRepository.save(studentAccount.getStudentOnClasses().getFirst());
-        return StudentResponse.builder()
-                .major(studentAccount.getStudentOnClasses().getFirst().getClazz().getMajor().getName())
-                .specialization("")
-                .gender(studentAccount.isGender())
-                .id(account.getId())
-                .clazz(studentAccount.getStudentOnClasses().getFirst().getClazz().getName())
-                .status(account.getStatus().toString())
-                .fullName(studentAccount.getFullName())
-                .code(studentAccount.getCode())
-                .email(studentAccount.getEmail())
-                .phone(studentAccount.getPhone())
-                .role(account.getRole().getName())
-                .build();
+        return (StudentResponse) UserMapper.mapUserToResponse(account, studentAccount);
     }
+
 
     @Override
     @Transactional
-    public Object updateUser(Long userId, Map<String, Object> payload) {
+    public Object updateUser(UpdateUserProfileRequest request) {
+        Account account = getCurrentAccount();
+
+        switch (account.getRole().getName()) {
+            case "MANAGER" -> {
+                ManagerAccount managerAccount = managerAccountRepository.findById(account.getId()).orElseThrow(() -> new ResourceNotFoundException("Manager not found with id: " + account.getId()));
+                managerAccount.setEmail(request.getEmail());
+                managerAccount.setPhone(request.getPhone());
+                return UserMapper.mapUserToResponse(accountRepository.save(account), managerAccountRepository.save(managerAccount));
+            }
+            case "LECTURER" -> {
+                LecturerAccount lecturerAccount = lecturerAccountRepository.findById(account.getId()).orElseThrow(() -> new ResourceNotFoundException("Lecturer not found with id: " + account.getId()));
+                lecturerAccount.setEmail(request.getEmail());
+                lecturerAccount.setPhone(request.getPhone());
+                return UserMapper.mapUserToResponse(accountRepository.save(account), lecturerAccountRepository.save(lecturerAccount));
+            }
+            case "STUDENT" -> {
+                StudentAccount studentAccount = studentAccountRepository.findById(account.getId()).orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + account.getId()));
+                studentAccount.setEmail(request.getEmail());
+                studentAccount.setPhone(request.getPhone());
+                return UserMapper.mapUserToResponse(accountRepository.save(account), studentAccountRepository.save(studentAccount));
+            }
+        }
         return null;
     }
+
+    private <T> void updateUserInfo(T entity, Map<String, Object> payload) {
+        for (Map.Entry<String, Object> entry : payload.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            try {
+                Field field = entity.getClass().getDeclaredField(key);
+                field.setAccessible(true);
+                if (field.getType().equals(LocalDate.class) && value instanceof String) {
+                    value = LocalDate.parse((String) value);
+                }
+
+
+                field.set(entity, value);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new ResourceNotFoundException("Field not found: " + key);
+            }
+        }
+    }
+
+    @Override
+    public StudentResponse updateStudent(Long studentId, Map<String, Object> payload) {
+        StudentAccount studentAccount = studentAccountRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + studentId));
+        Account account = studentAccount.getAccount();
+        updateUserInfo(studentAccount, payload);
+        return (StudentResponse) UserMapper.mapUserToResponse(accountRepository.save(account), studentAccountRepository.save(studentAccount));
+    }
+
+    @Override
+    public LecturerResponse updateLecturer(Long lecturerId, Map<String, Object> payload) {
+        LecturerAccount lecturerAccount = lecturerAccountRepository.findById(lecturerId).orElseThrow(() -> new ResourceNotFoundException("Lecturer not found with id: " + lecturerId));
+        Account account = lecturerAccount.getAccount();
+        updateUserInfo(lecturerAccount, payload);
+        return (LecturerResponse) UserMapper.mapUserToResponse(accountRepository.save(account), lecturerAccountRepository.save(lecturerAccount));
+    }
+
 
     @Override
     public void deleteUser(Long userId) {

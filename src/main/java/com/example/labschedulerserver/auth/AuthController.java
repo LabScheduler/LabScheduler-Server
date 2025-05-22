@@ -15,7 +15,12 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         AuthResponse authResponse = authService.authenticate(authRequest);
-        return ResponseEntity.ok(authResponse);
+        DataResponse dataResponse = DataResponse.builder()
+                .data(authResponse)
+                .message("Login successfully")
+                .success(true)
+                .build();
+        return ResponseEntity.ok(dataResponse);
     }
 
     @PostMapping("/forgot-password")

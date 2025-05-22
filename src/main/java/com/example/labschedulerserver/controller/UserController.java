@@ -4,6 +4,7 @@ package com.example.labschedulerserver.controller;
 import com.example.labschedulerserver.payload.request.User.AddLecturerRequest;
 import com.example.labschedulerserver.payload.request.User.AddManagerRequest;
 import com.example.labschedulerserver.payload.request.User.AddStudentRequest;
+import com.example.labschedulerserver.payload.request.User.UpdateUserProfileRequest;
 import com.example.labschedulerserver.payload.response.DataResponse;
 import com.example.labschedulerserver.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +49,7 @@ public class UserController {
         return ResponseEntity.ok(dataResponse);
     }
 
-    @PostMapping("/create/manager")
+    @PostMapping("/manager")
     public ResponseEntity<?> createManager(@RequestBody AddManagerRequest request) {
         DataResponse dataResponse = DataResponse.builder()
                 .data(userService.createManager(request))
@@ -58,7 +59,7 @@ public class UserController {
         return ResponseEntity.ok(dataResponse);
     }
 
-    @PostMapping("/create/lecturer")
+    @PostMapping("/lecturer")
     public ResponseEntity<?> createLecturer(@RequestBody AddLecturerRequest request) {
         DataResponse dataResponse = DataResponse.builder()
                 .data(userService.createLecturer(request))
@@ -68,7 +69,7 @@ public class UserController {
         return ResponseEntity.ok(dataResponse);
     }
 
-    @PostMapping("/create/student")
+    @PostMapping("/student")
     public ResponseEntity<?> createStudent(@RequestBody AddStudentRequest request) {
         DataResponse dataResponse = DataResponse.builder()
                 .data(userService.createStudent(request))
@@ -78,17 +79,38 @@ public class UserController {
         return ResponseEntity.ok(dataResponse);
     }
 
-    @PatchMapping("/update/{id}")
-    public ResponseEntity<?> updateUserInfo(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
+    @PutMapping
+    public ResponseEntity<?> updateUserInfo(@RequestBody UpdateUserProfileRequest request) {
         DataResponse dataResponse = DataResponse.builder()
-                .data(userService.updateUser(id, payload))
+                .data(userService.updateUser(request))
                 .message("Update user information successfully")
                 .success(true)
                 .build();
         return ResponseEntity.ok(dataResponse);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PatchMapping("/student/{id}")
+    public ResponseEntity<?> updateStudent(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
+        DataResponse dataResponse = DataResponse.builder()
+                .data(userService.updateStudent(id, payload))
+                .message("Update student successfully")
+                .success(true)
+                .build();
+        return ResponseEntity.ok(dataResponse);
+    }
+    @PatchMapping("/lecturer/{id}")
+    public ResponseEntity<?> updateLecturer(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
+        DataResponse dataResponse = DataResponse.builder()
+                .data(userService.updateLecturer(id, payload))
+                .message("Update lecturer successfully")
+                .success(true)
+                .build();
+        return ResponseEntity.ok(dataResponse);
+    }
+
+
+
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         DataResponse dataResponse = DataResponse.builder()

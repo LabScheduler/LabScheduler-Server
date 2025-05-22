@@ -5,7 +5,6 @@ import com.example.labschedulerserver.common.StudentOnClassStatus;
 import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.model.*;
 import com.example.labschedulerserver.payload.request.Class.CreateClassRequest;
-import com.example.labschedulerserver.payload.request.Class.CreateSpecializationClass;
 import com.example.labschedulerserver.payload.request.Class.UpdateClassRequest;
 import com.example.labschedulerserver.payload.response.Class.ClassMapper;
 import com.example.labschedulerserver.payload.response.Class.ClassResponse;
@@ -17,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -32,42 +30,35 @@ public class ClassServiceImpl implements ClassService {
     public ClassResponse createClass(CreateClassRequest request) {
         Clazz clazz = Clazz.builder()
                 .name(request.getName())
-                .major(majorRepository.findById(request.getMajorId()).orElseThrow(()-> new ResourceNotFoundException("Major not found")))
-                .classType(ClassType.MAJOR)
-                .build();
-        return ClassMapper.toClassResponse(classRepository.save(clazz));
-    }
-
-    @Override
-    public ClassResponse createSpecializationClass(CreateSpecializationClass request) {
-        Clazz clazz = Clazz.builder()
-                .name(request.getName())
-                .major(majorRepository.findById(request.getMajorId()).orElseThrow(()-> new ResourceNotFoundException("Major not found")))
-                .specialization(specializationRepository.findById(request.getSpecializationId()).orElseThrow(()-> new ResourceNotFoundException("Specialization not found")))
-                .classType(ClassType.SPECIALIZATION)
+                .major(majorRepository.findById(request.getMajorId()).orElseThrow(() -> new ResourceNotFoundException("Major not found")))
+                .classType(ClassType.valueOf(request.getClassType().toUpperCase()))
+                .specialization(request.getSpecializationId() != null ? specializationRepository.findById(request.getSpecializationId()).orElseThrow(() -> new ResourceNotFoundException("Specialization not found")) : null)
                 .build();
         return ClassMapper.toClassResponse(classRepository.save(clazz));
     }
 
     @Override
     public List<ClassResponse> getAllClasses(String classType) {
+        if (classType == null || classType.isEmpty()) {
+            return classRepository.findAll().stream().map(ClassMapper::toClassResponse).toList();
+        }
         return classRepository.findAll().stream().filter(clazz -> clazz.getClassType() == ClassType.valueOf(classType.toUpperCase())).map(ClassMapper::toClassResponse).toList();
     }
 
 
     @Override
     public ClassResponse getClassById(Long id) {
-        return ClassMapper.toClassResponse(classRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Class not found")));
+        return ClassMapper.toClassResponse(classRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Class not found")));
     }
 
     @Override
     public List<StudentResponse> getStudentsInClass(Long classId) {
-        Clazz clazz = classRepository.findById(classId).orElseThrow(()-> new ResourceNotFoundException("Class not found"));
+        Clazz clazz = classRepository.findById(classId).orElseThrow(() -> new ResourceNotFoundException("Class not found"));
         if (clazz.getStudentOnClasses() != null) {
             return clazz.getStudentOnClasses().stream()
                     .map(studentOnClass -> {
                         StudentAccount student = studentOnClass.getStudents();
-                        return (StudentResponse) UserMapper.mapUserToResponse(student.getAccount(),student);
+                        return (StudentResponse) UserMapper.mapUserToResponse(student.getAccount(), student);
                     })
                     .toList();
         }
@@ -76,18 +67,18 @@ public class ClassServiceImpl implements ClassService {
 
     @Override
     public ClassResponse updateClass(Long id, UpdateClassRequest request) {
-        Clazz clazz = classRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Class not found"));
+        Clazz clazz = classRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Class not found"));
         clazz.setName(request.getName());
 
         if (clazz.getClassType() == ClassType.MAJOR) {
-            clazz.setMajor(majorRepository.findById(request.getMajorId()).orElseThrow(()-> new ResourceNotFoundException("Major not found")));
-        }else if (clazz.getClassType() == ClassType.SPECIALIZATION) {
-            clazz.setMajor(majorRepository.findById(request.getMajorId()).orElseThrow(()-> new ResourceNotFoundException("Major not found")));
+            clazz.setMajor(majorRepository.findById(request.getMajorId()).orElseThrow(() -> new ResourceNotFoundException("Major not found")));
+        } else if (clazz.getClassType() == ClassType.SPECIALIZATION) {
+            clazz.setMajor(majorRepository.findById(request.getMajorId()).orElseThrow(() -> new ResourceNotFoundException("Major not found")));
 
-            Specialization specialization = specializationRepository.findById(request.getSpecializationId()).orElseThrow(()-> new ResourceNotFoundException("Specialization not found"));
-            if(specialization.getMajor() == clazz.getMajor()){
+            Specialization specialization = specializationRepository.findById(request.getSpecializationId()).orElseThrow(() -> new ResourceNotFoundException("Specialization not found"));
+            if (specialization.getMajor() == clazz.getMajor()) {
                 clazz.setSpecialization(specialization);
-            }else {
+            } else {
                 throw new ResourceNotFoundException("Specialization not found in this major");
             }
         }
@@ -97,12 +88,24 @@ public class ClassServiceImpl implements ClassService {
 
     @Override
     public void deleteClass(Long id) {
-        Clazz clazz = classRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Class not found"));
+        Clazz clazz = classRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Class not found"));
         classRepository.delete(clazz);
     }
 
     @Override
-    public void addStudentsToSpecializationClass(Long classId, List<Long> studentIds) {
+    public void deleteStudentFromClass(Long classId, Long studentId) {
+        Clazz clazz = classRepository.findById(classId)
+                .orElseThrow(() -> new ResourceNotFoundException("Class not found"));
+        List<StudentOnClass> studentOnClass = clazz.getStudentOnClasses().stream()
+                .filter(studentOnClass1 -> studentOnClass1.getStudents().getAccountId().equals(studentId))
+                .toList();
+
+
+        studentOnClassRepository.deleteAll(studentOnClass);
+    }
+
+    @Override
+    public void addStudentToClass(Long classId, List<Long> studentIds) {
         Clazz clazz = classRepository.findById(classId)
                 .orElseThrow(() -> new ResourceNotFoundException("Class not found"));
 

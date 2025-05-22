@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @Builder
 public class StudentResponse {
     private Long id;
-    @JsonProperty("full_name")
     private String fullName;
     private String email;
     private String code;
@@ -24,3 +23,4 @@ public class StudentResponse {
     private String major;
     private String specialization;
 }
+

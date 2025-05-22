@@ -7,9 +7,7 @@ import lombok.Data;
 @Data
 public class UpdateClassRequest {
     private String name;
-    @JsonProperty("major_id")
     private Long majorId;
-    @JsonProperty("specialization_id")
     @Nullable
     private Long specializationId;
 }

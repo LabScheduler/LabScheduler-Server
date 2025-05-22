@@ -9,9 +9,11 @@ import com.example.labschedulerserver.payload.response.Schedule.ScheduleResponse
 import java.util.List;
 
 public interface ScheduleService {
-    List<ScheduleResponse> allocateSchedule(List<Long> courseIds);
+    List<ScheduleResponse> allocateSchedule(Long courseIds, Long semesterWeekId);
 
-    List<ScheduleResponse> getScheduleByCourseId(Long courseId);
+    List<ScheduleResponse> getScheduleBySemesterId(Long semesterId);
+
+    List<ScheduleResponse> getScheduleByCourseId(Long semesterId, Long courseId);
 
     List<ScheduleResponse> getScheduleByLecturerId(Long semesterId, Long lecturerId);
 
@@ -23,7 +25,7 @@ public interface ScheduleService {
 
     ScheduleResponse cancelSchedule(Long scheduleId);
 
-
+    void deleteSchedule(Long scheduleId);
 
 
 }

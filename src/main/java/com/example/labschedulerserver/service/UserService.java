@@ -4,6 +4,7 @@ import com.example.labschedulerserver.model.Account;
 import com.example.labschedulerserver.payload.request.User.AddLecturerRequest;
 import com.example.labschedulerserver.payload.request.User.AddManagerRequest;
 import com.example.labschedulerserver.payload.request.User.AddStudentRequest;
+import com.example.labschedulerserver.payload.request.User.UpdateUserProfileRequest;
 import com.example.labschedulerserver.payload.response.User.LecturerResponse;
 import com.example.labschedulerserver.payload.response.User.ManagerResponse;
 import com.example.labschedulerserver.payload.response.User.StudentResponse;
@@ -22,6 +23,7 @@ public interface UserService {
 
     public LecturerResponse getCurrentLecturer();
 
+    public Account getCurrentAccount();
 
     public Object findById(Long userId);
 
@@ -31,7 +33,10 @@ public interface UserService {
     public LecturerResponse createLecturer(AddLecturerRequest request);
     public StudentResponse createStudent(AddStudentRequest request);
 
-    public Object updateUser(Long userId, Map<String, Object> payload);
+    public Object updateUser(UpdateUserProfileRequest request);
+
+    public StudentResponse updateStudent(Long studentId, Map<String, Object> payload);
+    public LecturerResponse updateLecturer(Long lecturerId, Map<String, Object> payload);
 
     public List<StudentResponse> getAllStudent();
     public List<LecturerResponse> getAllLecturer();

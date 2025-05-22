@@ -26,16 +26,17 @@ public class ScheduleUtils {
     public Schedule checkScheduleConflict(Schedule newSchedule, List<Schedule> existingSchedule) {
         return existingSchedule.stream()
                 .filter(existing -> existing.getSemesterWeek().getName().equals(newSchedule.getSemesterWeek().getName()))
+
                 .filter(existing ->{
                     if(!checkTimeConflict(existing, newSchedule)) {
                         return false;
                     }
 
-                    boolean roomConflict = newSchedule.getRoom().equals(existing.getRoom());
+                    boolean roomConflict = newSchedule.getRoom().getId().equals(existing.getRoom().getId());
 
                     boolean lecturerConflict = newSchedule.getLecturer().equals(existing.getLecturer());
 
-                    return roomConflict || lecturerConflict;
+                    return roomConflict && lecturerConflict;
                 })
                 .findFirst()
                 .orElse(null);

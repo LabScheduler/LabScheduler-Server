@@ -2,6 +2,7 @@ package com.example.labschedulerserver.payload.response.LecturerRequest;
 
 import com.example.labschedulerserver.model.LecturerRequest;
 import com.example.labschedulerserver.model.LecturerRequestLog;
+import com.example.labschedulerserver.payload.request.LecturerScheduleRequest;
 
 public class LecturerRequestMapper {
     public static LecturerRequestResponse toResponse(LecturerRequest request, LecturerRequestLog requestLog) {
@@ -16,10 +17,10 @@ public class LecturerRequestMapper {
                 .newDayOfWeek(request.getDayOfWeek())
                 .newStartPeriod(request.getStartPeriod())
                 .newTotalPeriod(request.getTotalPeriod())
-                .body(request.getBody())
+                .lecturerBody(request.getBody())
+                .managerBody(requestLog.getBody())
                 .status(requestLog.getStatus().name())
                 .createdAt(request.getCreatedAt())
                 .build();
-
     }
 }

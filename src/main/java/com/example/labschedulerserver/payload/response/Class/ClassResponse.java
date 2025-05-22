@@ -12,6 +12,5 @@ public class ClassResponse {
     private String major;
     private String specialization;
     private String type;
-    @JsonProperty("number_of_students")
     private int numberOfStudents;
 }

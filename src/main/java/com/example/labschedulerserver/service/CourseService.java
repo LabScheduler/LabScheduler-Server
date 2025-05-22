@@ -5,6 +5,7 @@ import com.example.labschedulerserver.model.CourseSection;
 import com.example.labschedulerserver.payload.request.Course.CreateCourseRequest;
 import com.example.labschedulerserver.payload.request.Course.UpdateCourseRequest;
 import com.example.labschedulerserver.payload.response.CourseResponse;
+import com.example.labschedulerserver.payload.response.NewCourseResponse;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface CourseService {
 
     public List<CourseSection> getCourseSectionByCourseId(Long courseId);
 
-    public CourseResponse createCourse(CreateCourseRequest request);
+    public NewCourseResponse createCourse(CreateCourseRequest request);
     public void deleteCourse(Long id);
     public Course checkCourseExist(Long subjectId, Long classId, Long semesterId);
 

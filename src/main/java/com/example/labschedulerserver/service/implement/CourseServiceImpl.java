@@ -8,13 +8,17 @@ import com.example.labschedulerserver.payload.request.Course.CourseMapper;
 import com.example.labschedulerserver.payload.request.Course.CreateCourseRequest;
 import com.example.labschedulerserver.payload.request.Course.UpdateCourseRequest;
 import com.example.labschedulerserver.payload.response.CourseResponse;
+import com.example.labschedulerserver.payload.response.NewCourseResponse;
+import com.example.labschedulerserver.payload.response.Schedule.ScheduleResponse;
 import com.example.labschedulerserver.repository.*;
 import com.example.labschedulerserver.service.CourseService;
+import com.example.labschedulerserver.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +33,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseSectionRepository courseSectionRepository;
 
     private final ModelMapper modelMapper;
+    private final ScheduleService scheduleService;
 
     //Get all courses by the current semester
     @Override
@@ -84,8 +89,13 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     @Transactional
-    public CourseResponse createCourse(CreateCourseRequest request) {
+    public NewCourseResponse createCourse(CreateCourseRequest request) {
         Semester semester = semesterRepository.findById(request.getSemesterId()).orElseThrow(() -> new ResourceNotFoundException("Semester not found"));
+
+//        if(semester.getStartDate().isBefore(LocalDate.now())){
+//            throw new ResourceNotFoundException("Semester has started");
+//        }
+
         Course course = courseRepository.findCoursesBySubjectIdAndClazzIdAndSemesterId(request.getSubjectId(), request.getClassId(), semester.getId());
         if (course != null) {
             throw new ResourceNotFoundException("Course already exist");
@@ -94,7 +104,7 @@ public class CourseServiceImpl implements CourseService {
         Course newCourse = Course.builder()
                 .subject(subjectRepository.findById(request.getSubjectId()).orElseThrow(() -> new ResourceNotFoundException("Subject not found")))
                 .clazz(classRepository.findById(request.getClassId()).orElseThrow(() -> new ResourceNotFoundException("Class not found")))
-                .lecturers(lecturerAccountRepository.findAllById(request.getLecturersId()))
+                .lecturers(lecturerAccountRepository.findAllById(request.getLecturersIds()))
                 .groupNumber(courseRepository
                         .findAllBySubjectIdAndSemesterId(request.getSubjectId(), semester.getId())
                         .stream()
@@ -106,7 +116,7 @@ public class CourseServiceImpl implements CourseService {
                 .semester(semester)
                 .build();
         if (newCourse.getSubject().getTotalPracticePeriods() == 0) {
-            return CourseMapper.toCourseResponse(courseRepository.save(newCourse));
+            throw new ResourceNotFoundException("Subject has no practice periods");
         }
         List<CourseSection> courseSections = new ArrayList<>();
         for (int i = 1; i <= request.getTotalSection(); i++) {
@@ -127,7 +137,10 @@ public class CourseServiceImpl implements CourseService {
         System.out.println(newCourse.getCourseSections().size());
         courseRepository.save(newCourse);
         courseSectionRepository.saveAll(courseSections);
-        return CourseMapper.toCourseResponse(newCourse);
+        return NewCourseResponse.builder()
+                .course(CourseMapper.toCourseResponse(newCourse))
+                .schedules(generatePracticeSchedule(newCourse, request.getStartWeekId()))
+                .build();
     }
 
 
@@ -144,13 +157,20 @@ public class CourseServiceImpl implements CourseService {
         course.setClazz(classRepository.findById(request.getClassId()).orElseThrow(() -> new ResourceNotFoundException("Class not found")));
         course.setTotalStudents(request.getTotalStudents());
 
-        Course updatedCourse = courseRepository.save(course);
-        return CourseMapper.toCourseResponse(updatedCourse);
+        if (request.getLecturersIds() != null) {
+            course.setLecturers(lecturerAccountRepository.findAllById(request.getLecturersIds()));
+        }
+
+        return CourseMapper.toCourseResponse(courseRepository.save(course));
     }
 
     @Override
     public void deleteCourse(Long id) {
         Course course = courseRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
         courseRepository.delete(course);
+    }
+
+    private List<ScheduleResponse> generatePracticeSchedule(Course course, Long startWeek) {
+        return scheduleService.allocateSchedule(course.getId(), startWeek);
     }
 }

@@ -162,8 +162,7 @@ CREATE TABLE `schedule`
     `start_period`      INT                                            NOT NULL,
     `total_period`      INT                                            NOT NULL,
     `semester_week_id`  BIGINT                                         NOT NULL,
-    `status`            ENUM ('IN_PROGRESS', 'COMPLETED', 'CANCELLED') NOT NULL,
-    `type`             ENUM ('THEORY','PRACTICE') NOT NULL
+    `status`            ENUM ('IN_PROGRESS', 'COMPLETED', 'CANCELLED') NOT NULL
 );
 
 CREATE TABLE `lecturer_request`
@@ -187,7 +186,7 @@ CREATE TABLE `lecturer_request_log`
     `manager_id` BIGINT,
     `status`     ENUM ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED') NOT NULL DEFAULT 'PENDING',
     `body`       VARCHAR(255),
-    `replied_at` TIMESTAMP NOT NULL DEFAULT (CURRENT_TIMESTAMP)
+    `replied_at` TIMESTAMP DEFAULT (CURRENT_TIMESTAMP)
 );
 
 ALTER TABLE `account`
@@ -206,10 +205,10 @@ ALTER TABLE `class`
     ADD FOREIGN KEY (`specialization_id`) REFERENCES `specialization` (`id`);
 
 ALTER TABLE `student_account`
-    ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`);
+    ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ;
 
 ALTER TABLE `student_on_class`
-    ADD FOREIGN KEY (`student_id`) REFERENCES `student_account` (`account_id`);
+    ADD FOREIGN KEY (`student_id`) REFERENCES `student_account` (`account_id`) ON DELETE CASCADE ;
 
 ALTER TABLE `student_on_class`
     ADD FOREIGN KEY (`class_id`) REFERENCES `class` (`id`);
@@ -218,7 +217,7 @@ ALTER TABLE `lecturer_account`
     ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `lecturer_account`
-    ADD FOREIGN KEY (`department_id`) REFERENCES `department` (`id`);
+    ADD FOREIGN KEY (`department_id`) REFERENCES `department` (`id`) ON DELETE CASCADE ;
 
 ALTER TABLE `manager_account`
     ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE;
@@ -233,7 +232,7 @@ ALTER TABLE `course`
     ADD FOREIGN KEY (`semester_id`) REFERENCES `semester` (`id`);
 
 ALTER TABLE `lecturer_on_course`
-    ADD FOREIGN KEY (`course_id`) REFERENCES `course` (`id`);
+    ADD FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `lecturer_on_course`
     ADD FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer_account` (`account_id`);
@@ -242,10 +241,10 @@ ALTER TABLE `course_section`
     ADD FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `semester_week`
-    ADD FOREIGN KEY (`semester_id`) REFERENCES `semester` (`id`);
+    ADD FOREIGN KEY (`semester_id`) REFERENCES `semester` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `schedule`
-    ADD FOREIGN KEY (`course_id`) REFERENCES `course` (`id`);
+    ADD FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `schedule`
     ADD FOREIGN KEY (`course_section_id`) REFERENCES `course_section` (`id`);
@@ -275,7 +274,7 @@ ALTER TABLE `lecturer_request`
     ADD FOREIGN KEY (`semester_week_id`) REFERENCES `semester_week` (`id`);
 
 ALTER TABLE `lecturer_request_log`
-    ADD FOREIGN KEY (`request_id`) REFERENCES `lecturer_request` (`id`);
+    ADD FOREIGN KEY (`request_id`) REFERENCES `lecturer_request` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `lecturer_request_log`
     ADD FOREIGN KEY (`manager_id`) REFERENCES `manager_account` (`account_id`);

@@ -1,13 +1,11 @@
 package com.example.labschedulerserver.model;
 
 import com.example.labschedulerserver.common.RequestStatus;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 
@@ -17,12 +15,12 @@ import java.sql.Timestamp;
 @Builder
 @Entity
 @Table(name = "lecturer_request_log")
-public class    LecturerRequestLog {
+public class LecturerRequestLog {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
+    @MapsId
     @JoinColumn(name = "request_id")
     private LecturerRequest request;
 
@@ -31,12 +29,10 @@ public class    LecturerRequestLog {
 
     @ManyToOne
     @JoinColumn(name = "manager_id")
-    @JsonProperty("manager_account")
     private ManagerAccount managerAccount;
 
     private String body;
 
     @Column(name = "replied_at")
-    @JsonProperty("replied_at")
     private Timestamp repliedAt;
 }

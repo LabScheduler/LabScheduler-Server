@@ -21,9 +21,7 @@ public class CourseResponse {
     private String clazz;
     private String semester;
     private List<String> lecturers;
-    @JsonProperty("group_number")
     private Integer groupNumber;
-    @JsonProperty("total_students")
     private Integer totalStudents;
 
 }

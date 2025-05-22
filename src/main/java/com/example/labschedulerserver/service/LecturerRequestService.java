@@ -18,16 +18,14 @@ public interface LecturerRequestService {
     List<LecturerRequestResponse> getAllRequests();
     
     //get requests from lecturer
-    List<LecturerRequestResponse> getRequestsByLecturerId(Long lecturerId);
+    List<LecturerRequestResponse> getRequestsByLecturer();
     
     //get request by id
-    LecturerRequestResponse getRequestById(Long requestId);
+//    LecturerRequestResponse getRequestById(Long requestId);
 
     //manager will process the request (approve/reject)
     LecturerRequestResponse processRequest(ProcessRequest request);
     
     //lecturer can cancel their request
     void cancelRequest(Long requestId);
-
-    boolean checkRequestConflict(LecturerScheduleRequest request);
 }

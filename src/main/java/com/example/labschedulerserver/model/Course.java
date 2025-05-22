@@ -32,7 +32,6 @@ public class Course {
     private Semester semester;
 
     @Column(name = "group_number")
-    @JsonProperty("group_number")
     private Integer groupNumber;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -45,7 +44,6 @@ public class Course {
     private List<LecturerAccount> lecturers;
 
     @Column(name = "total_students")
-    @JsonProperty("total_students")
     private Integer totalStudents;
 
     @OneToMany(mappedBy = "course" , fetch = FetchType.LAZY)
@@ -53,7 +51,6 @@ public class Course {
     private List<CourseSection> courseSections;
 
     @OneToMany(mappedBy = "course",fetch = FetchType.LAZY)
-    @JsonProperty("lecturer_requests")
     @JsonIgnore
     private List<LecturerRequest> lecturerRequests;
 

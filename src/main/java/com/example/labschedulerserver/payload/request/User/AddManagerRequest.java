@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class AddManagerRequest {
-    @JsonProperty("full_name")
+
     private String fullName;
     private String code;
     private String email;

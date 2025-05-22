@@ -1,6 +1,5 @@
 package com.example.labschedulerserver.payload.request.Course;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,21 +12,17 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class CreateCourseRequest {
-    @JsonProperty("subject_id")
     private Long subjectId;
 
-    @JsonProperty("class_id")
     private Long classId;
 
-    @JsonProperty("lecturer_id")
-    private List<Long> lecturersId;
+    private List<Long> lecturersIds;
 
-    @JsonProperty("semester_id")
     private Long semesterId;
 
-    @JsonProperty("total_students")
     private Integer totalStudents;
 
-    @JsonProperty("total_section")
     private Integer totalSection;
+
+    private Long startWeekId;
 }

@@ -1,9 +1,11 @@
 package com.example.labschedulerserver.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,11 +19,9 @@ import java.util.List;
 public class LecturerAccount {
     @Id
     @Column(name = "account_id")
-    @JsonProperty("account_id")
     private Long accountId;
 
     @Column(name = "full_name")
-    @JsonProperty("full_name")
     private String fullName;
 
     private String code;
@@ -47,7 +47,7 @@ public class LecturerAccount {
     @ManyToMany(mappedBy = "lecturers")
     private List<Course> courses;
 
-    @OneToMany(mappedBy = "lecturerAccount",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "lecturerAccount", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<LecturerRequest> lecturerRequests;
 

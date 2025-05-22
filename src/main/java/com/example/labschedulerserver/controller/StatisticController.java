@@ -10,15 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/sumary")
+@RequestMapping("/api/statistic")
 public class StatisticController {
     private final StatisticService statisticService;
 
-    @GetMapping("/dashboard")
+    @GetMapping
     public ResponseEntity<?> getDashboard() {
-        var dashboard = statisticService.getDashboard();
         DataResponse response = DataResponse.builder()
-                .data(dashboard)
+                .data(statisticService.getStatistics())
                 .success(true)
                 .message("Successfully retrieved dashboard data")
                 .build();

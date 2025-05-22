@@ -7,7 +7,6 @@ import com.example.labschedulerserver.payload.request.AddMajorRequest;
 import com.example.labschedulerserver.repository.DepartmentRepository;
 import com.example.labschedulerserver.repository.MajorRepository;
 import com.example.labschedulerserver.service.MajorService;
-import com.example.labschedulerserver.utils.ConvertFromJsonToTypeVariable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +61,7 @@ public class MajorServiceImpl implements MajorService {
             Object value = entry.getValue();
 
             try {
-                Field field = Major.class.getDeclaredField(ConvertFromJsonToTypeVariable.convert(key));
+                Field field = Major.class.getDeclaredField(key);
                 field.setAccessible(true);
                 field.set(major, value);
             } catch (NoSuchFieldException | IllegalAccessException e) {
