@@ -6,6 +6,7 @@ import com.example.labschedulerserver.payload.response.DataResponse;
 import com.example.labschedulerserver.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class CourseController {
     private final CourseService courseService;
 
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'LECTURER', 'STUDENT')")
     @GetMapping
     public ResponseEntity<?> getAllCourse() {
         DataResponse response = DataResponse.builder()
@@ -24,6 +26,7 @@ public class CourseController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'LECTURER', 'STUDENT')")
     @GetMapping(params = "semesterId")
     public ResponseEntity<?> getAllCourseBySemester(@RequestParam Long semesterId) {
         DataResponse response = DataResponse.builder()
@@ -35,6 +38,7 @@ public class CourseController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'LECTURER', 'STUDENT')")
     @GetMapping(params = "classId")
     public ResponseEntity<?> getAllCourse(Long classId) {
         DataResponse response = DataResponse.builder()
@@ -85,7 +89,7 @@ public class CourseController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<?> updateCourse(@PathVariable Long id, @RequestBody UpdateCourseRequest request) {
         DataResponse response = DataResponse.builder()
                 .success(true)
@@ -101,6 +105,26 @@ public class CourseController {
                 .success(true)
                 .data(courseService.getCourseSectionByCourseId(courseId))
                 .message("Get course section by course id successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/lecturer")
+    public ResponseEntity<?> getLecturerCourse() {
+        DataResponse response = DataResponse.builder()
+                .success(true)
+                .data(courseService.getLecturerCourse())
+                .message("Get lecturer course successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{courseId}/lecturers")
+    public ResponseEntity<?> getLecturersByCourse(@PathVariable Long courseId) {
+        DataResponse response = DataResponse.builder()
+                .success(true)
+                .data(courseService.getLecturersByCourse(courseId))
+                .message("Get lecturers by course successfully")
                 .build();
         return ResponseEntity.ok(response);
     }

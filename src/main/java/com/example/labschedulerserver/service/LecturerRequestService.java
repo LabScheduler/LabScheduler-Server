@@ -4,6 +4,7 @@ import com.example.labschedulerserver.model.LecturerRequestLog;
 import com.example.labschedulerserver.payload.request.LecturerScheduleRequest;
 import com.example.labschedulerserver.payload.request.ProcessRequest;
 import com.example.labschedulerserver.payload.response.LecturerRequest.LecturerRequestResponse;
+import com.example.labschedulerserver.payload.response.Schedule.ScheduleResponse;
 
 import java.util.List;
 
@@ -28,4 +29,6 @@ public interface LecturerRequestService {
     
     //lecturer can cancel their request
     void cancelRequest(Long requestId);
+
+    ScheduleResponse checkScheduleConflict(LecturerScheduleRequest request);
 }

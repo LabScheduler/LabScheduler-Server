@@ -1,18 +1,20 @@
 package com.example.labschedulerserver.service.implement;
 
+import com.example.labschedulerserver.auth.AuthService;
 import com.example.labschedulerserver.exception.ResourceNotFoundException;
-import com.example.labschedulerserver.model.Course;
-import com.example.labschedulerserver.model.CourseSection;
-import com.example.labschedulerserver.model.Semester;
+import com.example.labschedulerserver.model.*;
 import com.example.labschedulerserver.payload.request.Course.CourseMapper;
 import com.example.labschedulerserver.payload.request.Course.CreateCourseRequest;
 import com.example.labschedulerserver.payload.request.Course.UpdateCourseRequest;
 import com.example.labschedulerserver.payload.response.CourseResponse;
 import com.example.labschedulerserver.payload.response.NewCourseResponse;
 import com.example.labschedulerserver.payload.response.Schedule.ScheduleResponse;
+import com.example.labschedulerserver.payload.response.User.LecturerResponse;
+import com.example.labschedulerserver.payload.response.User.UserMapper;
 import com.example.labschedulerserver.repository.*;
 import com.example.labschedulerserver.service.CourseService;
 import com.example.labschedulerserver.service.ScheduleService;
+import com.example.labschedulerserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,8 @@ public class CourseServiceImpl implements CourseService {
 
     private final ModelMapper modelMapper;
     private final ScheduleService scheduleService;
+    private final AuthService authService;
+    private final UserService userService;
 
     //Get all courses by the current semester
     @Override
@@ -150,6 +154,18 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<CourseResponse> getLecturerCourse() {
+        Account account = userService.getCurrentAccount();
+        LecturerAccount lecturerAccount = (LecturerAccount) userService.getAccountInfo(account);
+
+        return courseRepository.findAllBySemesterId(semesterRepository.findCurrentSemester().orElseThrow(() -> new ResourceNotFoundException("Semester not found")).getId())
+                .stream()
+                .filter(course -> course.getLecturers().contains(lecturerAccount))
+                .map(CourseMapper::toCourseResponse)
+                .toList();
+    }
+
+    @Override
     public CourseResponse updateCourse(Long id, UpdateCourseRequest request) {
         Course course = courseRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
 
@@ -162,6 +178,17 @@ public class CourseServiceImpl implements CourseService {
         }
 
         return CourseMapper.toCourseResponse(courseRepository.save(course));
+    }
+
+    @Override
+    public List<LecturerResponse> getLecturersByCourse(Long courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + courseId));
+        return course.getLecturers()
+                .stream()
+                .map(lecturerAccount -> {
+                    return (LecturerResponse) UserMapper.mapUserToResponse(lecturerAccount.getAccount(), lecturerAccount);
+                })
+                .toList();
     }
 
     @Override

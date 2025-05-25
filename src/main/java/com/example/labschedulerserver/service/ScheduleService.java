@@ -27,5 +27,7 @@ public interface ScheduleService {
 
     void deleteSchedule(Long scheduleId);
 
+    ScheduleResponse checkScheduleConflict(CreateScheduleRequest request);
+
 
 }

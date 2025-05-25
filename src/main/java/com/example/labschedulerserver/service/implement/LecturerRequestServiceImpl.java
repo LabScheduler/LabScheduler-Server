@@ -10,6 +10,7 @@ import com.example.labschedulerserver.payload.request.ProcessRequest;
 import com.example.labschedulerserver.payload.response.LecturerRequest.LecturerRequestMapper;
 import com.example.labschedulerserver.payload.response.LecturerRequest.LecturerRequestResponse;
 import com.example.labschedulerserver.payload.response.Schedule.ScheduleMapper;
+import com.example.labschedulerserver.payload.response.Schedule.ScheduleResponse;
 import com.example.labschedulerserver.repository.*;
 import com.example.labschedulerserver.service.EmailSenderService;
 import com.example.labschedulerserver.service.LecturerRequestService;
@@ -47,7 +48,7 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
     public LecturerRequestResponse createScheduleRequest(LecturerScheduleRequest request) {
         Account account = userService.getCurrentAccount();
 
-        LecturerAccount lecturerAccount =(LecturerAccount) lecturerAccountRepository.findByAccount(account);
+        LecturerAccount lecturerAccount = (LecturerAccount) lecturerAccountRepository.findByAccount(account);
 
         Course course = courseRepository.findById(request.getCourseId()).orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + request.getCourseId()));
 
@@ -70,8 +71,9 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
 
         Schedule conflict = scheduleUtils.checkScheduleConflict(schedule, scheduleRepository.findAllByCurrentSemester());
 
-        if(conflict != null){
-            throw new ScheduleException("Your request has conflict with: ", ScheduleMapper.mapScheduleToResponse(conflict));
+        if (conflict != null) {
+//            throw new ScheduleException("Your request has conflict with: ", ScheduleMapper.mapScheduleToResponse(conflict));
+            return null;
         }
 
         LecturerRequest lecturerRequest = LecturerRequest.builder()
@@ -133,14 +135,14 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
     @Override
     public LecturerRequestResponse processRequest(ProcessRequest request) {
         LecturerRequest lecturerRequest = lecturerRequestRepository.findById(request.getRequestId())
-                .orElseThrow(()-> new ResourceNotFoundException("Request not found with id: " + request.getRequestId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Request not found with id: " + request.getRequestId()));
         LecturerRequestLog lecturerRequestLog = lecturerRequest.getLecturerRequestLog();
 
         lecturerRequestLog.setBody(request.getBody());
         lecturerRequestLog.setStatus(RequestStatus.valueOf(request.getStatus().toUpperCase()));
         lecturerRequestLog.setManagerAccount(managerAccountRepository.findByAccount(userService.getCurrentAccount()));
 
-        if(lecturerRequestLog.getStatus() == RequestStatus.APPROVED){
+        if (lecturerRequestLog.getStatus() == RequestStatus.APPROVED) {
             Schedule schedule = Schedule.builder()
                     .course(lecturerRequest.getCourse())
                     .courseSection(lecturerRequest.getCourseSection())
@@ -154,18 +156,18 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
                     .build();
 
             Schedule conflict = scheduleUtils.checkScheduleConflict(schedule, scheduleRepository.findAllByCurrentSemester());
-            if(conflict != null){
+            if (conflict != null) {
                 throw new ScheduleException("Your request has conflict with: ", ScheduleMapper.mapScheduleToResponse(conflict));
             }
             scheduleRepository.save(schedule);
         } else if (lecturerRequestLog.getStatus() == RequestStatus.REJECTED) {
-            emailSenderService.sendEmail(lecturerRequest.getLecturerAccount().getEmail(),"Yêu cầu bị từ chối",
-                            "\n\nYêu cầu của bạn đã bị từ chối bởi: " + userService.getCurrentManager().getFullName() +
+            emailSenderService.sendEmail(lecturerRequest.getLecturerAccount().getEmail(), "Yêu cầu bị từ chối",
+                    "\n\nYêu cầu của bạn đã bị từ chối bởi: " + userService.getCurrentManager().getFullName() +
                             "\n\nLý do: " + lecturerRequestLog.getBody() +
                             "\n\nXin hãy gửi lại yêu cầu hoặc trao đổi trực tiếp với quản lý.");
         }
 
-        return LecturerRequestMapper.toResponse(lecturerRequest, lecturerRequestLogRepository.save(lecturerRequestLog)) ;
+        return LecturerRequestMapper.toResponse(lecturerRequest, lecturerRequestLogRepository.save(lecturerRequestLog));
     }
 
     @Override
@@ -174,17 +176,44 @@ public class LecturerRequestServiceImpl implements LecturerRequestService {
         LecturerAccount lecturerAccount = (LecturerAccount) lecturerAccountRepository.findByAccount(account);
 
         LecturerRequest lecturerRequest = lecturerRequestRepository.findById(requestId)
-                .orElseThrow(()-> new ResourceNotFoundException("Request not found with id: " + requestId));
-        if(lecturerRequest.getLecturerRequestLog().getStatus() != RequestStatus.PENDING){
+                .orElseThrow(() -> new ResourceNotFoundException("Request not found with id: " + requestId));
+        if (lecturerRequest.getLecturerRequestLog().getStatus() != RequestStatus.PENDING) {
             throw new RuntimeException("Request cannot be cancelled because it has been processed");
         } else {
             LecturerRequestLog lecturerRequestLog = lecturerRequest.getLecturerRequestLog();
             lecturerRequestLog.setStatus(RequestStatus.CANCELLED);
 
-            lecturerRequestLog.setBody("Request has been cancelled by: " +lecturerAccount.getFullName());
+            lecturerRequestLog.setBody("Request has been cancelled by: " + lecturerAccount.getFullName());
             lecturerRequestLog.setManagerAccount(managerAccountRepository.findByAccount(userService.getCurrentAccount()));
             lecturerRequestLogRepository.save(lecturerRequestLog);
         }
+    }
+
+    @Override
+    public ScheduleResponse checkScheduleConflict(LecturerScheduleRequest request) {
+        Course course = courseRepository.findById(request.getCourseId()).orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + request.getCourseId()));
+
+        CourseSection courseSection = courseSectionRepository.findById(request.getCourseSectionId()).orElseThrow(() -> new ResourceNotFoundException("Course section not found with id: " + request.getCourseSectionId()));
+
+        Room room = roomRepository.findById(request.getNewRoomId()).orElseThrow(() -> new ResourceNotFoundException("Room not found with id: " + request.getNewRoomId()));
+
+        SemesterWeek semesterWeek = semesterWeekRepository.findById(request.getNewSemesterWeekId()).orElseThrow(() -> new ResourceNotFoundException("Semester week not found with id: " + request.getNewSemesterWeekId()));
+
+        Schedule schedule = Schedule.builder()
+                .course(course)
+                .courseSection(courseSection)
+                .room(room)
+                .semesterWeek(semesterWeek)
+                .dayOfWeek(request.getNewDayOfWeek())
+                .startPeriod(request.getNewStartPeriod())
+                .totalPeriod(request.getNewTotalPeriod())
+                .lecturer((LecturerAccount) lecturerAccountRepository.findByAccount(userService.getCurrentAccount()))
+                .build();
+        Schedule conflict = scheduleUtils.checkScheduleConflict(schedule, scheduleRepository.findAllByCurrentSemester());
+        if (conflict != null) {
+            return ScheduleMapper.mapScheduleToResponse(conflict);
+        }
+        return null;
     }
 
 }

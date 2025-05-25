@@ -36,7 +36,7 @@ public class LecturerRequestController {
     }
 
     @GetMapping("/lecturer")
-    public ResponseEntity<?> getRequestsByLecturerId(){
+    public ResponseEntity<?> getRequestsByLecturer(){
         DataResponse response = DataResponse.builder()
                 .success(true)
                 .message("Lecturer requests retrieved successfully")
@@ -50,7 +50,7 @@ public class LecturerRequestController {
         DataResponse response = DataResponse.builder()
                 .success(true)
                 .message("Schedule request created successfully")
-                .data(lecturerRequestService.createScheduleRequest(request))
+                .data(lecturerRequestService.createScheduleRequest(request)!=null ? "Tạo yêu cầu thành công" : "Lịch đã bị trùng tại thời điểm này")
                 .build();
         return ResponseEntity.ok(response);
     }
@@ -71,6 +71,16 @@ public class LecturerRequestController {
         DataResponse response = DataResponse.builder()
                 .success(true)
                 .message("Request cancelled successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/checkRequestConflict")
+    public ResponseEntity<?> checkScheduleConflict(@RequestBody LecturerScheduleRequest request) {
+        DataResponse response = DataResponse.builder()
+                .success(true)
+                .message("Schedule conflict checked successfully")
+                .data(lecturerRequestService.checkScheduleConflict(request))
                 .build();
         return ResponseEntity.ok(response);
     }

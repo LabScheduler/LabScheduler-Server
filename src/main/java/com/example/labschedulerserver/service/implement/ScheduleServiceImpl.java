@@ -14,8 +14,6 @@ import com.example.labschedulerserver.utils.ScheduleUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -301,5 +299,26 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Schedule not found with id: " + scheduleId));
         scheduleRepository.delete(schedule);
+    }
+
+    @Override
+    public ScheduleResponse checkScheduleConflict(CreateScheduleRequest request) {
+        Schedule schedule = Schedule.builder()
+                .course(courseRepository.findById(request.getCourseId()).orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + request.getCourseId())))
+                .courseSection(courseSectionRepository.findById(request.getCourseSectionId()).orElseThrow(() -> new ResourceNotFoundException("Course section not found with id: " + request.getCourseSectionId())))
+                .room(roomRepository.findById(request.getRoomId()).orElseThrow(() -> new ResourceNotFoundException("Room not found with id: " + request.getRoomId())))
+                .lecturer(lecturerRepository.findById(request.getLecturerId()).orElseThrow(() -> new ResourceNotFoundException("Lecturer not found with id: " + request.getLecturerId())))
+                .semesterWeek(semesterWeekRepository.findById(request.getSemesterWeekId()).orElseThrow(() -> new ResourceNotFoundException("Semester week not found with id: " + request.getSemesterWeekId())))
+                .dayOfWeek(request.getDayOfWeek())
+                .startPeriod(request.getStartPeriod())
+                .totalPeriod(request.getTotalPeriod())
+                .status(ScheduleStatus.IN_PROGRESS)
+                .build();
+        List<Schedule> existingSchedules = scheduleRepository.findAllByCurrentSemester();
+        Schedule conflictSchedule = scheduleUtils.checkScheduleConflict(schedule, existingSchedules);
+        if (conflictSchedule != null) {
+            return ScheduleMapper.mapScheduleToResponse(conflictSchedule);
+        }
+        return null;
     }
 }

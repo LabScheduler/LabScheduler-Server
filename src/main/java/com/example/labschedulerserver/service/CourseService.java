@@ -6,22 +6,32 @@ import com.example.labschedulerserver.payload.request.Course.CreateCourseRequest
 import com.example.labschedulerserver.payload.request.Course.UpdateCourseRequest;
 import com.example.labschedulerserver.payload.response.CourseResponse;
 import com.example.labschedulerserver.payload.response.NewCourseResponse;
+import com.example.labschedulerserver.payload.response.User.LecturerResponse;
 
 import java.util.List;
 
 public interface CourseService {
-    public List<CourseResponse> getAllCourse();
-    public List<CourseResponse> getAllCourseBySemester(Long semesterId);
-    public List<CourseResponse> getAllCourse(Long classId);
-    public List<CourseResponse> getAllCourse(Long subjectId, Long semesterId);
+    List<CourseResponse> getAllCourse();
 
-    public CourseResponse getCourseById(Long id);
+    List<CourseResponse> getAllCourseBySemester(Long semesterId);
 
-    public List<CourseSection> getCourseSectionByCourseId(Long courseId);
+    List<CourseResponse> getAllCourse(Long classId);
 
-    public NewCourseResponse createCourse(CreateCourseRequest request);
-    public void deleteCourse(Long id);
-    public Course checkCourseExist(Long subjectId, Long classId, Long semesterId);
+    List<CourseResponse> getAllCourse(Long subjectId, Long semesterId);
 
-    public CourseResponse updateCourse(Long id, UpdateCourseRequest request);
+    CourseResponse getCourseById(Long id);
+
+    List<CourseSection> getCourseSectionByCourseId(Long courseId);
+
+    NewCourseResponse createCourse(CreateCourseRequest request);
+
+    void deleteCourse(Long id);
+
+    Course checkCourseExist(Long subjectId, Long classId, Long semesterId);
+
+    List<CourseResponse> getLecturerCourse();
+
+    CourseResponse updateCourse(Long id, UpdateCourseRequest request);
+
+    List<LecturerResponse> getLecturersByCourse(Long courseId);
 }

@@ -1,5 +1,6 @@
 package com.example.labschedulerserver.utils;
 
+import com.example.labschedulerserver.common.ScheduleStatus;
 import com.example.labschedulerserver.model.Schedule;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +37,7 @@ public class ScheduleUtils {
 
                     boolean lecturerConflict = newSchedule.getLecturer().equals(existing.getLecturer());
 
-                    return roomConflict && lecturerConflict;
+                    return roomConflict || lecturerConflict;
                 })
                 .findFirst()
                 .orElse(null);

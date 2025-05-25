@@ -6,6 +6,7 @@ import com.example.labschedulerserver.payload.response.DataResponse;
 import com.example.labschedulerserver.service.ClassService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 public class ClassController {
     private final ClassService classService;
 
+    @PreAuthorize( "hasAnyAuthority('MANAGER', 'LECTURER', 'STUDENT')")
     @GetMapping
     public ResponseEntity<?> getAllClasses(@RequestParam(required = false) String classType) {
         DataResponse response = DataResponse.builder()
@@ -27,6 +29,7 @@ public class ClassController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize( "hasAnyAuthority('MANAGER', 'LECTURER', 'STUDENT')")
     @GetMapping("/{id}/students")
     public ResponseEntity<?> getStudentsInClass(@PathVariable Long id) {
         DataResponse response = DataResponse.builder()
@@ -37,6 +40,7 @@ public class ClassController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize( "hasAnyAuthority('MANAGER', 'LECTURER', 'STUDENT')")
     @PostMapping("/{classId}/students")
     public ResponseEntity<?> addStudentToClass(@PathVariable Long classId, @RequestBody List<Long> studentIds) {
         classService.addStudentToClass(classId, studentIds);
@@ -48,7 +52,7 @@ public class ClassController {
     }
 
 
-
+    @PreAuthorize( "hasAnyAuthority('MANAGER')")
     @PostMapping
     public ResponseEntity<?> createClass(@RequestBody CreateClassRequest request){
         DataResponse response = DataResponse.builder()
@@ -59,7 +63,7 @@ public class ClassController {
         return ResponseEntity.ok(response);
     }
 
-
+    @PreAuthorize( "hasAnyAuthority('MANAGER', 'LECTURER', 'STUDENT')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getClassById(@PathVariable Long id) {
         DataResponse response = DataResponse.builder()
@@ -69,7 +73,7 @@ public class ClassController {
                 .build();
         return ResponseEntity.ok(response);
     }
-
+    @PreAuthorize( "hasAnyAuthority('MANAGER')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateClass(@PathVariable Long id, @RequestBody UpdateClassRequest request) {
         DataResponse response = DataResponse.builder()
@@ -80,6 +84,7 @@ public class ClassController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize( "hasAnyAuthority('MANAGER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteClass(@PathVariable Long id) {
         classService.deleteClass(id);
@@ -90,6 +95,7 @@ public class ClassController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize( "hasAnyAuthority('MANAGER')")
     @DeleteMapping("/{classId}/students")
     public ResponseEntity<?> deleteStudentFromClass(@PathVariable Long classId, @RequestBody Long studentId) {
         classService.deleteStudentFromClass(classId, studentId);
