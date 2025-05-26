@@ -125,7 +125,7 @@ INSERT INTO specialization (id, name, major_id) VALUES
 
 INSERT INTO semester (id, code, name, start_date, end_date)
 VALUES (1, '2024-1', 'Học kỳ 1 - Năm học 2024 - 2025', '2024-8-12', '2024-12-29'),
-       (2, '2024-2', 'Học kỳ 2 - Năm học 2024 - 2025', '2024-12-30', '2025-05-26'),
+       (2, '2024-2', 'Học kỳ 2 - Năm học 2024 - 2025', '2024-12-30', '2025-07-30'),
        (3, '2024-3', 'Học kỳ 3 - Năm học 2024 - 2025', '2025-06-23', '2025-10-13');
 
 -- Học kỳ 1: 12/08/2024 - 29/12/2024 (20 tuần)
@@ -195,74 +195,42 @@ VALUES (42, 'Tuần 46', '2025-06-23 00:00:00', '2025-06-29 23:59:59', 3),
        (57, 'Tuần 61', '2025-10-06 00:00:00', '2025-10-12 23:59:59', 3);
 
 INSERT INTO subject (id, code, name, total_credits, total_theory_periods, total_practice_periods, total_exercise_periods, total_self_study_periods)
-VALUES (1, 'BAS1150', 'Triết học Mác - Lênin', 3, 45, 0, 0, 0),
-       (2, 'BAS1203', 'Giải tích 1', 3, 36, 0, 0, 0),
-       (3, 'INT1154', 'Tin học cơ sở 1', 2, 20, 4, 0, 0),
-       (4, 'BAS1201', 'Đại số', 3, 36, 0, 0, 0),
-       (5, 'BAS1106', 'Giáo dục thể chất 1', 2, 2, 0, 0, 0),
-       (6, 'BAS1105-7', 'Giáo dục quốc phòng và an ninh', 7, 0, 165, 0, 0),
-       (7, 'BAS1151', 'Kinh tế chính trị Mác - Lênin', 2, 30, 0, 0, 0),
-       (8, 'BAS1157', 'Tiếng Anh (Course 1)', 4, 60, 0, 0, 0),
-       (9, 'BAS1156', 'Tiếng Anh bổ trợ', 4, 60, 0, 0, 0),
-       (10, 'BAS1204', 'Giải tích 2', 3, 36, 0, 0, 0),
-       (11, 'BAS1224', 'Vật lý 1 và thí nghiệm', 4, 42, 8, 0, 0),
-       (12, 'INT1155', 'Tin học cơ sở 2', 2, 20, 4, 0, 0),
-       (13, 'ELE1433', 'Kỹ thuật số', 2, 24, 2, 0, 0),
-       (14, 'BAS1226', 'Xác suất thống kê', 2, 24, 0, 0, 0),
-       (15, 'BAS1107', 'Giáo dục thể chất 2', 2, 2, 26, 0, 0),
-       (16, 'BAS1152', 'Chủ nghĩa xã hội khoa học', 2, 30, 0, 0, 0),
-       (17, 'BAS1158', 'Tiếng Anh (Course 2)', 4, 60, 0, 0, 0),
-       (18, 'INT1358', 'Toán rời rạc 1', 3, 36, 0, 0, 0),
-       (19, 'BAS1227', 'Vật lý 3 và thí nghiệm', 4, 36, 4, 0, 0),
-       (20, 'ELE1330', 'Xử lý tín hiệu số', 2, 24, 0, 0, 0),
-       (21, 'INT1339', 'Ngôn ngữ lập trình C++', 3, 30, 8, 0, 0),
-       (22, 'SKD1101', 'Kỹ năng thuyết trình', 1, 6, 0, 0, 0),
-       (23, 'BAS1122', 'Tư tưởng Hồ Chí Minh', 2, 24, 0, 0, 0),
-       (24, 'BAS1159', 'Tiếng Anh (Course 3)', 4, 60, 0, 0, 0),
-       (25, 'INT13145', 'Kiến trúc máy tính', 3, 36, 0, 0, 0),
-       (26, 'INT1359-3', 'Toán rời rạc 2', 3, 36, 0, 0, 0),
-       (27, 'INT1306', 'Cấu trúc dữ liệu và giải thuật', 3, 32, 4, 0, 0),
-       (28, 'ELE1319', 'Lý thuyết thông tin', 3, 36, 0, 0, 0),
-       (29, 'SKD1102', 'Kỹ năng làm việc nhóm', 1, 6, 0, 0, 0),
-       (30, 'BSA1221', 'Pháp luật đại cương', 2, 24, 0, 0, 0),
-       (31, 'BAS1153', 'Lịch sử Đảng Cộng sản Việt Nam', 2, 30, 0, 0, 0),
-       (32, 'INT13162', 'Lập trình với Python', 3, 30, 6, 0, 0),
-       (33, 'INT1319', 'Hệ điều hành', 3, 34, 3, 0, 0),
-       (34, 'INT1336', 'Mạng máy tính', 3, 34, 3, 0, 0),
-       (35, 'INT1332', 'Lập trình hướng đối tượng', 3, 30, 6, 0, 0),
-       (36, 'INT1313', 'Cơ sở dữ liệu', 3, 32, 4, 0, 0),
-       (37, 'BAS1160', 'Tiếng Anh (Course 3 Plus)', 2, 30, 0, 0, 0),
-       (38, 'INT1434-3', 'Lập trình Web', 3, 30, 6, 0, 0),
-       (39, 'INT1303', 'An toàn và bảo mật hệ thống thông tin', 3, 32, 2, 0, 0),
-       (40, 'INT1340', 'Nhập môn công nghệ phần mềm', 3, 36, 0, 0, 0),
-       (41, 'INT1341', 'Nhập môn trí tuệ nhân tạo', 3, 36, 0, 0, 0),
-       (42, 'INT14148', 'Cơ sở dữ liệu phân tán', 3, 36, 0, 0, 0),
-       (43, 'INT13147', 'Thực tập cơ sở', 3, 4, 0, 0, 0),
-       (44, 'SKD1103', 'Kỹ năng tạo lập Văn bản', 1, 6, 0, 0, 0);
+VALUES
+    (1, 'INT1154', 'Tin học cơ sở 1', 2, 20, 4, 0, 0),
+    (2, 'INT1155', 'Tin học cơ sở 2', 2, 20, 4, 0, 0),
+    (3, 'INT1339', 'Ngôn ngữ lập trình C++', 3, 30, 8, 0, 0),
+    (4, 'INT1306', 'Cấu trúc dữ liệu và giải thuật', 3, 32, 4, 0, 0),
+    (5, 'INT13162', 'Lập trình với Python', 3, 30, 6, 0, 0),
+    (6, 'INT1319', 'Hệ điều hành', 3, 34, 3, 0, 0),
+    (7, 'INT1336', 'Mạng máy tính', 3, 34, 3, 0, 0),
+    (8, 'INT1332', 'Lập trình hướng đối tượng', 3, 30, 6, 0, 0),
+    (9, 'INT1313', 'Cơ sở dữ liệu', 3, 32, 4, 0, 0),
+    (10, 'INT1434-3', 'Lập trình Web', 3, 30, 6, 0, 0),
+    (11, 'INT1303', 'An toàn và bảo mật hệ thống thông tin', 3, 32, 2, 0, 0);
 
-INSERT INTO course (id, subject_id, class_id, semester_id, group_number, total_students)
-VALUES (1, 38, 1, 2, 1, 80),
-       (2, 39, 1, 2, 1, 80),
-       (3, 40, 1, 2, 1, 80),
-       (4, 41, 1, 2, 1, 80),
-       (5, 42, 1, 2, 1, 80),
-       (6, 43, 1, 2, 1, 80),
-       (7, 44, 1, 2, 1, 80);
+-- INSERT INTO course (id, subject_id, class_id, semester_id, group_number, total_students)
+-- VALUES (1, 1, 1, 2, 1, 80),
+--        (2, 2, 1, 2, 1, 80),
+--        (3, 3, 1, 2, 1, 80),
+--        (4, 4, 1, 2, 1, 80),
+--        (5, 42, 1, 2, 1, 80),
+--        (6, 43, 1, 2, 1, 80),
+--        (7, 44, 1, 2, 1, 80);
+--
+-- INSERT INTO lecturer_on_course (course_id, lecturer_id)
+-- VALUES (1, 1),
+--        (2, 2),
+--        (3, 3),
+--        (4, 4),
+--        (5, 5),
+--        (6, 1),
+--        (7, 2);
 
-INSERT INTO lecturer_on_course (course_id, lecturer_id)
-VALUES (1, 1),
-       (2, 2),
-       (3, 3),
-       (4, 4),
-       (5, 5),
-       (6, 1),
-       (7, 2);
-
-INSERT INTO course_section(course_id, section_number, total_students_in_section)
-VALUES (1, 1, 40),
-       (1, 2, 40),
-       (2, 1, 43),
-       (2, 2, 43);
+-- INSERT INTO course_section(course_id, section_number, total_students_in_section)
+-- VALUES (1, 1, 40),
+--        (1, 2, 40),
+--        (2, 1, 43),
+--        (2, 2, 43);
 
 
 INSERT INTO room (id, name, capacity, status, description, last_updated)
@@ -280,9 +248,9 @@ VALUES (1, '2B11', 50, 'AVAILABLE', '', '2025-03-01 10:00:00'),
 --        (2, 1, 3, 4, 2, 7, 3, 21, 'IN_PROGRESS');
 
 -- Add sample lecturer request
-INSERT INTO lecturer_request (lecturer_id, course_id, room_id, day_of_week, start_period, total_period, body)
-VALUES (1, 1, 2, 5, 1, 3, 'Học bù');
-
--- Add sample lecturer request log
-INSERT INTO lecturer_request_log (request_id, manager_id, status, body)
-VALUES (1, 6, 'REJECTED', 'Bị trùng lịch');
+-- INSERT INTO lecturer_request (lecturer_id, course_id, room_id, day_of_week, start_period, total_period, body)
+-- VALUES (1, 1, 2, 5, 1, 3, 'Học bù');
+--
+-- -- Add sample lecturer request log
+-- INSERT INTO lecturer_request_log (request_id, manager_id, status, body)
+-- VALUES (1, 6, 'REJECTED', 'Bị trùng lịch');

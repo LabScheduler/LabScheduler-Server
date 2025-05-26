@@ -23,7 +23,7 @@ public class AuthController {
         return ResponseEntity.ok(dataResponse);
     }
 
-    @PostMapping("/forgot-password")
+    @PostMapping("/forgotPassword")
     public ResponseEntity<?> forgotPassword(@RequestParam String username) {
         DataResponse dataResponse = DataResponse.builder()
                 .data(authService.forgotPassword(username))
@@ -33,7 +33,7 @@ public class AuthController {
         return ResponseEntity.ok(dataResponse);
     }
 
-    @PostMapping("/verify-otp")
+    @PostMapping("/verifyOtp")
     public ResponseEntity<?> verifyOtp(@RequestParam String username, @RequestParam String otp) {
         DataResponse dataResponse = DataResponse.builder()
                 .data(authService.verifyOtp(username, otp))
@@ -43,8 +43,8 @@ public class AuthController {
         return ResponseEntity.ok(dataResponse);
     }
 
-    @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestParam String username, @RequestParam(name = "new_password") String newPassword) {
+    @PostMapping("/resetPassword")
+    public ResponseEntity<?> resetPassword(@RequestParam String username, @RequestParam String newPassword) {
         DataResponse dataResponse = DataResponse.builder()
                 .data(authService.resetPassword(username, newPassword))
                 .message("Reset password successfully")

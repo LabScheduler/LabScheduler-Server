@@ -132,8 +132,8 @@ public class UserController {
 
 
 
-    @PatchMapping("/change-password")
-    public ResponseEntity<?> changePassword(@RequestParam(value = "old_password") String oldPassword, @RequestParam(value = "new_password") String newPassword) {
+    @PatchMapping("/changePassword")
+    public ResponseEntity<?> changePassword(@RequestParam String oldPassword, @RequestParam String newPassword) {
         DataResponse dataResponse = DataResponse.builder()
                 .data(userService.changePassword(oldPassword, newPassword))
                 .message("Change password successfully")
