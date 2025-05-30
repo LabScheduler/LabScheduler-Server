@@ -149,12 +149,17 @@ public class ScheduleServiceImpl implements ScheduleService {
         // We need consecutive weeks for each section
         int consecutiveWeeksNeeded = Math.min(sessionsNeeded, courseSemesterWeeks.size());
 
-        for (int i = 0; i < consecutiveWeeksNeeded && remainingPeriods > 0; i++) {
+        int consecutiveWeeksCount = 0;
+        for (int i = 0; (consecutiveWeeksCount < consecutiveWeeksNeeded) && remainingPeriods > 0; i++) {
             if (i >= courseSemesterWeeks.size()) {
                 break; // No more available weeks
             }
 
             SemesterWeek week = courseSemesterWeeks.get(i);
+
+            if (usedWeeks.contains(week)) {
+                continue;
+            }
 
             // Calculate periods for this session (max 4 periods per session)
             byte periodsForThisSession = (byte) Math.min(remainingPeriods, MAX_PERIODS_PER_SESSION);

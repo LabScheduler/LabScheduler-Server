@@ -35,7 +35,5 @@ public class CourseSection {
     @JsonIgnore
     private List<Schedule> schedules;
 
-    @OneToMany(mappedBy = "courseSection", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<LecturerRequest> lecturerRequests;
+
 }

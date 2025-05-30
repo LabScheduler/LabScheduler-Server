@@ -57,10 +57,7 @@ INSERT INTO class (name, major_id, class_type)
 VALUES ('D22CQCN01-N', 1, 'MAJOR');
 INSERT INTO class (name, major_id, class_type)
 VALUES ('D22CQCN02-N', 1, 'MAJOR');
-INSERT INTO class (name, major_id, class_type)
-VALUES ('D22CQPT01-N', 8, 'MAJOR');
-INSERT INTO class (name, major_id, class_type)
-VALUES ('D22CQDT01-N', 5, 'MAJOR');
+
 
 INSERT INTO student_account (account_id, full_name, code, email, phone, gender, birthday)
 VALUES (7, 'Nguyen Van A', 'STUDENT001', 'n22dccn086@student.ptithcm.edu.vn', '0123456789', 1, '2004-01-01');
@@ -125,7 +122,7 @@ INSERT INTO specialization (id, name, major_id) VALUES
 
 INSERT INTO semester (id, code, name, start_date, end_date)
 VALUES (1, '2024-1', 'Học kỳ 1 - Năm học 2024 - 2025', '2024-8-12', '2024-12-29'),
-       (2, '2024-2', 'Học kỳ 2 - Năm học 2024 - 2025', '2024-12-30', '2025-07-30'),
+       (2, '2024-2', 'Học kỳ 2 - Năm học 2024 - 2025', '2024-12-30', '2025-06-30'),
        (3, '2024-3', 'Học kỳ 3 - Năm học 2024 - 2025', '2025-06-23', '2025-10-13');
 
 -- Học kỳ 1: 12/08/2024 - 29/12/2024 (20 tuần)

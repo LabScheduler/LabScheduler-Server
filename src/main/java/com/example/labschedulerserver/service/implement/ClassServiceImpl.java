@@ -2,6 +2,7 @@ package com.example.labschedulerserver.service.implement;
 
 import com.example.labschedulerserver.common.ClassType;
 import com.example.labschedulerserver.common.StudentOnClassStatus;
+import com.example.labschedulerserver.exception.BadRequestException;
 import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.model.*;
 import com.example.labschedulerserver.payload.request.Class.CreateClassRequest;
@@ -12,6 +13,7 @@ import com.example.labschedulerserver.payload.response.User.StudentResponse;
 import com.example.labschedulerserver.payload.response.User.UserMapper;
 import com.example.labschedulerserver.repository.*;
 import com.example.labschedulerserver.service.ClassService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -105,9 +107,29 @@ public class ClassServiceImpl implements ClassService {
     }
 
     @Override
+    @Transactional
     public void addStudentToClass(Long classId, List<Long> studentIds) {
         Clazz clazz = classRepository.findById(classId)
                 .orElseThrow(() -> new ResourceNotFoundException("Class not found"));
+
+        if (clazz.getClassType() != ClassType.SPECIALIZATION) {
+            throw new BadRequestException("Chỉ có thể thêm sinh viên vào lớp chuyên ngành");
+        }
+
+        List<StudentOnClass> exists = studentIds.stream()
+                .map(studentId -> {
+                    StudentAccount student = studentAccountRepository.findById(studentId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+                    return student.getStudentOnClasses().getFirst();
+                })
+                .toList();
+        for (StudentOnClass studentOnClass : exists) {
+            if (studentOnClass.getStatus() == StudentOnClassStatus.ENROLLED && clazz.getClassType() == ClassType.SPECIALIZATION) {
+                studentOnClass.setStatus(StudentOnClassStatus.COMPLETED);
+                System.out.println("Student " + studentOnClass.getStudents().getFullName() + studentOnClass.getStatus());
+            }
+        }
+
 
         List<StudentOnClass> studentOnClasses = studentIds.stream()
                 .map(studentId -> {
@@ -122,7 +144,7 @@ public class ClassServiceImpl implements ClassService {
                             .build();
                 })
                 .toList();
-
+        studentOnClassRepository.saveAll(exists);
         studentOnClassRepository.saveAll(studentOnClasses);
     }
 

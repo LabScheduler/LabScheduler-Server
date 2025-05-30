@@ -180,7 +180,7 @@ Default database credentials in Docker environment:
 ## Database Migration
 The project uses Flyway for database migrations:
 - `V1__schema.sql`: Database schema
-- `V2__data.sql`: Initial test data
+- `test.sql`: Initial test data
 
 Migrations run automatically on application startup.
 

@@ -165,29 +165,42 @@ CREATE TABLE `schedule`
     `status`            ENUM ('IN_PROGRESS', 'COMPLETED', 'CANCELLED') NOT NULL
 );
 
-CREATE TABLE `lecturer_request`
-(
-    `id`                BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `lecturer_id`       BIGINT       NOT NULL,
-    `course_id`         BIGINT       NOT NULL,
-    `course_section_id` BIGINT,
-    `room_id`           BIGINT       NOT NULL,
-    `semester_week_id`  BIGINT,
-    `day_of_week`       TINYINT      NOT NULL,
-    `start_period`      INT          NOT NULL,
-    `total_period`      INT          NOT NULL,
-    `body`              VARCHAR(255) NOT NULL,
-    `created_at`        TIMESTAMP DEFAULT (CURRENT_TIMESTAMP)
+
+
+#REPORT
+#==================================================#
+CREATE TABLE report (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    author_id BIGINT NOT NULL,
+    FOREIGN KEY (author_id) REFERENCES account(id)
 );
 
-CREATE TABLE `lecturer_request_log`
-(
-    `request_id` BIGINT PRIMARY KEY,
-    `manager_id` BIGINT,
-    `status`     ENUM ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED') NOT NULL DEFAULT 'PENDING',
-    `body`       VARCHAR(255),
-    `replied_at` TIMESTAMP DEFAULT (CURRENT_TIMESTAMP)
+CREATE TABLE report_log (
+    report_id BIGINT PRIMARY KEY,
+    status ENUM('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED') NOT NULL,
+    content TEXT,
+    manager_id BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (report_id) REFERENCES report(id) ON DELETE CASCADE,
+    FOREIGN KEY (manager_id) REFERENCES manager_account(account_id)
 );
+
+
+
+
+
+#==================================================#
+CREATE TABLE student_on_course (
+                                   student_id BIGINT,
+                                   course_id BIGINT,
+                                   PRIMARY KEY (student_id, course_id),
+                                   FOREIGN KEY (student_id) REFERENCES student_account(account_id),
+                                   FOREIGN KEY (course_id) REFERENCES course(id)
+);
+#==================================================#
 
 ALTER TABLE `account`
     ADD FOREIGN KEY (`role_id`) REFERENCES `role` (`id`);
@@ -258,23 +271,3 @@ ALTER TABLE `schedule`
 ALTER TABLE `schedule`
     ADD FOREIGN KEY (`semester_week_id`) REFERENCES `semester_week` (`id`);
 
-ALTER TABLE `lecturer_request`
-    ADD FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer_account` (`account_id`);
-
-ALTER TABLE `lecturer_request`
-    ADD FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `lecturer_request`
-    ADD FOREIGN KEY (`course_section_id`) REFERENCES `course_section` (`id`);
-
-ALTER TABLE `lecturer_request`
-    ADD FOREIGN KEY (`room_id`) REFERENCES `room` (`id`);
-
-ALTER TABLE `lecturer_request`
-    ADD FOREIGN KEY (`semester_week_id`) REFERENCES `semester_week` (`id`);
-
-ALTER TABLE `lecturer_request_log`
-    ADD FOREIGN KEY (`request_id`) REFERENCES `lecturer_request` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `lecturer_request_log`
-    ADD FOREIGN KEY (`manager_id`) REFERENCES `manager_account` (`account_id`);

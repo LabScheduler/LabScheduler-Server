@@ -1,44 +1,37 @@
 package com.example.labschedulerserver.model;
 
-import com.example.labschedulerserver.common.RoomStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.List;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "room")
-public class Room {
+@Entity
+@Table(name = "report")
+public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String title;
 
-    private Integer capacity;
+    private String content;
 
-    @Enumerated(EnumType.STRING)
-    private RoomStatus status;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private Account author;
 
-    private String description;
-
-    @Column(name = "last_updated")
-    @UpdateTimestamp
-    private Timestamp lastUpdated;
-
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "report")
     @JsonIgnore
-    private List<Schedule> schedules;
-
-
+    private ReportLog reportLog;
 }

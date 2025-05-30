@@ -42,7 +42,8 @@ public class ManagerAccount {
     @JsonIgnore
     private Account account;
 
-    @OneToMany(mappedBy = "managerAccount", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "manager", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<LecturerRequestLog> lecturerRequestLogs;
+    private List<ReportLog> reportLogs;
+
 }

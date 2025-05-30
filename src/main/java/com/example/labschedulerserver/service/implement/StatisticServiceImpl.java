@@ -4,7 +4,7 @@ import com.example.labschedulerserver.model.Account;
 import com.example.labschedulerserver.model.Room;
 import com.example.labschedulerserver.payload.response.StatisticsResponse;
 import com.example.labschedulerserver.repository.*;
-import com.example.labschedulerserver.service.LecturerRequestService;
+import com.example.labschedulerserver.service.ReportService;
 import com.example.labschedulerserver.service.StatisticService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,8 @@ public class StatisticServiceImpl implements StatisticService {
     private final SemesterRepository semesterRepository;
     private final ScheduleRepository scheduleRepository;
     private final AccountRepository accountRepository;
-    private final LecturerRequestService lecturerRequestService;
+    private final ReportService reportService;
+    private final ReportRepository reportRepository;
 
     @Override
     public StatisticsResponse getStatistics() {
@@ -44,7 +45,9 @@ public class StatisticServiceImpl implements StatisticService {
             return account.getRole().getName().equals("LECTURER");
         }).toList().size();
 
-
+        int totalPendingReports = reportRepository.findAll().stream()
+                .filter(report -> report.getReportLog().getStatus().toString().equals("PENDING"))
+                .toList().size();
         return StatisticsResponse.builder()
                 .totalRooms(availableRoom + repairingRoom)
                 .totalAvailableRooms(availableRoom)
@@ -54,7 +57,7 @@ public class StatisticServiceImpl implements StatisticService {
                 .totalPracticeSchedulesInSemester(scheduleRepository.findAllByCurrentSemester().size())
                 .totalLecturers(totalLecturers)
                 .totalStudents(totalStudents)
-                .totalPendingRequests(lecturerRequestService.getAllPendingRequests().size())
+                .totalPendingReports(totalPendingReports)
                 .build();
     }
 }

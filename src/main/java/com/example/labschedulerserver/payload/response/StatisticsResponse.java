@@ -22,5 +22,5 @@ public class StatisticsResponse {
 
     private long totalLecturers;
 
-    private long totalPendingRequests;
+    private long totalPendingReports;
 }

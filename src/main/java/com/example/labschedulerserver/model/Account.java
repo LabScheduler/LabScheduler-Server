@@ -2,7 +2,6 @@ package com.example.labschedulerserver.model;
 
 import com.example.labschedulerserver.common.AccountStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CurrentTimestamp;
@@ -13,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 @Entity
 @Data
@@ -40,6 +39,10 @@ public class Account implements UserDetails {
     @Column(name = "created_at")
     @CurrentTimestamp
     private Timestamp createdAt;
+
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Report> reports;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

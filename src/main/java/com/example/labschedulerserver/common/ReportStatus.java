@@ -1,6 +1,6 @@
 package com.example.labschedulerserver.common;
 
-public enum RequestStatus {
+public enum ReportStatus {
     PENDING,
     APPROVED,
     REJECTED,

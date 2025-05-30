@@ -50,9 +50,7 @@ public class Course {
     @JsonIgnore
     private List<CourseSection> courseSections;
 
-    @OneToMany(mappedBy = "course",fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<LecturerRequest> lecturerRequests;
+
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     @JsonIgnore
