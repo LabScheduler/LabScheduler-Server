@@ -43,8 +43,8 @@ public class Course {
     @JsonIgnore
     private List<LecturerAccount> lecturers;
 
-    @Column(name = "total_students")
-    private Integer totalStudents;
+    @Column(name = "max_students")
+    private Integer maxStudents;
 
     @OneToMany(mappedBy = "course" , fetch = FetchType.LAZY)
     @JsonIgnore

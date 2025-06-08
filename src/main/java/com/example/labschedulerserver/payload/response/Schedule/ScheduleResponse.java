@@ -34,4 +34,6 @@ public class ScheduleResponse {
 
     private String status;
 
+    private String type;
+
 }

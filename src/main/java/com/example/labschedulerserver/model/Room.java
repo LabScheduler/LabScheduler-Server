@@ -1,6 +1,7 @@
 package com.example.labschedulerserver.model;
 
 import com.example.labschedulerserver.common.RoomStatus;
+import com.example.labschedulerserver.common.RoomType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -40,5 +41,6 @@ public class Room {
     @JsonIgnore
     private List<Schedule> schedules;
 
-
+    @Enumerated(EnumType.STRING)
+    private RoomType type;
 }

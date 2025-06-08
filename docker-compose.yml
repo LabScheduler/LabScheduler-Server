@@ -14,6 +14,7 @@ services:
       retries: 5
     volumes:
       - labscheduler-data:/var/lib/mysql
+      - ./labscheduler_backups:/backup
     networks:
       - labscheduler-network
     restart: always
@@ -43,6 +44,24 @@ services:
     networks:
       - labscheduler-network
 
+  mysql-backup:
+    image: mysql:8.0
+    container_name: mysql-backup-labscheduler
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+      MYSQL_DATABASE: labscheduler-backup
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./labscheduler_backups:/backup
+    networks:
+      - labscheduler-network
+    restart: always
 volumes:
   labscheduler-data:
 

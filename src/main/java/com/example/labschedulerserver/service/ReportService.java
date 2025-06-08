@@ -12,6 +12,8 @@ public interface ReportService {
     List<ReportResponse> getReportByUserId(Long userId);
     List<ReportResponse> getAllReport();
     List<ReportResponse> getPendingReports();
+
+    ReportResponse processReport(Long reportId, String status);
     void deleteReport(Long reportId);
     ReportResponse updateReport(Long reportId, UpdateReportRequest request);
     ReportResponse cancelReport(Long reportId);

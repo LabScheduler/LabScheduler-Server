@@ -11,7 +11,7 @@ public class ScheduleMapper {
                 .subjectCode(schedule.getCourse().getSubject().getCode())
                 .subjectName(schedule.getCourse().getSubject().getName())
                 .courseGroup(schedule.getCourse().getGroupNumber())
-                .courseSection(schedule.getCourseSection().getSectionNumber())
+                .courseSection(schedule.getCourseSection() != null ? schedule.getCourseSection().getSectionNumber() : null)
                 .room(schedule.getRoom().getName())
                 .dayOfWeek(schedule.getDayOfWeek())
                 .startPeriod(schedule.getStartPeriod())
@@ -20,6 +20,7 @@ public class ScheduleMapper {
                 .semesterWeek(schedule.getSemesterWeek().getName())
                 .status(schedule.getStatus().name())
                 .clazz(schedule.getCourse().getClazz().getName())
+                .type(schedule.getType().name())
                 .build();
     }
 }

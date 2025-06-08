@@ -3,6 +3,8 @@ package com.example.labschedulerserver.service.implement;
 import com.example.labschedulerserver.common.ReportStatus;
 import com.example.labschedulerserver.exception.BadRequestException;
 import com.example.labschedulerserver.exception.ResourceNotFoundException;
+import com.example.labschedulerserver.model.Account;
+import com.example.labschedulerserver.model.ManagerAccount;
 import com.example.labschedulerserver.model.Report;
 import com.example.labschedulerserver.model.ReportLog;
 import com.example.labschedulerserver.payload.request.Report.CreateReportRequest;
@@ -76,6 +78,18 @@ public class ReportServiceImpl implements ReportService {
                     return reportResponse.getStatus().equals("PENDING");
                 })
                 .toList();
+    }
+
+    @Override
+    public ReportResponse processReport(Long reportId, String status) {
+        Report report = reportRepository.findById(reportId).orElseThrow(() -> new ResourceNotFoundException("Report not found with id: " + reportId));
+        if (report.getReportLog().getStatus() != ReportStatus.PENDING)
+            throw new BadRequestException("Report is not pending, can not process");
+        ReportLog reportLog = report.getReportLog();
+        reportLog.setStatus(ReportStatus.valueOf(status.toUpperCase()));
+        reportLog.setManager((ManagerAccount) userService.getAccountInfo(userService.getCurrentAccount()));
+
+        return reportMapper.toReportResponse(reportRepository.save(report), reportLogRepository.save(reportLog));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.labschedulerserver.service.implement;
 
 import com.example.labschedulerserver.common.ScheduleStatus;
+import com.example.labschedulerserver.common.ScheduleType;
 import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.exception.ScheduleException;
 import com.example.labschedulerserver.model.*;
@@ -31,76 +32,95 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final CourseSectionRepository courseSectionRepository;
 
     @Override
-    public List<ScheduleResponse> allocateSchedule(Long courseId, Long semesterWeekId) {
+    public List<ScheduleResponse> allocateSchedule(Long courseId, Long startWeekId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + courseId));
 
-        // Get all available resources
         List<Room> availableRooms = roomRepository.findAll().stream()
                 .filter(room -> room.getStatus().toString().equals("AVAILABLE"))
                 .toList();
         List<Schedule> existingSchedules = scheduleRepository.findAll();
+        List<Schedule> generatedSchedules = new ArrayList<>();
 
         Subject subject = course.getSubject();
-        Long subjectId = subject.getId();
-
-        // Get semester weeks specific to this course's semester
+        
+        // Get semester weeks
         List<SemesterWeek> courseSemesterWeeks = semesterWeekRepository.findBySemesterId(course.getSemester().getId());
+        SemesterWeek startingWeek = semesterWeekRepository.findById(startWeekId)
+                .orElseThrow(() -> new ResourceNotFoundException("Semester week not found with id: " + startWeekId));
 
-        // Find the starting week
-        SemesterWeek startingWeek = semesterWeekRepository.findById(semesterWeekId)
-                .orElseThrow(() -> new ResourceNotFoundException("Semester week not found with id: " + semesterWeekId));
-
-        // Filter to only include weeks from the starting week onwards
         courseSemesterWeeks = courseSemesterWeeks.stream()
                 .filter(week -> !week.getStartDate().isBefore(startingWeek.getStartDate()))
                 .sorted(Comparator.comparing(SemesterWeek::getStartDate))
                 .toList();
 
         if (courseSemesterWeeks.isEmpty()) {
-            throw new RuntimeException("No available semester weeks after the specified starting week for course: " + subject.getName());
+            throw new RuntimeException("No available semester weeks after the specified starting week");
         }
 
-        // Get lecturers specific to this course
         List<LecturerAccount> courseLecturers = course.getLecturers();
-
         if (courseLecturers == null || courseLecturers.isEmpty()) {
             throw new RuntimeException("No available lecturers for course: " + subject.getName());
         }
 
-        List<CourseSection> sections = course.getCourseSections();
-        if (sections == null || sections.isEmpty()) {
-            throw new RuntimeException("No available sections for course: " + subject.getName());
-        }
+        List<Room> availableTheoryRooms = availableRooms.stream()
+                .filter(room -> room.getType().toString().equals("LECTURE_HALL"))
+                .toList();
+        List<Room> availablePracticeRooms = availableRooms.stream()
+                .filter(room -> room.getType().toString().equals("COMPUTER_LAB"))
+                .toList();
 
-        // Get the total practice periods required from the subject
-        int totalPracticePeriods = subject.getTotalPracticePeriods();
-        if (totalPracticePeriods <= 0) {
-            throw new RuntimeException("No practice periods required for course: " + subject.getName());
-        }
+        // generate theory schedules
+        int totalTheoryPeriods = subject.getTotalTheoryPeriods();
+        if (totalTheoryPeriods > 0) {
+            int theorySessionsNeeded = (int) Math.ceil((double) totalTheoryPeriods / MAX_PERIODS_PER_SESSION);
 
-        // Calculate how many sessions needed based on max periods per session
-        int sessionsNeeded = (int) Math.ceil((double) totalPracticePeriods / MAX_PERIODS_PER_SESSION);
-
-        List<Schedule> generatedSchedules = new ArrayList<>();
-        Set<SemesterWeek> usedWeeks = new HashSet<>();
-
-        // Iterate through each section of the course
-        for (CourseSection section : sections) {
-            List<Schedule> sectionSchedules = createSchedulesForSection(
+            List<Schedule> theorySchedules = createTheorySchedules(
                     course,
-                    section,
-                    availableRooms,
+                    availableTheoryRooms,
                     courseLecturers,
                     courseSemesterWeeks,
                     existingSchedules,
                     generatedSchedules,
-                    sessionsNeeded,
-                    totalPracticePeriods,
-                    usedWeeks
+                    theorySessionsNeeded,
+                    totalTheoryPeriods
+            );
+            generatedSchedules.addAll(theorySchedules);
+            System.out.println("Generated theory schedules: " + theorySchedules.size());
+        }
+
+        // generate practice schedules
+        int totalPracticePeriods = subject.getTotalPracticePeriods();
+        if (totalPracticePeriods > 0) {
+            List<CourseSection> sections = course.getCourseSections();
+            if (sections == null || sections.isEmpty()) {
+                throw new RuntimeException("No available sections for practice sessions");
+            }
+
+            int totalWeeks = courseSemesterWeeks.size();
+            int practiceStartWeekIndex = totalWeeks / 3;
+            
+            List<SemesterWeek> practiceWeeks = courseSemesterWeeks.subList(
+                    practiceStartWeekIndex,
+                    courseSemesterWeeks.size()
             );
 
-            if (!sectionSchedules.isEmpty()) {
+            int sessionsPerSection = (int) Math.ceil((double) totalPracticePeriods / MAX_PERIODS_PER_SESSION);
+            Set<SemesterWeek> usedPracticeWeeks = new HashSet<>();
+
+            for (CourseSection section : sections) {
+                List<Schedule> sectionSchedules = createPracticeSchedulesForSection(
+                        course,
+                        section,
+                        availablePracticeRooms,
+                        courseLecturers,
+                        practiceWeeks,
+                        existingSchedules,
+                        generatedSchedules,
+                        sessionsPerSection,
+                        totalPracticePeriods,
+                        usedPracticeWeeks
+                );
                 generatedSchedules.addAll(sectionSchedules);
             }
         }
@@ -109,29 +129,24 @@ public class ScheduleServiceImpl implements ScheduleService {
         return generatedSchedules.stream().map(ScheduleMapper::mapScheduleToResponse).toList();
     }
 
-    @Override
-    public List<ScheduleResponse> getScheduleBySemesterId(Long semesterId) {
-        return scheduleRepository.findAllBySemesterId(semesterId).stream()
-                .map(ScheduleMapper::mapScheduleToResponse)
-                .collect(Collectors.toList());
-
-    }
-
-    private List<Schedule> createSchedulesForSection(
+    private List<Schedule> createTheorySchedules(
             Course course,
-            CourseSection section,
             List<Room> availableRooms,
             List<LecturerAccount> courseLecturers,
-            List<SemesterWeek> courseSemesterWeeks,
+            List<SemesterWeek> weeks,
             List<Schedule> existingSchedules,
             List<Schedule> generatedSchedules,
             int sessionsNeeded,
-            int totalPracticePeriods,
-            Set<SemesterWeek> usedWeeks
+            int totalPeriods
     ) {
-        // Filter rooms by capacity
+        List<Schedule> createdSchedules = new ArrayList<>();
+        List<Schedule> allSchedules = new ArrayList<>(existingSchedules);
+        allSchedules.addAll(generatedSchedules);
+        int remainingPeriods = totalPeriods;
+
+        // Lọc phòng theo capacity cho cả lớp
         List<Room> suitableRooms = availableRooms.stream()
-                .filter(room -> room.getCapacity() >= section.getTotalStudentsInSection())
+                .filter(room -> room.getCapacity() >= course.getMaxStudents())
                 .sorted(Comparator.comparing(Room::getCapacity))
                 .toList();
 
@@ -139,32 +154,69 @@ public class ScheduleServiceImpl implements ScheduleService {
             return Collections.emptyList();
         }
 
-        // Get all existing and newly generated schedules
+        for (int i = 0; remainingPeriods > 0; i++) {
+            SemesterWeek week = weeks.get(i);
+            byte periodsForThisSession = (byte) Math.min(remainingPeriods, MAX_PERIODS_PER_SESSION);
+
+            Schedule schedule = findScheduleForWeek(
+                    course,
+                    null, // No section for theory classes
+                    suitableRooms,
+                    courseLecturers,
+                    week,
+                    periodsForThisSession,
+                    allSchedules,
+                    ScheduleType.THEORY
+            );
+
+            if (schedule != null) {
+                createdSchedules.add(schedule);
+                allSchedules.add(schedule);
+                remainingPeriods -= periodsForThisSession;
+            }
+        }
+
+        return createdSchedules;
+    }
+
+    private List<Schedule> createPracticeSchedulesForSection(
+            Course course,
+            CourseSection section,
+            List<Room> availableRooms,
+            List<LecturerAccount> courseLecturers,
+            List<SemesterWeek> practiceWeeks,
+            List<Schedule> existingSchedules,
+            List<Schedule> generatedSchedules,
+            int sessionsNeeded,
+            int periodsPerSection,
+            Set<SemesterWeek> usedWeeks
+    ) {
+        List<Room> suitableRooms = availableRooms.stream()
+                .filter(room -> room.getCapacity() >= section.getMaxStudentsInSection())
+                .sorted(Comparator.comparing(Room::getCapacity))
+                .toList();
+
+        if (suitableRooms.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         List<Schedule> allSchedules = new ArrayList<>(existingSchedules);
         allSchedules.addAll(generatedSchedules);
-
         List<Schedule> createdSchedules = new ArrayList<>();
-        int remainingPeriods = totalPracticePeriods;
-
-        // We need consecutive weeks for each section
-        int consecutiveWeeksNeeded = Math.min(sessionsNeeded, courseSemesterWeeks.size());
+        int remainingPeriods = periodsPerSection;
 
         int consecutiveWeeksCount = 0;
-        for (int i = 0; (consecutiveWeeksCount < consecutiveWeeksNeeded) && remainingPeriods > 0; i++) {
-            if (i >= courseSemesterWeeks.size()) {
-                break; // No more available weeks
+        for (int i = 0; (consecutiveWeeksCount < sessionsNeeded) && remainingPeriods > 0; i++) {
+            if (i >= practiceWeeks.size()) {
+                break;
             }
 
-            SemesterWeek week = courseSemesterWeeks.get(i);
-
+            SemesterWeek week = practiceWeeks.get(i);
             if (usedWeeks.contains(week)) {
                 continue;
             }
 
-            // Calculate periods for this session (max 4 periods per session)
             byte periodsForThisSession = (byte) Math.min(remainingPeriods, MAX_PERIODS_PER_SESSION);
-
-            // Find a suitable schedule for this week
             Schedule schedule = findScheduleForWeek(
                     course,
                     section,
@@ -172,14 +224,16 @@ public class ScheduleServiceImpl implements ScheduleService {
                     courseLecturers,
                     week,
                     periodsForThisSession,
-                    allSchedules
+                    allSchedules,
+                    ScheduleType.PRACTICE
             );
 
             if (schedule != null) {
                 createdSchedules.add(schedule);
-                allSchedules.add(schedule); // Add to all schedules to avoid conflicts
+                allSchedules.add(schedule);
                 remainingPeriods -= periodsForThisSession;
-                usedWeeks.add(week); // Mark this week as used
+                usedWeeks.add(week);
+                consecutiveWeeksCount++;
             }
         }
 
@@ -193,12 +247,18 @@ public class ScheduleServiceImpl implements ScheduleService {
             List<LecturerAccount> courseLecturers,
             SemesterWeek week,
             byte totalPeriod,
-            List<Schedule> allSchedules
+            List<Schedule> allSchedules,
+            ScheduleType type
     ) {
-        for (byte dayOfWeek = 2; dayOfWeek <= 7; dayOfWeek++) { // Monday to Saturday (2-7)
-            for (byte startPeriod = 1; startPeriod <= 12; startPeriod += 2) { // Start at periods 1, 3, 5, etc.
-                // Make sure the session doesn't go beyond period 15
-                if (startPeriod + totalPeriod > 15) {
+        for (byte dayOfWeek = 2; dayOfWeek <= 7; dayOfWeek++) {
+            for (byte startPeriod = 1; startPeriod < 10; startPeriod += 1) {
+                byte endPeriod = (byte) (startPeriod + totalPeriod - 1);
+
+                if (startPeriod <= 5 && endPeriod >= 6) {
+                    continue;
+                }
+                
+                if (startPeriod + totalPeriod - 1 > 15) {
                     continue;
                 }
 
@@ -206,7 +266,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                     for (LecturerAccount lecturer : courseLecturers) {
                         Schedule newSchedule = Schedule.builder()
                                 .course(course)
-                                .courseSection(section)
+                                .courseSection(section) // null for theory, section for practice
                                 .room(room)
                                 .lecturer(lecturer)
                                 .dayOfWeek(dayOfWeek)
@@ -214,23 +274,26 @@ public class ScheduleServiceImpl implements ScheduleService {
                                 .totalPeriod(totalPeriod)
                                 .semesterWeek(week)
                                 .status(ScheduleStatus.IN_PROGRESS)
+                                .type(type)
                                 .build();
 
-                        // Check for conflicts
                         Schedule conflict = scheduleUtils.checkScheduleConflict(newSchedule, allSchedules);
                         if (conflict == null) {
-                            // No conflict, this schedule works
                             return newSchedule;
                         }
                     }
                 }
             }
         }
-
-        // Couldn't find a suitable schedule for this week
         return null;
     }
 
+    @Override
+    public List<ScheduleResponse> getScheduleBySemesterId(Long semesterId) {
+        return scheduleRepository.findAllBySemesterId(semesterId).stream()
+                .map(ScheduleMapper::mapScheduleToResponse)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public List<ScheduleResponse> getScheduleByCourseId(Long semesterId, Long courseId) {

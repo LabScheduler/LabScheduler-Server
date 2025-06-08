@@ -22,6 +22,6 @@ public class CourseResponse {
     private String semester;
     private List<String> lecturers;
     private Integer groupNumber;
-    private Integer totalStudents;
+    private Integer maxStudents;
 
 }

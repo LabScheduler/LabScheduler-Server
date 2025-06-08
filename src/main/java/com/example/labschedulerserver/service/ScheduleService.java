@@ -1,7 +1,5 @@
 package com.example.labschedulerserver.service;
 
-import com.example.labschedulerserver.model.Course;
-import com.example.labschedulerserver.model.Schedule;
 import com.example.labschedulerserver.payload.request.CreateScheduleRequest;
 import com.example.labschedulerserver.payload.request.UpdateScheduleRequest;
 import com.example.labschedulerserver.payload.response.Schedule.ScheduleResponse;
@@ -9,7 +7,7 @@ import com.example.labschedulerserver.payload.response.Schedule.ScheduleResponse
 import java.util.List;
 
 public interface ScheduleService {
-    List<ScheduleResponse> allocateSchedule(Long courseIds, Long semesterWeekId);
+    List<ScheduleResponse> allocateSchedule(Long courseIds, Long startWeekId);
 
     List<ScheduleResponse> getScheduleBySemesterId(Long semesterId);
 

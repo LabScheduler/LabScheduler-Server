@@ -36,6 +36,15 @@ public class ReportController {
         return ResponseEntity.ok(response);
     }
 
+    @PatchMapping("/{reportId}/process")
+    public ResponseEntity<?> processReport(@PathVariable Long reportId, @RequestParam String status) {
+        DataResponse response = DataResponse.builder()
+                .success(true)
+                .data(reportService.processReport(reportId, status))
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<?> getReportByUserId(@PathVariable Long userId) {
         DataResponse response = DataResponse.builder()

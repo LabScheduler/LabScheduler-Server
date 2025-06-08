@@ -22,7 +22,7 @@ public class CreateCourseRequest {
 
     private Integer totalStudents;
 
-    private Integer totalSection;
+//    private Integer totalSection;
 
     private Long startWeekId;
 }

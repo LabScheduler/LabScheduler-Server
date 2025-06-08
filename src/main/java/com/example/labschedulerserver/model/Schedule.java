@@ -1,6 +1,7 @@
 package com.example.labschedulerserver.model;
 
 import com.example.labschedulerserver.common.ScheduleStatus;
+import com.example.labschedulerserver.common.ScheduleType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,4 +50,7 @@ public class Schedule {
 
     @Enumerated(EnumType.STRING)
     private ScheduleStatus status;
+
+    @Enumerated(EnumType.STRING)
+    private ScheduleType type;
 }

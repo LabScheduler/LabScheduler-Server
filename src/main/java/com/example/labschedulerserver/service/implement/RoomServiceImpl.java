@@ -1,6 +1,7 @@
 package com.example.labschedulerserver.service.implement;
 
 import com.example.labschedulerserver.common.RoomStatus;
+import com.example.labschedulerserver.common.RoomType;
 import com.example.labschedulerserver.exception.FieldNotFoundException;
 import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.model.Room;
@@ -36,9 +37,11 @@ public class RoomServiceImpl implements RoomService {
                 .capacity(addRoomRequest.getCapacity())
                 .description(addRoomRequest.getDescription())
                 .status(RoomStatus.AVAILABLE)
+                .type(RoomType.valueOf(addRoomRequest.getType()))
                 .build();
-        roomRepository.save(room);
-        return room;
+
+        System.out.println("Creating room: " + room.getName() + " with type: " + room.getType() + " and status: " + room.getStatus() + " and capacity: " + room.getCapacity());
+        return roomRepository.save(room);
     }
 
     @Override

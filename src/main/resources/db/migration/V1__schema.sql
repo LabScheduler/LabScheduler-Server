@@ -9,7 +9,7 @@ CREATE TABLE `account`
     `id`         BIGINT PRIMARY KEY AUTO_INCREMENT,
     `username`   VARCHAR(50) UNIQUE        NOT NULL,
     `password`   VARCHAR(255)              NOT NULL,
-    `role_id`    BIGINT               NOT NULL,
+    `role_id`    BIGINT                    NOT NULL,
     `status`     ENUM ('ACTIVE', 'LOCKED') NOT NULL DEFAULT 'ACTIVE',
     `created_at` TIMESTAMP                          DEFAULT (CURRENT_TIMESTAMP)
 );
@@ -97,10 +97,10 @@ CREATE TABLE `semester`
 
 CREATE TABLE `subject`
 (
-    `id`                     BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `code`                   VARCHAR(36) UNIQUE NOT NULL,
-    `name`                   VARCHAR(100)       NOT NULL,
-    `total_credits`          INT                NOT NULL,
+    `id`                       BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `code`                     VARCHAR(36) UNIQUE NOT NULL,
+    `name`                     VARCHAR(100)       NOT NULL,
+    `total_credits`            INT                NOT NULL,
     `total_theory_periods`     INT                NOT NULL,
     `total_practice_periods`   INT                NOT NULL,
     `total_exercise_periods`   INT                NOT NULL,
@@ -114,7 +114,7 @@ CREATE TABLE `course`
     `class_id`       BIGINT NOT NULL,
     `semester_id`    BIGINT NOT NULL,
     `group_number`   INT    NOT NULL,
-    `total_students` INT    NOT NULL
+    `max_students` INT    NOT NULL
 );
 
 CREATE TABLE `lecturer_on_course`
@@ -129,7 +129,7 @@ CREATE TABLE `course_section`
     `id`                        BIGINT PRIMARY KEY AUTO_INCREMENT,
     `course_id`                 BIGINT NOT NULL,
     `section_number`            INT    NOT NULL,
-    `total_students_in_section` INT    NOT NULL
+    `max_students_in_section` INT    NOT NULL
 );
 
 CREATE TABLE `room`
@@ -139,7 +139,8 @@ CREATE TABLE `room`
     `capacity`     INT                                            NOT NULL,
     `status`       ENUM ('AVAILABLE', 'UNAVAILABLE', 'REPAIRING') NOT NULL DEFAULT 'AVAILABLE',
     `description`  VARCHAR(255)                                   NOT NULL,
-    `last_updated` DATETIME                                       NOT NULL DEFAULT (CURRENT_TIMESTAMP)
+    `last_updated` DATETIME                                       NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+    `type`         ENUM ('LECTURE_HALL', 'COMPUTER_LAB') NOT NULL
 );
 
 CREATE TABLE `semester_week`
@@ -162,43 +163,44 @@ CREATE TABLE `schedule`
     `start_period`      INT                                            NOT NULL,
     `total_period`      INT                                            NOT NULL,
     `semester_week_id`  BIGINT                                         NOT NULL,
-    `status`            ENUM ('IN_PROGRESS', 'COMPLETED', 'CANCELLED') NOT NULL
+    `status`            ENUM ('IN_PROGRESS', 'COMPLETED', 'CANCELLED') NOT NULL,
+    `type`              ENUM ('THEORY', 'PRACTICE')                    NOT NULL
 );
 
 
 
 #REPORT
 #==================================================#
-CREATE TABLE report (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(255) NOT NULL,
-    content TEXT NOT NULL,
-    author_id BIGINT NOT NULL,
-    FOREIGN KEY (author_id) REFERENCES account(id)
+CREATE TABLE report
+(
+    id        BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title     VARCHAR(255) NOT NULL,
+    content   TEXT         NOT NULL,
+    author_id BIGINT       NOT NULL,
+    FOREIGN KEY (author_id) REFERENCES account (id)
 );
 
-CREATE TABLE report_log (
-    report_id BIGINT PRIMARY KEY,
-    status ENUM('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED') NOT NULL,
-    content TEXT,
+CREATE TABLE report_log
+(
+    report_id  BIGINT PRIMARY KEY,
+    status     ENUM ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED') NOT NULL,
+    content    TEXT,
     manager_id BIGINT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (report_id) REFERENCES report(id) ON DELETE CASCADE,
-    FOREIGN KEY (manager_id) REFERENCES manager_account(account_id)
+    FOREIGN KEY (report_id) REFERENCES report (id) ON DELETE CASCADE,
+    FOREIGN KEY (manager_id) REFERENCES manager_account (account_id)
 );
 
 
-
-
-
 #==================================================#
-CREATE TABLE student_on_course (
-                                   student_id BIGINT,
-                                   course_id BIGINT,
-                                   PRIMARY KEY (student_id, course_id),
-                                   FOREIGN KEY (student_id) REFERENCES student_account(account_id),
-                                   FOREIGN KEY (course_id) REFERENCES course(id)
+CREATE TABLE student_on_course_section
+(
+    student_id BIGINT,
+    course_section_id  BIGINT,
+    PRIMARY KEY (student_id, course_section_id),
+    FOREIGN KEY (student_id) REFERENCES student_account (account_id),
+    FOREIGN KEY (course_section_id) REFERENCES course_section (id)
 );
 #==================================================#
 
@@ -218,10 +220,10 @@ ALTER TABLE `class`
     ADD FOREIGN KEY (`specialization_id`) REFERENCES `specialization` (`id`);
 
 ALTER TABLE `student_account`
-    ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ;
+    ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `student_on_class`
-    ADD FOREIGN KEY (`student_id`) REFERENCES `student_account` (`account_id`) ON DELETE CASCADE ;
+    ADD FOREIGN KEY (`student_id`) REFERENCES `student_account` (`account_id`) ON DELETE CASCADE;
 
 ALTER TABLE `student_on_class`
     ADD FOREIGN KEY (`class_id`) REFERENCES `class` (`id`);
@@ -230,7 +232,7 @@ ALTER TABLE `lecturer_account`
     ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `lecturer_account`
-    ADD FOREIGN KEY (`department_id`) REFERENCES `department` (`id`) ON DELETE CASCADE ;
+    ADD FOREIGN KEY (`department_id`) REFERENCES `department` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `manager_account`
     ADD FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE;

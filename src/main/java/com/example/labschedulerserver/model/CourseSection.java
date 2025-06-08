@@ -28,8 +28,8 @@ public class CourseSection {
     @Column(name = "section_number")
     private Integer sectionNumber;
 
-    @Column(name = "total_students_in_section")
-    private Integer totalStudentsInSection;
+    @Column(name = "max_students_in_section")
+    private Integer maxStudentsInSection;
 
     @OneToMany(mappedBy = "courseSection", fetch = FetchType.LAZY)
     @JsonIgnore

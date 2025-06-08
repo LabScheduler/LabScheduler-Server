@@ -13,7 +13,7 @@ public class CourseMapper {
                 .semester(course.getSemester().getName())
                 .lecturers(course.getLecturers().stream().map(LecturerAccount::getFullName).toList())
                 .groupNumber(course.getGroupNumber())
-                .totalStudents(course.getTotalStudents())
+                .maxStudents(course.getMaxStudents())
                 .build();
     }
 }

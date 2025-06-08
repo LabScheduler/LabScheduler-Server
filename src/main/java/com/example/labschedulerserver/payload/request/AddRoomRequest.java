@@ -8,4 +8,5 @@ public class AddRoomRequest {
     private String name;
     private Integer capacity;
     private String description;
+    private String type;
 }

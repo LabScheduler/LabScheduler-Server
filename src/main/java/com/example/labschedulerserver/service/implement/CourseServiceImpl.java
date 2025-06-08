@@ -1,6 +1,8 @@
 package com.example.labschedulerserver.service.implement;
 
 import com.example.labschedulerserver.auth.AuthService;
+import com.example.labschedulerserver.common.RoomStatus;
+import com.example.labschedulerserver.common.RoomType;
 import com.example.labschedulerserver.exception.ResourceNotFoundException;
 import com.example.labschedulerserver.model.*;
 import com.example.labschedulerserver.payload.request.Course.CourseMapper;
@@ -13,6 +15,7 @@ import com.example.labschedulerserver.payload.response.User.LecturerResponse;
 import com.example.labschedulerserver.payload.response.User.UserMapper;
 import com.example.labschedulerserver.repository.*;
 import com.example.labschedulerserver.service.CourseService;
+import com.example.labschedulerserver.service.RoomService;
 import com.example.labschedulerserver.service.ScheduleService;
 import com.example.labschedulerserver.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +23,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +40,7 @@ public class CourseServiceImpl implements CourseService {
     private final ScheduleService scheduleService;
     private final AuthService authService;
     private final UserService userService;
+    private final RoomService roomService;
 
     //Get all courses by the current semester
     @Override
@@ -91,11 +94,48 @@ public class CourseServiceImpl implements CourseService {
         return courseSections;
     }
 
+
+    private void combine(List<Room> rooms, List<Room> current, int index, int r, List<List<Room>> result) {
+        if (current.size() == r) {
+            result.add(new ArrayList<>(current));
+            return;
+        }
+        for (int i = index; i < rooms.size(); i++) {
+            current.add(rooms.get(i));
+            combine(rooms, current, i + 1, r, result);
+            current.remove(current.size() - 1);
+        }
+    }
+
+    //Generate the best room combination for the course
+    private List<Room> generatePracticeRoomCombinations(List<Room> rooms, int maxStudentsInCourse) {
+        List<Room> availableRooms = rooms.stream()
+                .filter(room -> room.getStatus() == RoomStatus.AVAILABLE && room.getType() == RoomType.COMPUTER_LAB)
+                .sorted(Comparator.comparingInt(Room::getCapacity).reversed())
+                .collect(Collectors.toList());
+
+        List<List<Room>> roomCombinations = new ArrayList<>();
+
+        for (int r = 1; r <= availableRooms.size(); r++) {
+            combine(availableRooms, new ArrayList<>(), 0, r, roomCombinations);
+        }
+
+        List<Room> bestCombination = roomCombinations.stream()
+                .filter(c -> c.stream().mapToInt(Room::getCapacity).sum() >= maxStudentsInCourse).min(Comparator
+                        .comparingInt((List<Room> c) -> c.stream().mapToInt(Room::getCapacity).sum() - maxStudentsInCourse)
+                        .thenComparing(List::size)
+                        .thenComparing(c -> {
+                            IntSummaryStatistics stats = c.stream().mapToInt(Room::getCapacity).summaryStatistics();
+                            return stats.getMax() - stats.getMin();
+                        }))
+                .orElseThrow(() -> new ResourceNotFoundException("No suitable room combination found"));
+        return bestCombination;
+    }
+
     @Override
     @Transactional
     public NewCourseResponse createCourse(CreateCourseRequest request) {
         Semester semester = semesterRepository.findById(request.getSemesterId()).orElseThrow(() -> new ResourceNotFoundException("Semester not found"));
-
 //        if(semester.getStartDate().isBefore(LocalDate.now())){
 //            throw new ResourceNotFoundException("Semester has started");
 //        }
@@ -104,7 +144,11 @@ public class CourseServiceImpl implements CourseService {
         if (course != null) {
             throw new ResourceNotFoundException("Course already exist");
         }
-
+        List<Room> availableRooms = roomService.getAllRoom().stream()
+                .filter(room -> room.getStatus() == RoomStatus.AVAILABLE && room.getType() == RoomType.COMPUTER_LAB)
+                .toList();
+        List<Room> bestPracticeRoomCombinations = generatePracticeRoomCombinations(availableRooms, request.getTotalStudents());
+        int totalSection = bestPracticeRoomCombinations.size();
         Course newCourse = Course.builder()
                 .subject(subjectRepository.findById(request.getSubjectId()).orElseThrow(() -> new ResourceNotFoundException("Subject not found")))
                 .clazz(classRepository.findById(request.getClassId()).orElseThrow(() -> new ResourceNotFoundException("Class not found")))
@@ -116,29 +160,29 @@ public class CourseServiceImpl implements CourseService {
                         .max()
                         .orElse(0) + 1
                 )
-                .totalStudents(request.getTotalStudents())
+                .maxStudents(request.getTotalStudents())
                 .semester(semester)
                 .build();
         if (newCourse.getSubject().getTotalPracticePeriods() == 0) {
             throw new ResourceNotFoundException("Subject has no practice periods");
         }
         List<CourseSection> courseSections = new ArrayList<>();
-        for (int i = 1; i <= request.getTotalSection(); i++) {
-            int totalStudent = newCourse.getTotalStudents();
-            int totalStudentInSection = totalStudent / request.getTotalSection();
-            int remainingStudents = totalStudent % request.getTotalSection();
 
-            int studentsInThisSection = totalStudentInSection + (i <= remainingStudents ? 1 : 0);
+        int remainingStudents = newCourse.getMaxStudents();
+
+        for (int i = 1; i <= totalSection; i++) {
+            int totalStudent = newCourse.getMaxStudents();
+            int totalStudentInSection = remainingStudents - bestPracticeRoomCombinations.get(i - 1).getCapacity();
 
             CourseSection newCourseSection = CourseSection.builder()
                     .course(newCourse)
                     .sectionNumber(i)
-                    .totalStudentsInSection(studentsInThisSection)
+                    .maxStudentsInSection(totalStudentInSection)
                     .build();
             courseSections.add(newCourseSection);
         }
         newCourse.setCourseSections(courseSections);
-        System.out.println(newCourse.getCourseSections().size());
+
         courseRepository.save(newCourse);
         courseSectionRepository.saveAll(courseSections);
         return NewCourseResponse.builder()
@@ -171,7 +215,7 @@ public class CourseServiceImpl implements CourseService {
 
         course.setSubject(subjectRepository.findById(request.getSubjectId()).orElseThrow(() -> new ResourceNotFoundException("Subject not found")));
         course.setClazz(classRepository.findById(request.getClassId()).orElseThrow(() -> new ResourceNotFoundException("Class not found")));
-        course.setTotalStudents(request.getTotalStudents());
+        course.setMaxStudents(request.getTotalStudents());
 
         if (request.getLecturersIds() != null) {
             course.setLecturers(lecturerAccountRepository.findAllById(request.getLecturersIds()));
