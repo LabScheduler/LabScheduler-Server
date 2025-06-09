@@ -45,7 +45,7 @@ public class ReportController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{userId}/reports")
     public ResponseEntity<?> getReportByUserId(@PathVariable Long userId) {
         DataResponse response = DataResponse.builder()
                 .success(true)

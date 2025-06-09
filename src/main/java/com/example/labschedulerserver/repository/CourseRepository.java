@@ -23,6 +23,19 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     public List<Course> findAllBySubjectIdAndSemesterId(Long subjectId, Long semesterId);
 
+    @Query(value = """
+        SELECT COUNT(*)
+        FROM student_on_course_section socs
+        JOIN course_section cs ON socs.course_section_id = cs.id
+        WHERE cs.course_id = :courseId
+        """, nativeQuery = true)
+    int countCurrentStudentInCourse(Long courseId);
 
-
+    @Query(value = """
+        SELECT COUNT(*)
+        FROM student_on_course_section socs
+        JOIN course_section cs ON socs.course_section_id = cs.id
+        WHERE cs.id = :courseSectionId;
+        """, nativeQuery = true)
+    int countCurrentStudentInCourseSection(Long courseSectionId);
 }

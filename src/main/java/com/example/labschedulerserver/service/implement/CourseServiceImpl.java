@@ -9,6 +9,7 @@ import com.example.labschedulerserver.payload.request.Course.CourseMapper;
 import com.example.labschedulerserver.payload.request.Course.CreateCourseRequest;
 import com.example.labschedulerserver.payload.request.Course.UpdateCourseRequest;
 import com.example.labschedulerserver.payload.response.CourseResponse;
+import com.example.labschedulerserver.payload.response.CourseSectionResponse;
 import com.example.labschedulerserver.payload.response.NewCourseResponse;
 import com.example.labschedulerserver.payload.response.Schedule.ScheduleResponse;
 import com.example.labschedulerserver.payload.response.User.LecturerResponse;
@@ -41,6 +42,7 @@ public class CourseServiceImpl implements CourseService {
     private final AuthService authService;
     private final UserService userService;
     private final RoomService roomService;
+    private final CourseMapper courseMapper;
 
     //Get all courses by the current semester
     @Override
@@ -49,7 +51,7 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository
                 .findAllBySemesterId(semester.getId())
                 .stream()
-                .map(CourseMapper::toCourseResponse)
+                .map(courseMapper::toCourseResponse)
                 .toList();
     }
 
@@ -57,7 +59,7 @@ public class CourseServiceImpl implements CourseService {
     public List<CourseResponse> getAllCourseBySemester(Long semesterId) {
         return courseRepository.findAllBySemesterId(semesterId)
                 .stream()
-                .map(CourseMapper::toCourseResponse)
+                .map(courseMapper::toCourseResponse)
                 .toList();
     }
 
@@ -66,7 +68,7 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository
                 .findAllByClazzId(classId)
                 .stream()
-                .map(CourseMapper::toCourseResponse)
+                .map(courseMapper::toCourseResponse)
                 .toList();
     }
 
@@ -74,24 +76,26 @@ public class CourseServiceImpl implements CourseService {
     public List<CourseResponse> getAllCourse(Long subjectId, Long semesterId) {
         return courseRepository.findAllBySubjectIdAndSemesterId(subjectId, semesterId)
                 .stream()
-                .map(CourseMapper::toCourseResponse)
+                .map(courseMapper::toCourseResponse)
                 .toList();
     }
 
     @Override
     public CourseResponse getCourseById(Long id) {
         return courseRepository.findById(id)
-                .map(CourseMapper::toCourseResponse)
+                .map(courseMapper::toCourseResponse)
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found with id:" + id));
     }
 
     @Override
-    public List<CourseSection> getCourseSectionByCourseId(Long courseId) {
+    public List<CourseSectionResponse> getCourseSectionByCourseId(Long courseId) {
         List<CourseSection> courseSections = courseSectionRepository.findAllByCourseId(courseId);
         if (courseSections.isEmpty()) {
             throw new ResourceNotFoundException("CourseSection not found with courseId: " + courseId);
         }
-        return courseSections;
+        return courseSections.stream()
+                .map(courseMapper::toCourseSectionResponse)
+                .toList();
     }
 
 
@@ -186,7 +190,7 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.save(newCourse);
         courseSectionRepository.saveAll(courseSections);
         return NewCourseResponse.builder()
-                .course(CourseMapper.toCourseResponse(newCourse))
+                .course(courseMapper.toCourseResponse(newCourse))
                 .schedules(generatePracticeSchedule(newCourse, request.getStartWeekId()))
                 .build();
     }
@@ -205,7 +209,7 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository.findAllBySemesterId(semesterRepository.findCurrentSemester().orElseThrow(() -> new ResourceNotFoundException("Semester not found")).getId())
                 .stream()
                 .filter(course -> course.getLecturers().contains(lecturerAccount))
-                .map(CourseMapper::toCourseResponse)
+                .map(courseMapper::toCourseResponse)
                 .toList();
     }
 
@@ -221,7 +225,7 @@ public class CourseServiceImpl implements CourseService {
             course.setLecturers(lecturerAccountRepository.findAllById(request.getLecturersIds()));
         }
 
-        return CourseMapper.toCourseResponse(courseRepository.save(course));
+        return courseMapper.toCourseResponse(courseRepository.save(course));
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.example.labschedulerserver.model.CourseSection;
 import com.example.labschedulerserver.payload.request.Course.CreateCourseRequest;
 import com.example.labschedulerserver.payload.request.Course.UpdateCourseRequest;
 import com.example.labschedulerserver.payload.response.CourseResponse;
+import com.example.labschedulerserver.payload.response.CourseSectionResponse;
 import com.example.labschedulerserver.payload.response.NewCourseResponse;
 import com.example.labschedulerserver.payload.response.User.LecturerResponse;
 
@@ -21,7 +22,7 @@ public interface CourseService {
 
     CourseResponse getCourseById(Long id);
 
-    List<CourseSection> getCourseSectionByCourseId(Long courseId);
+    List<CourseSectionResponse> getCourseSectionByCourseId(Long courseId);
 
     NewCourseResponse createCourse(CreateCourseRequest request);
 

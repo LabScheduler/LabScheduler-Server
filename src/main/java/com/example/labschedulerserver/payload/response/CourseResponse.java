@@ -23,5 +23,6 @@ public class CourseResponse {
     private List<String> lecturers;
     private Integer groupNumber;
     private Integer maxStudents;
+    private int totalStudents;
 
 }
