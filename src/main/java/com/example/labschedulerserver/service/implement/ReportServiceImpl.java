@@ -3,16 +3,15 @@ package com.example.labschedulerserver.service.implement;
 import com.example.labschedulerserver.common.ReportStatus;
 import com.example.labschedulerserver.exception.BadRequestException;
 import com.example.labschedulerserver.exception.ResourceNotFoundException;
-import com.example.labschedulerserver.model.Account;
-import com.example.labschedulerserver.model.ManagerAccount;
-import com.example.labschedulerserver.model.Report;
-import com.example.labschedulerserver.model.ReportLog;
+import com.example.labschedulerserver.model.*;
 import com.example.labschedulerserver.payload.request.Report.CreateReportRequest;
 import com.example.labschedulerserver.payload.request.Report.UpdateReportRequest;
 import com.example.labschedulerserver.payload.response.Report.ReportMapper;
 import com.example.labschedulerserver.payload.response.Report.ReportResponse;
+import com.example.labschedulerserver.repository.LecturerAccountRepository;
 import com.example.labschedulerserver.repository.ReportLogRepository;
 import com.example.labschedulerserver.repository.ReportRepository;
+import com.example.labschedulerserver.service.EmailSenderService;
 import com.example.labschedulerserver.service.ReportService;
 import com.example.labschedulerserver.service.UserService;
 import jakarta.transaction.Transactional;
@@ -29,6 +28,8 @@ public class ReportServiceImpl implements ReportService {
     private final ReportLogRepository reportLogRepository;
     private final ReportMapper reportMapper;
     private final UserService userService;
+    private final EmailSenderService emailSenderService;
+    private final LecturerAccountRepository lecturerAccountRepository;
 
     @Override
     public ReportResponse createReport(CreateReportRequest request) {
@@ -88,6 +89,15 @@ public class ReportServiceImpl implements ReportService {
         ReportLog reportLog = report.getReportLog();
         reportLog.setStatus(ReportStatus.valueOf(status.toUpperCase()));
         reportLog.setManager((ManagerAccount) userService.getAccountInfo(userService.getCurrentAccount()));
+
+        String email = ((LecturerAccount) userService.getAccountInfo(report.getAuthor())).getEmail();
+        String mailStatus = reportLog.getStatus() == ReportStatus.APPROVED ? "Đã duyệt" : "Đã từ chối";
+        emailSenderService.sendEmail(email,
+                "Về việc "+ report.getTitle() + " vào lúc: "+reportLog.getCreatedAt(),
+                "Báo cáo của bạn đã được xử lý với trạng thái: "+ mailStatus
+                        +" bởi: " + reportLog.getManager().getFullName()
+                        + ". Nội dung: " + reportLog.getContent()!= null ? reportLog.getContent() : "Không có nội dung");
+
 
         return reportMapper.toReportResponse(reportRepository.save(report), reportLogRepository.save(reportLog));
     }
