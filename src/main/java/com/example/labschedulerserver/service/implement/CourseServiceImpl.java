@@ -176,7 +176,7 @@ public class CourseServiceImpl implements CourseService {
 
         for (int i = 1; i <= totalSection; i++) {
             int totalStudent = newCourse.getMaxStudents();
-            int totalStudentInSection = remainingStudents - bestPracticeRoomCombinations.get(i - 1).getCapacity();
+            int totalStudentInSection = (remainingStudents - bestPracticeRoomCombinations.get(i - 1).getCapacity() + bestPracticeRoomCombinations.get(i - 1).getCapacity())%bestPracticeRoomCombinations.get(i - 1).getCapacity();
 
             CourseSection newCourseSection = CourseSection.builder()
                     .course(newCourse)
