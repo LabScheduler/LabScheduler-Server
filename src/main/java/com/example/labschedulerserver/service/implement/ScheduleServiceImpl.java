@@ -328,6 +328,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .dayOfWeek(request.getDayOfWeek())
                 .startPeriod(request.getStartPeriod())
                 .totalPeriod(request.getTotalPeriod())
+                .type(ScheduleType.PRACTICE)
                 .status(ScheduleStatus.IN_PROGRESS)
                 .build();
 

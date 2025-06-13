@@ -43,6 +43,7 @@ public class CourseServiceImpl implements CourseService {
     private final UserService userService;
     private final RoomService roomService;
     private final CourseMapper courseMapper;
+    private final ScheduleRepository scheduleRepository;
 
     //Get all courses by the current semester
     @Override
@@ -242,6 +243,17 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void deleteCourse(Long id) {
         Course course = courseRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
+
+        List<CourseSection> courseSections = course.getCourseSections();
+        List<Schedule> schedules = course.getSchedules();
+
+        if (!schedules.isEmpty()) {
+            scheduleRepository.deleteAll(schedules);
+        }
+        if (!courseSections.isEmpty()) {
+            courseSectionRepository.deleteAll(courseSections);
+        }
+
         courseRepository.delete(course);
     }
 

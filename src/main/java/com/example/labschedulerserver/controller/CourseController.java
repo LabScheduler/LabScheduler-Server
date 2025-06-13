@@ -1,5 +1,7 @@
 package com.example.labschedulerserver.controller;
 
+import com.example.labschedulerserver.model.Course;
+import com.example.labschedulerserver.payload.request.Course.CourseMapper;
 import com.example.labschedulerserver.payload.request.Course.CreateCourseRequest;
 import com.example.labschedulerserver.payload.request.Course.UpdateCourseRequest;
 import com.example.labschedulerserver.payload.response.DataResponse;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CourseController {
     private final CourseService courseService;
+    private final CourseMapper courseMapper;
 
     @PreAuthorize("hasAnyAuthority('MANAGER', 'LECTURER', 'STUDENT')")
     @GetMapping
@@ -125,6 +128,24 @@ public class CourseController {
                 .success(true)
                 .data(courseService.getLecturersByCourse(courseId))
                 .message("Get lecturers by course successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/exists")
+    public ResponseEntity<?> checkCourseExists(@RequestBody CreateCourseRequest request) {
+        Course course = courseService.checkCourseExist(request.getSubjectId(), request.getClassId(), request.getSemesterId());
+        if (course == null) {
+            DataResponse response = DataResponse.builder()
+                    .success(true)
+                    .data(null)
+                    .build();
+            return ResponseEntity.ok(response);
+        }
+        DataResponse response = DataResponse.builder()
+                .success(true)
+                .data(courseMapper.toCourseResponse(course) != null ? courseMapper.toCourseResponse(course) : null)
+                .message("Check course exists successfully")
                 .build();
         return ResponseEntity.ok(response);
     }
